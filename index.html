@@ -1,16 +1,251 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title></title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #ffffff;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAPHAEL FARIA — Prancha I.</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#c5b99e;
+  font-family:'Crimson Text',Georgia,serif;
+  color:#1e0f06;
+  min-height:100vh;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:repeating-linear-gradient(
+    0deg,transparent,transparent 23px,rgba(50,28,8,.04) 23px,rgba(50,28,8,.04) 24px
+  );
+  pointer-events:none;z-index:0;
+}
+.page{position:relative;z-index:1;max-width:940px;margin:22px auto;padding:22px 26px;}
+.ob{border:2px solid #2a1406;padding:4px;background:#f9f5ed;}
+.ib{border:0.75px solid #2a1406;padding:18px 20px 14px;}
+
+/* HEADER */
+.hdr{text-align:center;padding-bottom:3px;}
+.t1{font-family:'IM Fell English',serif;font-size:42px;letter-spacing:11px;color:#090301;line-height:1;font-weight:400;}
+.t2{font-family:'IM Fell English',serif;font-size:13px;letter-spacing:4px;color:#090301;margin-top:2px;}
+.t3{font-family:'IM Fell English',serif;font-style:italic;font-size:9.5px;letter-spacing:3px;color:#573215;margin-top:2px;}
+.deco{display:flex;align-items:center;justify-content:center;gap:6px;margin:5px 0;color:#3a1f0a;font-size:9px;}
+.deco::before,.deco::after{content:'';display:block;width:88px;height:0.5px;background:#3a1f0a;}
+.prancha{font-family:'IM Fell English',serif;font-size:9px;letter-spacing:4px;color:#3a1f0a;text-align:center;margin-bottom:7px;}
+hr{border:none;border-top:0.75px solid #2a1406;margin:4px 0 7px;}
+
+/* MAIN 3-COL — right col wider to hold hand */
+.g3{display:grid;grid-template-columns:186px 1fr 196px;align-items:start;}
+.gl{padding-right:11px;border-right:0.5px solid #a08860;}
+.gc{padding:0 11px;display:flex;flex-direction:column;}
+.gr{padding-left:11px;border-left:0.5px solid #a08860;display:flex;flex-direction:column;gap:0;}
+
+/* labels */
+.fl{font-family:'IM Fell English',serif;font-size:10px;color:#2a1406;margin-bottom:1px;}
+.fs{font-family:'IM Fell English',serif;font-style:italic;font-size:9px;color:#6b4226;margin-bottom:4px;}
+
+/* thumbnails */
+.tr{display:flex;align-items:flex-start;gap:6px;margin-bottom:7px;}
+.tb{flex-shrink:0;border:0.5px solid #967550;background:#f9f5ed;overflow:hidden;}
+.tb img{width:66px;height:50px;object-fit:cover;display:block;}
+.ck{font-family:'IM Fell English',serif;font-size:9.5px;color:#1a0c04;}
+.ct{font-weight:600;display:inline;}
+.cb{font-size:8.8px;color:#2a1608;line-height:1.42;margin-top:1px;}
+
+/* natureza */
+.nat{border:0.75px solid #2a1406;padding:7px 8px;margin-top:7px;background:#f9f5ed;}
+.nt{font-family:'IM Fell English',serif;font-size:8.8px;letter-spacing:2px;text-align:center;color:#090301;margin-bottom:5px;}
+.nb{font-size:8.3px;line-height:1.56;text-align:justify;}
+.nb p+p{margin-top:4px;}
+
+/* portrait */
+.portrait{width:100%;display:block;border:0.5px solid #967550;}
+
+/* illus boxes */
+.ib2{border:0.5px solid #967550;background:#f9f5ed;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.ib2 img{display:block;object-fit:contain;}
+
+/* annotation */
+.an{font-family:'IM Fell English',serif;font-style:italic;font-size:8.8px;color:#2a1406;line-height:1.44;}
+
+/* right col divider */
+.rdiv{border:none;border-top:0.5px solid #a08860;margin:6px 0;}
+
+/* BOTTOM ROW — directly under main, no big gap */
+.bhr{border:none;border-top:0.75px solid #2a1406;margin:8px 0 7px;}
+.bg{display:grid;grid-template-columns:186px 1fr 196px;align-items:center;}
+.bgl{padding-right:11px;border-right:0.5px solid #a08860;}
+.bgc{padding:0 11px;display:flex;align-items:center;justify-content:center;}
+.bgr{padding-left:11px;border-left:0.5px solid #a08860;}
+
+/* classification */
+.cb2{border:0.75px solid #2a1406;padding:7px 12px;background:#f9f5ed;}
+.ct2{font-family:'IM Fell English',serif;font-size:9px;letter-spacing:2px;text-align:center;margin-bottom:5px;}
+.ctb{width:100%;border-collapse:collapse;font-size:8.8px;}
+.ctb td{padding:1px 2px;line-height:1.4;}
+.ctb td:first-child{font-style:italic;color:#6b4226;white-space:nowrap;padding-right:6px;}
+
+.tab{text-align:right;margin-top:5px;font-family:'IM Fell English',serif;font-style:italic;font-size:8.8px;color:#6b4226;letter-spacing:1px;}
+</style>
 </head>
 <body>
+<div class="page">
+<div class="ob"><div class="ib">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="t1">RAPHAEL FARIA</div>
+  <div class="t2">(HOMO &nbsp;SAPIENS)</div>
+  <div class="t3">1.985 &nbsp;d.C</div>
+</div>
+<div class="deco">⊹</div>
+<div class="prancha">PRANCHA &nbsp; I.</div>
+<hr>
+
+<!-- MAIN GRID -->
+<div class="g3">
+
+  <!-- ESQUERDA: thumbnails + natureza -->
+  <div class="gl">
+    <div class="fl">Fig. 1. Retrato.</div>
+    <div class="fs">Vista anterior.</div>
+
+    <div class="tr">
+      <div class="tb"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1776915345/olhos_zxmbgb.png" alt="Olho"/></div>
+      <div>
+        <div class="ck">a. <span class="ct">Olho</span></div>
+        <div class="cb">Olhos voltados para a frente proporcionam percepção de profundidade.</div>
+      </div>
+    </div>
+
+    <div class="tr">
+      <div class="tb"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1776915449/nariz_c368sd.png" alt="Nariz"/></div>
+      <div>
+        <div class="ck">b. <span class="ct">Nariz</span></div>
+        <div class="cb">Proeminente e adaptado para a filtração do ar.</div>
+      </div>
+    </div>
+
+    <div class="tr">
+      <div class="tb"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1776915347/pelos_faciais_z1s57p.png" alt="Pelos faciais"/></div>
+      <div>
+        <div class="ck">c. <span class="ct">Pelos faciais</span></div>
+        <div class="cb">Folículos pilosos protegem e sensibilizam.</div>
+      </div>
+    </div>
+
+    <div class="nat">
+      <div class="nt">NATUREZA &nbsp;HUMANA</div>
+      <div class="nb">
+        <p>Os seres humanos são animais mamíferos, bípedes, que se distinguem dos outros mamíferos, como a baleia, ou bípedes, como a galinha, principalmente por duas características: o telencéfalo altamente desenvolvido e o polegar opositor.</p>
+        <p>O telencéfalo altamente desenvolvido permite aos seres humanos armazenar informações, relacioná-las, processá-las e entendê-las.</p>
+        <p>O polegar opositor permite aos seres humanos o movimento de pinça dos dedos o que, por sua vez, permite a manipulação de precisão.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTRO: só o retrato, ocupa todo o espaço vertical -->
+  <div class="gc">
+    <img
+      src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1776915337/face_ytsuon.png"
+      class="portrait"
+      alt="Retrato de Raphael Faria"
+      style="height:100%;object-fit:cover;object-position:top;"
+    />
+  </div>
+
+  <!-- DIREITA: cérebro → crânio → mão → texto -->
+  <div class="gr">
+
+    <div>
+      <div class="fl">Fig. 2. Telencéfalo.</div>
+      <div class="fs">Vista lateral.</div>
+      <div class="ib2" style="height:118px;margin-bottom:3px;">
+        <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1776915333/cerebro_pisoyk.png" style="width:100%;height:118px;"/>
+      </div>
+      <div class="an" style="margin-bottom:0;">Telencéfalo altamente desenvolvido.<br>Centro da inteligência, memória e raciocínio.</div>
+    </div>
+
+    <hr class="rdiv">
+
+    <div>
+      <div class="fl">Fig. 3. Crânio.</div>
+      <div class="fs">Vista lateral.</div>
+      <div class="ib2" style="height:118px;margin-bottom:3px;">
+        <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1776915335/cranio_bklher.png" style="width:100%;height:118px;"/>
+      </div>
+      <div class="an" style="text-align:right;margin-bottom:0;">Caixa craniana protege o cérebro.<br>Mandíbula reduzida em comparação<br>a outros mamíferos.</div>
+    </div>
+
+    <hr class="rdiv">
+
+    <div>
+      <div class="fl">Fig. 4. Mão.</div>
+      <div class="fs">Vista palmar.</div>
+      <div class="ib2" style="height:175px;margin-bottom:4px;">
+        <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1776915341/mao_hqog0m.png" style="width:100%;height:175px;"/>
+      </div>
+      <div class="an" style="text-align:center;">Polegar opositor permite o movimento de pinça<br>e a manipulação de precisão.</div>
+    </div>
+
+  </div>
+
+</div><!-- /g3 -->
+
+<!-- BOTTOM — sobe, separado apenas por linha -->
+<hr class="bhr">
+
+<div class="bg">
+
+  <div class="bgl">
+    <div class="fl">Fig. 5. <em>Gallus gallus domesticus.</em></div>
+    <div class="fs">(Galinha)</div>
+    <div style="display:flex;gap:7px;align-items:flex-start;">
+      <div class="ib2" style="width:84px;height:100px;flex-shrink:0;">
+        <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1776915339/galinha_xwxzxo.png" style="width:84px;height:100px;"/>
+      </div>
+      <div>
+        <div class="an">Bípede.</div>
+        <div class="an" style="margin-top:3px;">Asas adaptadas para o voo,<br>não para a manipulação manual.</div>
+        <div class="an" style="margin-top:3px;">Não possui polegar opositor.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bgc">
+    <div class="cb2">
+      <div class="ct2">CLASSIFICAÇÃO</div>
+      <table class="ctb">
+        <tr><td>Reino:</td><td>Animalia</td></tr>
+        <tr><td>Filo:</td><td>Chordata</td></tr>
+        <tr><td>Classe:</td><td>Mammalia</td></tr>
+        <tr><td>Ordem:</td><td>Primates</td></tr>
+        <tr><td>Família:</td><td>Hominidae</td></tr>
+        <tr><td>Gênero:</td><td>Homo</td></tr>
+        <tr><td>Espécie:</td><td>Homo sapiens</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="bgr">
+    <div class="fl">Fig. 6. <em>Balaenoptera musculus.</em></div>
+    <div class="fs">(Baleia-azul)</div>
+    <div style="display:flex;gap:7px;align-items:flex-start;">
+      <div class="ib2" style="width:104px;height:68px;flex-shrink:0;">
+        <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1776915332/baleia_jjx8cc.png" style="width:104px;height:68px;"/>
+      </div>
+      <div>
+        <div class="an">Mamífero. Vive na água.</div>
+        <div class="an" style="margin-top:3px;">Membros anteriores adaptados<br>para nadar (nadadeiras).</div>
+        <div class="an" style="margin-top:3px;">Não é bípede e não possui<br>polegar opositor.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /bg -->
+
+<div class="tab">Tab. I.</div>
+
+</div></div></div>
 </body>
 </html>
