@@ -216,6 +216,7 @@ function compute32(matches){
 // DB.results = {matches:{}, r1thirds:{jogoId:team}, winners:{k1:{1:team,...},k2:{...},...}}
 let DB={guesses:{},results:{matches:{},r1thirds:{},winners:{}},imported:{}};
 const state={tab:"ranking",apiMsg:"",saving:false,ready:false,impMsg:"",vp:"Raphael"};
+const isAdmin=new URLSearchParams(window.location.search).has("admin");
 const PLAYERS=["Raphael","Danillo","Lucas","Paulo"];
 const INIT={Raphael:"R",Danillo:"D",Lucas:"L",Paulo:"P"};
 const AVATAR={Raphael:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781359009/rapha_so8cg3.png",Danillo:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781359009/mestre_cuqtcx.png",Lucas:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781359009/luks_je5kat.png",Paulo:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781359009/paulo_gg7qoi.png"};
@@ -335,8 +336,8 @@ async function handleFile(file,player){
 const GR="var(--gr)",GRD="var(--grd)",GOLD="var(--gold)",INK="var(--ink)",MUT="var(--mut)";
 function render(){if(!state.ready)return;const app=$("#app");app.innerHTML="";app.appendChild(header());app.appendChild(tabs());const body=ce("div");
   ({ranking,importar,palpites:verPalpites,grupos,mata,regras}[state.tab]||ranking)(body);app.appendChild(body);}
-function header(){const h=ce("div",{class:"hero"});const img=ce("img",{src:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781266046/topo_bola_yofe8e.png",alt:"Bolão da Copa 2026 — Raphael, Danillo, Lucas e Paulo"});h.appendChild(img);const n=PLAYERS.filter(p=>DB.imported[p]).length;const sub=ce("div",{style:"text-align:center;font-size:12.5px;color:var(--mut);margin:-6px 0 14px;font-weight:700"},n+"/4 planilhas importadas · mata-mata em cascata");const wrap=ce("div");wrap.appendChild(h);wrap.appendChild(sub);return wrap;}
-function tabs(){const items=[["ranking","🏆 Ranking"],["importar","📥 Importar"],["palpites","👁️ Palpites"],["grupos","📊 Grupos"],["mata","🏟️ Mata-mata"],["regras","ℹ️ Regras"]];const w=ce("div",{class:"tabs"});items.forEach(it=>{const b=ce("button",{class:state.tab===it[0]?"on":""},it[1]);b.onclick=()=>{state.tab=it[0];render();};w.appendChild(b);});return w;}
+function header(){const h=ce("div",{class:"hero"});const img=ce("img",{src:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781266046/topo_bola_yofe8e.png",alt:"Bolão da Copa 2026 — Raphael, Danillo, Lucas e Paulo"});h.appendChild(img);const n=PLAYERS.filter(p=>DB.imported[p]).length;const sub=ce("div",{style:"text-align:center;font-size:12.5px;color:var(--mut);margin:-6px 0 14px;font-weight:700"},n+"/4 planilhas importadas"+(isAdmin?" · 🔐 admin":""));const wrap=ce("div");wrap.appendChild(h);wrap.appendChild(sub);return wrap;}
+function tabs(){let items=[["ranking","🏆 Ranking"],["importar","📥 Importar"],["palpites","👁️ Palpites"],["grupos","📊 Grupos"],["mata","🏟️ Mata-mata"],["regras","ℹ️ Regras"]];if(!isAdmin)items=items.filter(x=>x[0]!=="importar");const w=ce("div",{class:"tabs"});items.forEach(it=>{const b=ce("button",{class:state.tab===it[0]?"on":""},it[1]);b.onclick=()=>{state.tab=it[0];render();};w.appendChild(b);});return w;}
 function sec(p,ic,t,s){const h=ce("div",{class:"sec"});h.appendChild(ce("span",{class:"ic"},ic));h.appendChild(ce("h2",null,t));p.appendChild(h);if(s)p.appendChild(ce("p",{class:"subt"},s));}
 
 function importar(body){
@@ -368,27 +369,56 @@ function ranking(body){
 }
 
 function verPalpites(body){
-  sec(body,"👁️","Conferir palpites","O que foi importado de cada um");
+  sec(body,"👁️","Conferir palpites","Placares da fase de grupos que cada um palpitou");
   const t=ce("div",{style:"display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"});
   PLAYERS.forEach(p=>{const b=ce("button",{class:"tbtn"+(state.vp===p?" on":""),style:"flex:0 0 auto"});b.innerHTML='<img src="'+AVATAR[p]+'" style="width:24px;height:24px;border-radius:50%;object-fit:cover"> '+p;b.onclick=()=>{state.vp=p;render();};t.appendChild(b);});
   body.appendChild(t);
   const p=state.vp,g=pg(p);
   if(!DB.imported[p]){body.appendChild(ce("div",{class:"card",style:"text-align:center;color:var(--mut);padding:24px"},p+" ainda não importado."));return;}
-  const fM=M.filter(m=>{const x=g.matches[m[0]];return x&&x.h!==""&&x.a!=="";}).length;
-  body.appendChild(ce("div",{class:"card",style:"margin-bottom:14px;font-size:13px;color:var(--mut)"},'<b style="color:var(--ink)">'+p+'</b> — '+fM+'/72 placares'));
-  PH.forEach(ph=>{const ch=bsel(g.bracket,ph.k);if(!ch.length)return;body.appendChild(ce("div",{class:"round"},'<span class="tag">'+ph.label+'</span><span class="line"></span>'));const grid=ce("div",{style:"display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"});ch.forEach(x=>grid.appendChild(ce("span",{class:"tbtn",style:"flex:0 0 auto"},'<span style="font-size:15px">'+fl(x)+'</span> '+x)));body.appendChild(grid);});
+  const fM=M.filter(m=>{const x=g.matches[m[0]]||g.matches["m"+m[0]];return x&&x.h!==""&&x.a!=="";}).length;
+  body.appendChild(ce("div",{class:"card",style:"margin-bottom:14px;font-size:13px;color:var(--mut)"},'<b style="color:var(--ink)">'+p+'</b> — '+fM+'/72 placares preenchidos'));
+  [1,2,3].forEach(rod=>{
+    body.appendChild(ce("div",{class:"round"},'<span class="tag">'+rod+'ª RODADA</span><span class="line"></span>'));
+    const box=ce("div",{style:"display:grid;gap:5px"});
+    M.filter(m=>roundOf(m[0])===rod).forEach(m=>{
+      const gm=g.matches[m[0]]||g.matches["m"+m[0]]||{};
+      const hasGuess=gm.h!==""&&gm.h!=null&&gm.a!==""&&gm.a!=null;
+      // comparar com resultado real pra mostrar se acertou
+      const rm=DB.results.matches[m[0]]||DB.results.matches["m"+m[0]]||{};
+      const hasResult=rm.h!==""&&rm.h!=null&&rm.a!==""&&rm.a!=null;
+      let badge="",badgeColor="var(--mut)";
+      if(hasGuess&&hasResult){
+        const gh=+gm.h,ga=+gm.a,rh=+rm.h,ra=+rm.a;
+        if(gh===rh&&ga===ra){badge="✅ exato!";badgeColor="var(--gr)";}
+        else if((gh>ga&&rh>ra)||(gh<ga&&rh<ra)||(gh===ga&&rh===ra)){badge="✓ desfecho";badgeColor="var(--blue,var(--gr))";}
+        else{badge="✗ errou";badgeColor="#c0392b";}
+      }
+      const row=ce("div",{class:"card",style:"padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap"});
+      row.appendChild(ce("span",{style:"font-size:10px;color:var(--mut);min-width:28px"},"G"+m[1]));
+      row.appendChild(ce("span",{style:"flex:1;font-size:13px;font-weight:700;text-align:right"},m[2]));
+      row.appendChild(ce("span",{class:"fl",style:"font-size:16px"},fl(m[2])));
+      row.appendChild(ce("span",{style:"font-size:15px;font-weight:800;min-width:52px;text-align:center;background:var(--soft);border-radius:8px;padding:4px 8px"},hasGuess?gm.h+" × "+gm.a:"– × –"));
+      row.appendChild(ce("span",{class:"fl",style:"font-size:16px"},fl(m[3])));
+      row.appendChild(ce("span",{style:"flex:1;font-size:13px;font-weight:700"},m[3]));
+      if(badge)row.appendChild(ce("span",{style:"font-size:11px;font-weight:700;color:"+badgeColor},badge));
+      box.appendChild(row);});
+    body.appendChild(box);
+  });
 }
 
 function grupos(body){
-  sec(body,"📊","Grupos — resultados reais","Os placares entram sozinhos pela API. Dá pra forçar atualização ou digitar na mão.");
-  // painel API
-  const api=ce("div",{class:"card api",style:"margin-bottom:16px;border:1px dashed var(--line)"});
-  api.appendChild(ce("div",{style:"font-weight:700;font-size:14px;margin-bottom:6px"},"⚡ Placares automáticos (API-Football)"));
-  api.appendChild(ce("p",{style:"font-size:12.5px;color:var(--mut);margin:0 0 12px"},"Busca sozinho ao abrir. Só jogos já finalizados entram. Toque para atualizar agora."));
-  const ar=ce("div",{style:"display:flex;gap:8px;flex-wrap:wrap"});
-  const btn=ce("button",{class:"btn"},state.saving?"Buscando…":"🔄 Atualizar resultados");btn.onclick=()=>fetchAPI(false);ar.appendChild(btn);api.appendChild(ar);
-  if(state.apiMsg)api.appendChild(ce("p",{style:"font-size:13px;margin:12px 0 0;font-weight:700;color:"+(state.apiMsg[0]==="✓"?"var(--grd)":"var(--mut)")},state.apiMsg));
-  body.appendChild(api);
+  if(isAdmin){
+    sec(body,"📊","Grupos — resultados reais","Modo admin: edite placares ou atualize pela API.");
+    const api=ce("div",{class:"card api",style:"margin-bottom:16px;border:1px dashed var(--line)"});
+    api.appendChild(ce("div",{style:"font-weight:700;font-size:14px;margin-bottom:6px"},"⚡ Placares automáticos (API-Football)"));
+    api.appendChild(ce("p",{style:"font-size:12.5px;color:var(--mut);margin:0 0 12px"},"Busca sozinho ao abrir. Toque para forçar atualização agora."));
+    const ar=ce("div",{style:"display:flex;gap:8px;flex-wrap:wrap"});
+    const btn=ce("button",{class:"btn"},state.saving?"Buscando…":"🔄 Atualizar resultados");btn.onclick=()=>fetchAPI(false);ar.appendChild(btn);api.appendChild(ar);
+    if(state.apiMsg)api.appendChild(ce("p",{style:"font-size:13px;margin:12px 0 0;font-weight:700;color:"+(state.apiMsg[0]==="✓"?"var(--grd)":"var(--mut)")},state.apiMsg));
+    body.appendChild(api);
+  } else {
+    sec(body,"📊","Grupos — resultados","Classificação e placares atualizados automaticamente.");
+  }
   // mini-tabelas de classificação
   const st=standings(DB.results.matches);
   GL.forEach(L=>{
@@ -400,7 +430,7 @@ function grupos(body){
         '<span style="width:18px;text-align:center">'+(idx+1)+'</span><span style="font-size:16px">'+fl(t)+'</span><span style="flex:1">'+t+'</span><span style="font-size:11px;color:var(--mut)">'+s.v+'V '+s.e+'E '+s.d+'D · SG '+(s.gp-s.gc>=0?'+':'')+(s.gp-s.gc)+'</span><span style="width:34px;text-align:right;font-weight:800">'+pts+' pt</span>'));});
     body.appendChild(tbl);
   });
-  // jogos (somente leitura — placares vêm da API, destaque no vencedor)
+  // jogos — admin pode editar, visitante só vê
   [1,2,3].forEach(rod=>{
     body.appendChild(ce("div",{class:"round"},'<span class="tag">'+rod+'ª RODADA</span><span class="line"></span>'));
     const box=ce("div",{style:"display:grid;gap:7px"});
@@ -412,9 +442,18 @@ function grupos(body){
       const sH=winH?"font-weight:900;color:var(--gr)":draw?"font-weight:700;color:var(--gold)":"";
       const sA=winA?"font-weight:900;color:var(--gr)":draw?"font-weight:700;color:var(--gold)":"";
       mid.appendChild(ce("span",{class:"side l",style:sH},'<span>'+m[2]+'</span><span class="fl">'+fl(m[2])+'</span>'));
-      const s1=ce("span",{class:"sc",style:"display:inline-flex;align-items:center;justify-content:center"+(winH?";background:var(--soft);border-color:var(--gr);color:var(--gr)":draw?";background:#fff8e6;border-color:var(--gold);color:var(--gold)":"")},done?r.h:"–");
-      const s2=ce("span",{class:"sc",style:"display:inline-flex;align-items:center;justify-content:center"+(winA?";background:var(--soft);border-color:var(--gr);color:var(--gr)":draw?";background:#fff8e6;border-color:var(--gold);color:var(--gold)":"")},done?r.a:"–");
-      mid.appendChild(s1);mid.appendChild(ce("span",{class:"x"},"×"));mid.appendChild(s2);
+      if(isAdmin){
+        const i1=ce("input",{class:"sc",type:"text",inputmode:"numeric",maxlength:"2"});i1.value=r.h==null?"":r.h;
+        i1.oninput=function(){this.value=this.value.replace(/[^\d]/g,"").slice(0,2);if(!DB.results.matches[m[0]])DB.results.matches[m[0]]={};DB.results.matches[m[0]].h=this.value;pushDB();};
+        const i2=ce("input",{class:"sc",type:"text",inputmode:"numeric",maxlength:"2"});i2.value=r.a==null?"":r.a;
+        i2.oninput=function(){this.value=this.value.replace(/[^\d]/g,"").slice(0,2);if(!DB.results.matches[m[0]])DB.results.matches[m[0]]={};DB.results.matches[m[0]].a=this.value;pushDB();};
+        mid.appendChild(i1);mid.appendChild(ce("span",{class:"x"},"×"));mid.appendChild(i2);
+      } else {
+        const scStyle=s=>winH&&s==="h"?";background:var(--soft);border-color:var(--gr);color:var(--gr)":winA&&s==="a"?";background:var(--soft);border-color:var(--gr);color:var(--gr)":draw?";background:#fff8e6;border-color:var(--gold);color:var(--gold)":"";
+        mid.appendChild(ce("span",{class:"sc",style:"display:inline-flex;align-items:center;justify-content:center"+scStyle("h")},done?r.h:"–"));
+        mid.appendChild(ce("span",{class:"x"},"×"));
+        mid.appendChild(ce("span",{class:"sc",style:"display:inline-flex;align-items:center;justify-content:center"+scStyle("a")},done?r.a:"–"));
+      }
       mid.appendChild(ce("span",{class:"side r",style:sA},'<span class="fl">'+fl(m[3])+'</span><span>'+m[3]+'</span>'));
       row.appendChild(mid);
       if(done){const tag=draw?"Empate":winH?m[2]+" venceu":m[3]+" venceu";row.appendChild(ce("div",{style:"text-align:center;font-size:11px;font-weight:700;margin-top:6px;color:"+(draw?"var(--gold)":"var(--gr)")},tag));}
