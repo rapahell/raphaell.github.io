@@ -48,8 +48,8 @@
   .rk{display:flex;align-items:center;gap:14px;padding:15px 16px;}
   .rk.lead{border:2px solid var(--gold);}
   .rk .medal{font-size:27px;min-width:40px;text-align:center;}
-  .rk .av{width:43px;height:43px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;background:var(--soft);color:var(--grd);}
-  .rk.lead .av{background:var(--gold);color:#fff;}
+  .rk .av{width:43px;height:43px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;overflow:hidden;}
+  .rk.lead .av{border:3px solid var(--gold);}
   .rk .pts{font-size:31px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;}
   .rk .barmini{height:6px;background:var(--soft);border-radius:999px;margin-top:8px;overflow:hidden;}
   .rk .barmini>i{display:block;height:100%;border-radius:999px;}
@@ -151,6 +151,8 @@ const ALL=[];GL.forEach(L=>GROUPS[L].forEach(t=>ALL.push(t)));
 const fl=t=>FLAG[t]||"🏳️";
 const NORM=s=>(s||"").toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim();
 const TBN={};ALL.forEach(t=>TBN[NORM(t)]=t);
+// mapa API-Football (inglês) → nomes em português do sistema
+const API_NAMES={"mexico":"México","south korea":"Coreia do Sul","korea republic":"Coreia do Sul","south africa":"África do Sul","czech republic":"R. Tcheca","czechia":"R. Tcheca","canada":"Canadá","bosnia":"Bósnia","bosnia and herzegovina":"Bósnia","bosnia herzegovina":"Bósnia","qatar":"Catar","switzerland":"Suíça","brazil":"Brasil","morocco":"Marrocos","scotland":"Escócia","haiti":"Haiti","usa":"Estados Unidos","united states":"Estados Unidos","paraguay":"Paraguai","australia":"Austrália","turkey":"Turquia","turkiye":"Turquia","germany":"Alemanha","curacao":"Curaçao","ivory coast":"Costa do Marfim","cote divoire":"Costa do Marfim","ecuador":"Equador","netherlands":"Holanda","holland":"Holanda","japan":"Japão","sweden":"Suécia","tunisia":"Tunísia","belgium":"Bélgica","egypt":"Egito","iran":"Irã","new zealand":"Nova Zelândia","spain":"Espanha","cape verde":"Cabo Verde","cabo verde":"Cabo Verde","saudi arabia":"Arábia Saudita","uruguay":"Uruguai","france":"França","senegal":"Senegal","iraq":"Iraque","norway":"Noruega","argentina":"Argentina","algeria":"Argélia","austria":"Áustria","jordan":"Jordânia","portugal":"Portugal","dr congo":"RD Congo","congo dr":"RD Congo","congo":"RD Congo","uzbekistan":"Uzbequistão","colombia":"Colômbia","england":"Inglaterra","croatia":"Croácia","ghana":"Gana","panama":"Panamá"};
 function matchTeam(raw){if(!raw)return null;let s=NORM(raw);if(TBN[s])return TBN[s];for(const t of ALL){const n=NORM(t);if(n&&(s.includes(n)||n.includes(s)))return t;}return null;}
 const roundOf=id=>{const n=+(""+id).replace(/\D/g,"");return n<=24?1:n<=48?2:3;};
 
@@ -216,8 +218,10 @@ let DB={guesses:{},results:{matches:{},r1thirds:{},winners:{}},imported:{}};
 const state={tab:"ranking",apiMsg:"",saving:false,ready:false,impMsg:"",vp:"Raphael"};
 const PLAYERS=["Raphael","Danillo","Lucas","Paulo"];
 const INIT={Raphael:"R",Danillo:"D",Lucas:"L",Paulo:"P"};
+const AVATAR={Raphael:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781359009/rapha_so8cg3.png",Danillo:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781359009/mestre_cuqtcx.png",Lucas:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781359009/luks_je5kat.png",Paulo:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781359009/paulo_gg7qoi.png"};
 const $=(s,e)=>(e||document).querySelector(s);
 const ce=(t,p,h)=>{const e=document.createElement(t);if(p)for(const k in p)e.setAttribute(k,p[k]);if(h!=null)e.innerHTML=h;return e;};
+function avt(p,sz){sz=sz||43;return '<img src="'+AVATAR[p]+'" alt="'+p+'" style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;object-fit:cover;display:block">';}
 
 function ensure(){if(!DB.results)DB.results={};if(!DB.results.matches)DB.results.matches={};if(!DB.results.r1thirds)DB.results.r1thirds={};if(!DB.results.winners)DB.results.winners={};if(!DB.imported)DB.imported={};if(!DB.guesses)DB.guesses={};}
 function pushDB(){ensure();if(usingFirebase&&dbRef)set(dbRef,DB).catch(e=>console.error(e));else try{localStorage.setItem("bolaoCascata",JSON.stringify(DB));}catch(e){}}
@@ -290,7 +294,7 @@ function scoreOf(p){
     let acc=0; guess.forEach(t=>{if(rset.has(t))acc++;});
     bd[ph.k]=acc*ph.pts; bp+=acc*ph.pts;
   });
-  return {total:mp+bp,mp,bp,ex,hit,bd};
+  return {total:mp,mp,bp,ex,hit,bd};
 }
 
 // ===== PARSER do Excel (novo formato: Placares + Mata-mata) =====
@@ -338,7 +342,7 @@ function sec(p,ic,t,s){const h=ce("div",{class:"sec"});h.appendChild(ce("span",{
 function importar(body){
   sec(body,"📥","Importar planilhas","Suba o Excel de cada um. Lê os placares, calcula os 32 e lê o mata-mata.");
   PLAYERS.forEach(p=>{const done=DB.imported[p];const c=ce("div",{class:"card",style:"margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"});
-    c.appendChild(ce("div",{style:"width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;background:var(--soft);color:var(--grd)"},INIT[p]));
+    const av=ce("div");av.innerHTML=avt(p,40);c.appendChild(av);
     const info=ce("div",{style:"flex:1;min-width:120px"});info.innerHTML='<div style="font-weight:700;font-size:15px">'+p+'</div><div style="font-size:12px;color:var(--mut)">'+(done?'✓ importada':'aguardando')+'</div>';c.appendChild(info);
     if(done)c.appendChild(ce("span",{class:"imported"},"importado"));
     const lab=ce("label",{class:"btn ghost",style:"cursor:pointer"});lab.innerHTML='⬆ '+(done?"Reenviar":"Escolher arquivo");
@@ -349,15 +353,15 @@ function importar(body){
 }
 
 function ranking(body){
-  sec(body,"🏆","Classificação","Placares dos grupos + acertos do mata-mata");
+  sec(body,"🏆","Classificação","Pontuação da fase de grupos (placar exato 5pts · desfecho 2pts)");
   if(!PLAYERS.some(p=>DB.imported[p])){body.appendChild(ce("div",{class:"card",style:"text-align:center;color:var(--mut);padding:28px"},'Nenhuma planilha importada.<br>Vá em <b>Importar</b>.'));return;}
   const rk=PLAYERS.slice().sort((a,b)=>scoreOf(b).total-scoreOf(a).total);
-  const max=Math.max(1,...PLAYERS.map(p=>scoreOf(p).total));const medals=["🥇","🥈","🥉","4º"];
+  const max=Math.max(1,...PLAYERS.map(p=>scoreOf(p).total));const medals=["<b>1º</b>","<b>2º</b>","<b>3º</b>","<b>4º</b>"];
   const grid=ce("div",{style:"display:grid;gap:12px"});
   rk.forEach((p,i)=>{const s=scoreOf(p),lead=i===0&&s.total>0;const c=ce("div",{class:"card rk"+(lead?" lead":"")});
-    c.appendChild(ce("div",{class:"medal"},medals[i]));c.appendChild(ce("div",{class:"av"},INIT[p]));
+    c.appendChild(ce("div",{class:"medal"},medals[i]));const avd=ce("div",{class:"av"});avd.innerHTML=avt(p,43);c.appendChild(avd);
     const mid=ce("div",{style:"flex:1"});mid.appendChild(ce("div",null,'<span style="font-size:17px;font-weight:700">'+p+'</span>'+(DB.imported[p]?' <span class="imported">importado</span>':' <span style="font-size:11px;color:var(--mut)">sem planilha</span>')));
-    mid.appendChild(ce("div",{style:"font-size:12px;color:var(--mut);margin-top:3px"},s.mp+" pts placares · "+s.bp+" pts mata-mata · "+s.ex+" exatos"));
+    mid.appendChild(ce("div",{style:"font-size:12px;color:var(--mut);margin-top:3px"},s.ex+" placar(es) exato(s) · "+s.hit+" acertos de desfecho"));
     mid.appendChild(ce("div",{class:"barmini"},'<i style="width:'+Math.round(s.total/max*100)+'%;background:'+(lead?"var(--gold)":"var(--gr)")+'"></i>'));
     c.appendChild(mid);c.appendChild(ce("div",{style:"text-align:right"},'<div class="pts" style="color:'+(lead?"var(--gold)":"var(--ink)")+'">'+s.total+'</div><div style="font-size:11px;color:var(--mut)">pontos</div>'));grid.appendChild(c);});
   body.appendChild(grid);
@@ -366,7 +370,7 @@ function ranking(body){
 function verPalpites(body){
   sec(body,"👁️","Conferir palpites","O que foi importado de cada um");
   const t=ce("div",{style:"display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"});
-  PLAYERS.forEach(p=>{const b=ce("button",{class:"tbtn"+(state.vp===p?" on":""),style:"flex:0 0 auto"},'<span style="width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:rgba(0,0,0,.06)">'+INIT[p]+'</span> '+p);b.onclick=()=>{state.vp=p;render();};t.appendChild(b);});
+  PLAYERS.forEach(p=>{const b=ce("button",{class:"tbtn"+(state.vp===p?" on":""),style:"flex:0 0 auto"});b.innerHTML='<img src="'+AVATAR[p]+'" style="width:24px;height:24px;border-radius:50%;object-fit:cover"> '+p;b.onclick=()=>{state.vp=p;render();};t.appendChild(b);});
   body.appendChild(t);
   const p=state.vp,g=pg(p);
   if(!DB.imported[p]){body.appendChild(ce("div",{class:"card",style:"text-align:center;color:var(--mut);padding:24px"},p+" ainda não importado."));return;}
@@ -396,74 +400,36 @@ function grupos(body){
         '<span style="width:18px;text-align:center">'+(idx+1)+'</span><span style="font-size:16px">'+fl(t)+'</span><span style="flex:1">'+t+'</span><span style="font-size:11px;color:var(--mut)">'+s.v+'V '+s.e+'E '+s.d+'D · SG '+(s.gp-s.gc>=0?'+':'')+(s.gp-s.gc)+'</span><span style="width:34px;text-align:right;font-weight:800">'+pts+' pt</span>'));});
     body.appendChild(tbl);
   });
-  // jogos para preencher
+  // jogos (somente leitura — placares vêm da API, destaque no vencedor)
   [1,2,3].forEach(rod=>{
     body.appendChild(ce("div",{class:"round"},'<span class="tag">'+rod+'ª RODADA</span><span class="line"></span>'));
     const box=ce("div",{style:"display:grid;gap:7px"});
     M.filter(m=>roundOf(m[0])===rod).forEach(m=>{const r=DB.results.matches[m[0]]||{};const done=r.h!==""&&r.a!==""&&r.h!=null&&r.a!=null;
       const row=ce("div",{class:"card match"+(done?" done":"")});row.appendChild(ce("div",{class:"meta"},'<span class="g">G'+m[1]+'</span><span>'+m[4]+' · '+m[5]+'</span>'));
-      const mid=ce("div",{class:"mrow"});mid.appendChild(ce("span",{class:"side l"},'<span>'+m[2]+'</span><span class="fl">'+fl(m[2])+'</span>'));
-      const i1=ce("input",{class:"sc",type:"text",inputmode:"numeric",maxlength:"2"});i1.value=r.h==null?"":r.h;i1.oninput=function(){this.value=this.value.replace(/[^\d]/g,"").slice(0,2);if(!DB.results.matches[m[0]])DB.results.matches[m[0]]={};DB.results.matches[m[0]].h=this.value;pushDB();};
-      const i2=ce("input",{class:"sc",type:"text",inputmode:"numeric",maxlength:"2"});i2.value=r.a==null?"":r.a;i2.oninput=function(){this.value=this.value.replace(/[^\d]/g,"").slice(0,2);if(!DB.results.matches[m[0]])DB.results.matches[m[0]]={};DB.results.matches[m[0]].a=this.value;pushDB();};
-      mid.appendChild(i1);mid.appendChild(ce("span",{class:"x"},"×"));mid.appendChild(i2);mid.appendChild(ce("span",{class:"side r"},'<span class="fl">'+fl(m[3])+'</span><span>'+m[3]+'</span>'));row.appendChild(mid);box.appendChild(row);});
+      const mid=ce("div",{class:"mrow"});
+      const H=done?+r.h:null,A=done?+r.a:null;
+      const winH=done&&H>A, winA=done&&A>H, draw=done&&H===A;
+      const sH=winH?"font-weight:900;color:var(--gr)":draw?"font-weight:700;color:var(--gold)":"";
+      const sA=winA?"font-weight:900;color:var(--gr)":draw?"font-weight:700;color:var(--gold)":"";
+      mid.appendChild(ce("span",{class:"side l",style:sH},'<span>'+m[2]+'</span><span class="fl">'+fl(m[2])+'</span>'));
+      const s1=ce("span",{class:"sc",style:"display:inline-flex;align-items:center;justify-content:center"+(winH?";background:var(--soft);border-color:var(--gr);color:var(--gr)":draw?";background:#fff8e6;border-color:var(--gold);color:var(--gold)":"")},done?r.h:"–");
+      const s2=ce("span",{class:"sc",style:"display:inline-flex;align-items:center;justify-content:center"+(winA?";background:var(--soft);border-color:var(--gr);color:var(--gr)":draw?";background:#fff8e6;border-color:var(--gold);color:var(--gold)":"")},done?r.a:"–");
+      mid.appendChild(s1);mid.appendChild(ce("span",{class:"x"},"×"));mid.appendChild(s2);
+      mid.appendChild(ce("span",{class:"side r",style:sA},'<span class="fl">'+fl(m[3])+'</span><span>'+m[3]+'</span>'));
+      row.appendChild(mid);
+      if(done){const tag=draw?"Empate":winH?m[2]+" venceu":m[3]+" venceu";row.appendChild(ce("div",{style:"text-align:center;font-size:11px;font-weight:700;margin-top:6px;color:"+(draw?"var(--gold)":"var(--gr)")},tag));}
+      box.appendChild(row);});
     body.appendChild(box);
   });
 }
 
 // ===== MATA-MATA em cascata (resultados reais) =====
 function mata(body){
-  sec(body,"🏟️","Mata-mata — resultados reais","Clique no vencedor de cada jogo. Ele sobe sozinho pra próxima fase.");
-  const br=resolveBracket();
-  // banner se faltam terceiros
-  const faltam3=R1.filter(g=>{const lblL=g.l.t==="3rd", lblR=g.r.t==="3rd";const A=br.r1.find(x=>x.id===g.id).A,B=br.r1.find(x=>x.id===g.id).B;return (lblL&&!A)||(lblR&&!B);}).length;
-  if(faltam3>0)body.appendChild(ce("div",{class:"banner"},'⚠️ '+faltam3+' confronto(s) da 2ª fase dependem de um 3º colocado ainda não definido. Defina os terceiros abaixo nos jogos marcados.'));
-
-  ROUNDS.forEach((rd,ri)=>{
-    body.appendChild(ce("div",{class:"round"},'<span class="tag">'+rd.label+'</span><span class="line"></span>'));
-    const box=ce("div",{style:"display:grid;gap:7px"});
-    rd.games.forEach(g=>{
-      const teams = ri===0 ? [br.r1.find(x=>x.id===g.id).A, br.r1.find(x=>x.id===g.id).B] : br.teamsByRound[rd.key][g.id];
-      const wkey=rd.key; const winner=(DB.results.winners[wkey]||{})[g.id]||null;
-      const row=ce("div",{class:"card ko"});
-      // rótulo do jogo (na R1 mostra a chave do PDF)
-      let lbl="";
-      if(ri===0){const og=R1.find(x=>x.id===g.id);const sl=s=>s.t==="pos"?(s.p+"º "+s.g):("3º "+s.lbl);lbl=sl(og.l)+" × "+sl(og.r);}
-      else lbl="Jogo "+g.a+" × Jogo "+g.b;
-      row.appendChild(ce("div",{style:"font-size:10px;color:var(--mut);font-weight:700;min-width:74px"},lbl));
-      // dois slots clicáveis
-      [0,1].forEach(si=>{
-        const team=teams[si];
-        const og=ri===0?R1.find(x=>x.id===g.id):null;
-        const isThirdSlot = ri===0 && (si===0?og.l.t==="3rd":og.r.t==="3rd");
-        if(team){
-          const slot=ce("div",{class:"slot"+(winner===team?" win":"")},'<span class="fl" style="font-size:16px">'+fl(team)+'</span><span style="flex:1">'+team+'</span>'+(winner===team?'✓':''));
-          slot.onclick=()=>{if(!DB.results.winners[wkey])DB.results.winners[wkey]={};
-            // se clicar no já vencedor, desmarca
-            if(DB.results.winners[wkey][g.id]===team)delete DB.results.winners[wkey][g.id];
-            else DB.results.winners[wkey][g.id]=team;
-            // limpar fases seguintes que dependiam (cascata)
-            clearDownstream();pushDB();render();};
-          row.appendChild(slot);
-        } else if(isThirdSlot){
-          // dropdown para escolher o 3º
-          const sel=ce("select",{style:"flex:1;padding:7px;border-radius:8px;border:1px solid var(--line)"});
-          sel.appendChild(ce("option",{value:""},"escolher 3º…"));
-          ALL.forEach(t=>{const o=ce("option",{value:t},fl(t)+" "+t);sel.appendChild(o);});
-          const key=(si===0?"L":"R")+g.id; sel.value=DB.results.r1thirds[key]||"";
-          sel.onchange=function(){DB.results.r1thirds[key]=this.value;clearDownstream();pushDB();render();};
-          const wrap=ce("div",{class:"slot empty",style:"padding:4px"});wrap.appendChild(sel);row.appendChild(wrap);
-        } else {
-          row.appendChild(ce("div",{class:"slot empty"},"a definir"));
-        }
-        if(si===0)row.appendChild(ce("span",{class:"vs"},"×"));
-      });
-      box.appendChild(row);
-    });
-    body.appendChild(box);
-  });
-  // campeão
-  const champ=(DB.results.winners.k5||{})[1];
-  if(champ){body.appendChild(ce("div",{class:"card",style:"margin-top:14px;text-align:center;border:2px solid var(--gold);padding:18px"},'<div style="font-size:13px;color:var(--mut);font-weight:700">CAMPEÃO</div><div style="font-size:26px;font-weight:800;margin-top:4px">'+fl(champ)+' '+champ+'</div>'));}
+  const popup=ce("div",{style:"text-align:center;padding:60px 20px"});
+  popup.appendChild(ce("div",{style:"font-size:52px;margin-bottom:16px"},"🏟️"));
+  popup.appendChild(ce("div",{style:"font-size:22px;font-weight:800;color:var(--gr);margin-bottom:10px"},"Em breve..."));
+  popup.appendChild(ce("div",{style:"font-size:14px;color:var(--mut);line-height:1.6"},"O mata-mata será liberado quando a fase de grupos terminar.<br>Fique ligado!"));
+  body.appendChild(ce("div",{class:"card"},popup.outerHTML));
 }
 function clearDownstream(){
   // recalcula validade: remove vencedores que não fazem mais parte dos confrontos
@@ -482,10 +448,12 @@ async function fetchAPI(silent){
   if(!silent){state.saving=true;state.apiMsg="Buscando…";render();}
   try{const res=await fetch("https://v3.football.api-sports.io/fixtures?league=1&season=2026",{headers:{"x-apisports-key":API_KEY}});const data=await res.json();
     if(!data.response||!data.response.length){if(!silent){state.apiMsg="Sem jogos finalizados ainda.";state.saving=false;render();}return;}
-    const okPair=(a,b)=>a&&b&&(a.indexOf(b)>=0||b.indexOf(a)>=0);let count=0;
+    function apiTeam(name){const n=NORM(name);if(API_NAMES[n])return API_NAMES[n];if(TBN[n])return TBN[n];for(const k in API_NAMES){if(n.includes(k)||k.includes(n))return API_NAMES[k];}return null;}
+    let count=0;
     data.response.forEach(fx=>{if(!fx.fixture||fx.fixture.status.short!=="FT")return;if(fx.goals.home==null||fx.goals.away==null)return;
-      const home=NORM(fx.teams.home.name),away=NORM(fx.teams.away.name);
-      const t=M.find(m=>okPair(NORM(m[2]),home)&&okPair(NORM(m[3]),away));
+      const home=apiTeam(fx.teams.home.name),away=apiTeam(fx.teams.away.name);
+      if(!home||!away)return;
+      const t=M.find(m=>m[2]===home&&m[3]===away);
       if(t){DB.results.matches[t[0]]={h:String(fx.goals.home),a:String(fx.goals.away)};count++;}});
     if(count>0)pushDB();
     if(!silent){state.apiMsg=count>0?("✓ "+count+" jogo(s) preenchido(s)."):"Nenhum jogo finalizado ainda.";state.saving=false;render();}
@@ -494,11 +462,11 @@ async function fetchAPI(silent){
 }
 
 function regras(body){
-  sec(body,"ℹ️","Como pontua","Grupos no placar · mata-mata por quem avança");
-  const rules=[["🎯","Placar exato (grupos)","5 pts"],["↔️","Desfecho: vitória ou empate","2 pts"],["🌳","Cada acerto dos 32","2 pts"],["🌳","Cada acerto dos 16","4 pts"],["🌳","Cada acerto dos 8","6 pts"],["🌳","Cada acerto dos 4","8 pts"],["🌳","Cada acerto dos 2","10 pts"],["🏆","Campeão","20 pts"]];
+  sec(body,"ℹ️","Como pontua","Só a fase de grupos vale pontos");
+  const rules=[["🎯","Placar exato (grupos)","5 pts"],["↔️","Desfecho certo (vitória/empate)","2 pts"]];
   const grid=ce("div",{style:"display:grid;gap:8px"});rules.forEach(r=>{const c=ce("div",{class:"card rule"});c.innerHTML='<span class="lft"><span class="ric">'+r[0]+'</span>'+r[1]+'</span><span class="pts">'+r[2]+'</span>';grid.appendChild(c);});body.appendChild(grid);
   const info=ce("div",{class:"card",style:"margin-top:16px;font-size:13.5px;color:var(--mut);line-height:1.6"});
-  info.innerHTML='<b style="color:var(--ink)">Fluxo:</b> importe as planilhas (palpites). Lance os placares dos grupos (API ou manual) — a classificação e os 32 se montam. No Mata-mata, clique no vencedor de cada jogo e ele sobe pela cascata até o campeão. O ranking soma tudo.';body.appendChild(info);
+  info.innerHTML='<b style="color:var(--ink)">Pontuação:</b> vale só a fase de grupos. Acertar o placar exato = 5 pts. Acertar quem vence (ou o empate) = 2 pts.<br><br><b style="color:var(--ink)">Mata-mata:</b> os palpites de quem avança continuam na planilha e no site pra acompanhar, mas não somam no ranking.<br><br><b style="color:var(--ink)">Fluxo:</b> importe as planilhas (palpites). Os placares dos grupos entram pela API ou na mão. O ranking calcula sozinho.';body.appendChild(info);
 }
 
 startSync();
