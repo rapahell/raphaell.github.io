@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Bolão da Copa 2026 — Raphael, Danillo, Lucas e Paulo</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dnnnn7njk/image/upload/v1781385503/icon_uuw2zp.png">
 <style>
   :root{--gr:#1b2e5f;--grd:#13224a;--grl:#2f4a86;--gold:#c98a0e;--ink:#142036;--mut:#5d6675;--paper:#eef1f6;--card:#fff;--line:#d6dbe6;--soft:#e3ecf8;--radius:14px;--blue:#73b4e9;}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -341,16 +342,18 @@ function tabs(){let items=[["ranking","🏆 Ranking"],["importar","📥 Importar
 function sec(p,ic,t,s){const h=ce("div",{class:"sec"});h.appendChild(ce("span",{class:"ic"},ic));h.appendChild(ce("h2",null,t));p.appendChild(h);if(s)p.appendChild(ce("p",{class:"subt"},s));}
 
 function importar(body){
-  sec(body,"📥","Importar planilhas","Suba o Excel de cada um. Lê os placares, calcula os 32 e lê o mata-mata.");
+  sec(body,"📥","Importar planilhas","Quem já enviou está travado. Só faltam os que ainda não importaram.");
   PLAYERS.forEach(p=>{const done=DB.imported[p];const c=ce("div",{class:"card",style:"margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"});
     const av=ce("div");av.innerHTML=avt(p,40);c.appendChild(av);
-    const info=ce("div",{style:"flex:1;min-width:120px"});info.innerHTML='<div style="font-weight:700;font-size:15px">'+p+'</div><div style="font-size:12px;color:var(--mut)">'+(done?'✓ importada':'aguardando')+'</div>';c.appendChild(info);
-    if(done)c.appendChild(ce("span",{class:"imported"},"importado"));
-    const lab=ce("label",{class:"btn ghost",style:"cursor:pointer"});lab.innerHTML='⬆ '+(done?"Reenviar":"Escolher arquivo");
-    const inp=ce("input",{type:"file",accept:".xlsx",style:"display:none"});inp.onchange=e=>handleFile(e.target.files[0],p);lab.appendChild(inp);c.appendChild(lab);body.appendChild(c);});
+    const info=ce("div",{style:"flex:1;min-width:120px"});info.innerHTML='<div style="font-weight:700;font-size:15px">'+p+'</div><div style="font-size:12px;color:var(--mut)">'+(done?'✓ importada e travada':'aguardando planilha')+'</div>';c.appendChild(info);
+    if(done){
+      c.appendChild(ce("span",{style:"font-size:12px;color:var(--mut);background:var(--line);padding:4px 12px;border-radius:999px;font-weight:700"},"🔒 Travado"));
+    } else {
+      const lab=ce("label",{class:"btn ghost",style:"cursor:pointer"});lab.innerHTML='⬆ Escolher arquivo';
+      const inp=ce("input",{type:"file",accept:".xlsx",style:"display:none"});inp.onchange=e=>handleFile(e.target.files[0],p);lab.appendChild(inp);c.appendChild(lab);
+    }
+    body.appendChild(c);});
   if(state.impMsg)body.appendChild(ce("div",{class:"card",style:"margin-top:8px;font-size:13px;font-weight:700;color:"+(state.impMsg[0]==="✓"?"var(--grd)":"#a35a00")},state.impMsg));
-  const help=ce("div",{class:"card",style:"margin-top:14px;font-size:13px;color:var(--mut);line-height:1.6"});
-  help.innerHTML='<b style="color:var(--ink)">Lembrete:</b> os 32 do mata-mata saem calculados dos placares de cada um (1º/2º + 8 melhores 3º). As fases seguintes vêm da aba Mata-mata da planilha.';body.appendChild(help);
 }
 
 function ranking(body){
@@ -485,19 +488,39 @@ function clearDownstream(){
 
 async function fetchAPI(silent){
   if(!silent){state.saving=true;state.apiMsg="Buscando…";render();}
-  try{const res=await fetch("https://v3.football.api-sports.io/fixtures?league=1&season=2026",{headers:{"x-apisports-key":API_KEY}});const data=await res.json();
-    if(!data.response||!data.response.length){if(!silent){state.apiMsg="Sem jogos finalizados ainda.";state.saving=false;render();}return;}
+  try{
+    const res=await fetch("https://v3.football.api-sports.io/fixtures?league=1&season=2026",{headers:{"x-apisports-key":API_KEY}});
+    if(!res.ok){
+      const msg="Erro HTTP "+res.status;
+      if(!silent||isAdmin){state.apiMsg="⚠️ "+msg;state.saving=false;render();}return;
+    }
+    const data=await res.json();
+    // diagnóstico: erros da API
+    if(data.errors&&Object.keys(data.errors).length>0){
+      const errMsg=Object.values(data.errors).join("; ");
+      if(!silent||isAdmin){state.apiMsg="⚠️ API respondeu com erro: "+errMsg;state.saving=false;render();}return;
+    }
+    const total=data.response?data.response.length:0;
+    const ft=data.response?data.response.filter(fx=>fx.fixture&&fx.fixture.status&&fx.fixture.status.short==="FT").length:0;
+    if(!total){
+      if(!silent||isAdmin){state.apiMsg="API respondeu OK mas sem jogos (total: 0). Requests restantes: "+(data.requests?data.requests.current+"/"+data.requests.limit_day:"?");state.saving=false;render();}return;
+    }
     function apiTeam(name){const n=NORM(name);if(API_NAMES[n])return API_NAMES[n];if(TBN[n])return TBN[n];for(const k in API_NAMES){if(n.includes(k)||k.includes(n))return API_NAMES[k];}return null;}
-    let count=0;
-    data.response.forEach(fx=>{if(!fx.fixture||fx.fixture.status.short!=="FT")return;if(fx.goals.home==null||fx.goals.away==null)return;
+    let count=0,unmatched=[];
+    data.response.forEach(fx=>{if(!fx.fixture||!fx.fixture.status||fx.fixture.status.short!=="FT")return;if(fx.goals.home==null||fx.goals.away==null)return;
       const home=apiTeam(fx.teams.home.name),away=apiTeam(fx.teams.away.name);
-      if(!home||!away)return;
+      if(!home||!away){unmatched.push((fx.teams.home.name||"?")+" × "+(fx.teams.away.name||"?"));return;}
       const t=M.find(m=>m[2]===home&&m[3]===away);
       if(t){DB.results.matches[t[0]]={h:String(fx.goals.home),a:String(fx.goals.away)};count++;}});
     if(count>0)pushDB();
-    if(!silent){state.apiMsg=count>0?("✓ "+count+" jogo(s) preenchido(s)."):"Nenhum jogo finalizado ainda.";state.saving=false;render();}
+    let msg=count>0?"✓ "+count+" jogo(s) preenchido(s).":"Nenhum jogo finalizado encontrado.";
+    if(isAdmin)msg+=" [total:"+total+" FT:"+ft+" ok:"+count+(unmatched.length?" unmatched:"+unmatched.join(","):"")+"]";
+    if(!silent||isAdmin){state.apiMsg=msg;state.saving=false;render();}
     else if(count>0)render();
-  }catch(e){if(!silent){state.apiMsg="Falha na API. Tente de novo em alguns minutos.";state.saving=false;render();}}
+  }catch(e){
+    const msg="Falha na requisição: "+(e.message||e);
+    if(!silent||isAdmin){state.apiMsg="⚠️ "+msg;state.saving=false;render();}
+  }
 }
 
 function regras(body){
