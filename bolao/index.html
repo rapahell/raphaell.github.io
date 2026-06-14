@@ -142,7 +142,6 @@ window.__bolao={dbRef,ref,onValue,set,usingFirebase};
 <script type="module">
 const { dbRef, onValue, set, usingFirebase } = window.__bolao;
 
-const API_KEY="dac231a3fbe295355461f50ed1fc3f13";
 const FLAG={"México": "🇲🇽", "África do Sul": "🇿🇦", "Coreia do Sul": "🇰🇷", "R. Tcheca": "🇨🇿", "Canadá": "🇨🇦", "Bósnia": "🇧🇦", "Catar": "🇶🇦", "Suíça": "🇨🇭", "Brasil": "🇧🇷", "Marrocos": "🇲🇦", "Escócia": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "Haiti": "🇭🇹", "Estados Unidos": "🇺🇸", "Paraguai": "🇵🇾", "Austrália": "🇦🇺", "Turquia": "🇹🇷", "Alemanha": "🇩🇪", "Curaçao": "🇨🇼", "Costa do Marfim": "🇨🇮", "Equador": "🇪🇨", "Holanda": "🇳🇱", "Japão": "🇯🇵", "Suécia": "🇸🇪", "Tunísia": "🇹🇳", "Bélgica": "🇧🇪", "Egito": "🇪🇬", "Irã": "🇮🇷", "Nova Zelândia": "🇳🇿", "Espanha": "🇪🇸", "Cabo Verde": "🇨🇻", "Arábia Saudita": "🇸🇦", "Uruguai": "🇺🇾", "França": "🇫🇷", "Senegal": "🇸🇳", "Iraque": "🇮🇶", "Noruega": "🇳🇴", "Argentina": "🇦🇷", "Argélia": "🇩🇿", "Áustria": "🇦🇹", "Jordânia": "🇯🇴", "Portugal": "🇵🇹", "RD Congo": "🇨🇩", "Uzbequistão": "🇺🇿", "Colômbia": "🇨🇴", "Inglaterra": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Croácia": "🇭🇷", "Gana": "🇬🇭", "Panamá": "🇵🇦"};
 const GROUPS={"A": ["México", "Coreia do Sul", "África do Sul", "R. Tcheca"], "B": ["Canadá", "Bósnia", "Catar", "Suíça"], "C": ["Brasil", "Marrocos", "Escócia", "Haiti"], "D": ["Estados Unidos", "Paraguai", "Austrália", "Turquia"], "E": ["Alemanha", "Curaçao", "Costa do Marfim", "Equador"], "F": ["Holanda", "Japão", "Suécia", "Tunísia"], "G": ["Bélgica", "Egito", "Irã", "Nova Zelândia"], "H": ["Espanha", "Cabo Verde", "Arábia Saudita", "Uruguai"], "I": ["França", "Senegal", "Iraque", "Noruega"], "J": ["Argentina", "Argélia", "Áustria", "Jordânia"], "K": ["Portugal", "RD Congo", "Uzbequistão", "Colômbia"], "L": ["Inglaterra", "Croácia", "Gana", "Panamá"]};
 const M=[[1, "A", "México", "África do Sul", "11/06", "16h"], [2, "A", "Coreia do Sul", "R. Tcheca", "11/06", "23h"], [3, "B", "Canadá", "Bósnia", "12/06", "16h"], [4, "D", "Estados Unidos", "Paraguai", "12/06", "22h"], [5, "D", "Austrália", "Turquia", "13/06", "1h"], [6, "B", "Catar", "Suíça", "13/06", "16h"], [7, "C", "Brasil", "Marrocos", "13/06", "19h"], [8, "C", "Haiti", "Escócia", "13/06", "22h"], [9, "E", "Alemanha", "Curaçao", "14/06", "14h"], [10, "F", "Holanda", "Japão", "14/06", "17h"], [11, "E", "Costa do Marfim", "Equador", "14/06", "20h"], [12, "F", "Suécia", "Tunísia", "14/06", "23h"], [13, "H", "Espanha", "Cabo Verde", "15/06", "13h"], [14, "G", "Bélgica", "Egito", "15/06", "16h"], [15, "H", "Arábia Saudita", "Uruguai", "15/06", "19h"], [16, "G", "Irã", "Nova Zelândia", "15/06", "22h"], [17, "J", "Argentina", "Argélia", "16/06", "14h"], [18, "I", "França", "Senegal", "16/06", "16h"], [19, "I", "Iraque", "Noruega", "16/06", "19h"], [20, "J", "Áustria", "Jordânia", "17/06", "1h"], [21, "K", "Portugal", "RD Congo", "17/06", "14h"], [22, "L", "Inglaterra", "Croácia", "17/06", "17h"], [23, "L", "Gana", "Panamá", "17/06", "20h"], [24, "K", "Uzbequistão", "Colômbia", "17/06", "23h"], [25, "A", "R. Tcheca", "África do Sul", "18/06", "13h"], [26, "B", "Suíça", "Bósnia", "18/06", "16h"], [27, "B", "Canadá", "Catar", "18/06", "19h"], [28, "A", "México", "Coreia do Sul", "18/06", "22h"], [29, "D", "Turquia", "Paraguai", "19/06", "1h"], [30, "D", "Estados Unidos", "Austrália", "19/06", "16h"], [31, "C", "Escócia", "Marrocos", "19/06", "19h"], [32, "C", "Brasil", "Haiti", "19/06", "21h30"], [33, "F", "Holanda", "Suécia", "20/06", "14h"], [34, "E", "Alemanha", "Costa do Marfim", "20/06", "17h"], [35, "E", "Equador", "Curaçao", "20/06", "21h"], [36, "F", "Tunísia", "Japão", "20/06", "23h"], [37, "H", "Espanha", "Arábia Saudita", "21/06", "13h"], [38, "G", "Bélgica", "Irã", "21/06", "16h"], [39, "H", "Uruguai", "Cabo Verde", "21/06", "19h"], [40, "G", "Nova Zelândia", "Egito", "21/06", "21h"], [41, "J", "Argentina", "Áustria", "22/06", "14h"], [42, "I", "França", "Iraque", "22/06", "18h"], [43, "I", "Noruega", "Senegal", "22/06", "21h"], [44, "J", "Jordânia", "Argélia", "23/06", "0h"], [45, "L", "Inglaterra", "Gana", "23/06", "17h"], [46, "K", "Portugal", "Uzbequistão", "23/06", "14h"], [47, "L", "Panamá", "Croácia", "23/06", "20h"], [48, "K", "Colômbia", "RD Congo", "23/06", "23h"], [49, "B", "Suíça", "Canadá", "24/06", "16h"], [50, "B", "Bósnia", "Catar", "24/06", "16h"], [51, "C", "Escócia", "Brasil", "24/06", "19h"], [52, "C", "Marrocos", "Haiti", "24/06", "19h"], [53, "A", "R. Tcheca", "México", "24/06", "22h"], [54, "A", "África do Sul", "Coreia do Sul", "24/06", "22h"], [55, "E", "Equador", "Alemanha", "25/06", "17h"], [56, "E", "Curaçao", "Costa do Marfim", "25/06", "17h"], [57, "F", "Japão", "Suécia", "25/06", "20h"], [58, "F", "Tunísia", "Holanda", "25/06", "20h"], [59, "D", "Turquia", "Estados Unidos", "25/06", "23h"], [60, "D", "Paraguai", "Austrália", "25/06", "23h"], [61, "I", "Noruega", "França", "26/06", "16h"], [62, "I", "Senegal", "Iraque", "26/06", "16h"], [63, "H", "Cabo Verde", "Arábia Saudita", "26/06", "21h"], [64, "H", "Uruguai", "Espanha", "26/06", "21h"], [65, "G", "Egito", "Irã", "27/06", "0h"], [66, "G", "Nova Zelândia", "Bélgica", "27/06", "0h"], [67, "L", "Panamá", "Inglaterra", "27/06", "18h"], [68, "L", "Croácia", "Gana", "27/06", "18h"], [69, "K", "Colômbia", "Portugal", "27/06", "20h30"], [70, "K", "RD Congo", "Uzbequistão", "27/06", "20h30"], [71, "J", "Argélia", "Áustria", "27/06", "23h"], [72, "J", "Jordânia", "Argentina", "27/06", "23h"]];
@@ -413,8 +412,8 @@ function grupos(body){
   if(isAdmin){
     sec(body,"📊","Grupos — resultados reais","Modo admin: edite placares ou atualize pela API.");
     const api=ce("div",{class:"card api",style:"margin-bottom:16px;border:1px dashed var(--line)"});
-    api.appendChild(ce("div",{style:"font-weight:700;font-size:14px;margin-bottom:6px"},"⚡ Placares automáticos (API-Football)"));
-    api.appendChild(ce("p",{style:"font-size:12.5px;color:var(--mut);margin:0 0 12px"},"Busca sozinho ao abrir. Toque para forçar atualização agora."));
+    api.appendChild(ce("div",{style:"font-weight:700;font-size:14px;margin-bottom:6px"},"⚡ Placares automáticos"));
+    api.appendChild(ce("p",{style:"font-size:12.5px;color:var(--mut);margin:0 0 12px"},"Busca resultados ao abrir e a cada 5 min. Toque para forçar agora."));
     const ar=ce("div",{style:"display:flex;gap:8px;flex-wrap:wrap"});
     const btn=ce("button",{class:"btn"},state.saving?"Buscando…":"🔄 Atualizar resultados");btn.onclick=()=>fetchAPI(false);ar.appendChild(btn);api.appendChild(ar);
     if(state.apiMsg)api.appendChild(ce("p",{style:"font-size:13px;margin:12px 0 0;font-weight:700;color:"+(state.apiMsg[0]==="✓"?"var(--grd)":"var(--mut)")},state.apiMsg));
@@ -489,37 +488,26 @@ function clearDownstream(){
 async function fetchAPI(silent){
   if(!silent){state.saving=true;state.apiMsg="Buscando…";render();}
   try{
-    const res=await fetch("https://v3.football.api-sports.io/fixtures?league=1&season=2026",{headers:{"x-apisports-key":API_KEY}});
-    if(!res.ok){
-      const msg="Erro HTTP "+res.status;
-      if(!silent||isAdmin){state.apiMsg="⚠️ "+msg;state.saving=false;render();}return;
-    }
+    const res=await fetch("https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json");
+    if(!res.ok){if(!silent||isAdmin){state.apiMsg="⚠️ Erro HTTP "+res.status;state.saving=false;render();}return;}
     const data=await res.json();
-    // diagnóstico: erros da API
-    if(data.errors&&Object.keys(data.errors).length>0){
-      const errMsg=Object.values(data.errors).join("; ");
-      if(!silent||isAdmin){state.apiMsg="⚠️ API respondeu com erro: "+errMsg;state.saving=false;render();}return;
-    }
-    const total=data.response?data.response.length:0;
-    const ft=data.response?data.response.filter(fx=>fx.fixture&&fx.fixture.status&&fx.fixture.status.short==="FT").length:0;
-    if(!total){
-      if(!silent||isAdmin){state.apiMsg="API respondeu OK mas sem jogos (total: 0). Requests restantes: "+(data.requests?data.requests.current+"/"+data.requests.limit_day:"?");state.saving=false;render();}return;
-    }
+    if(!data.matches||!data.matches.length){if(!silent||isAdmin){state.apiMsg="Sem jogos no feed.";state.saving=false;render();}return;}
     function apiTeam(name){const n=NORM(name);if(API_NAMES[n])return API_NAMES[n];if(TBN[n])return TBN[n];for(const k in API_NAMES){if(n.includes(k)||k.includes(n))return API_NAMES[k];}return null;}
-    let count=0,unmatched=[];
-    data.response.forEach(fx=>{if(!fx.fixture||!fx.fixture.status||fx.fixture.status.short!=="FT")return;if(fx.goals.home==null||fx.goals.away==null)return;
-      const home=apiTeam(fx.teams.home.name),away=apiTeam(fx.teams.away.name);
-      if(!home||!away){unmatched.push((fx.teams.home.name||"?")+" × "+(fx.teams.away.name||"?"));return;}
+    let count=0;
+    data.matches.forEach(mx=>{
+      if(!mx.score||!mx.score.ft)return;
+      const home=apiTeam(mx.team1),away=apiTeam(mx.team2);
+      if(!home||!away)return;
       const t=M.find(m=>m[2]===home&&m[3]===away);
-      if(t){DB.results.matches[t[0]]={h:String(fx.goals.home),a:String(fx.goals.away)};count++;}});
+      if(t){DB.results.matches[t[0]]={h:String(mx.score.ft[0]),a:String(mx.score.ft[1])};count++;}
+    });
     if(count>0)pushDB();
-    let msg=count>0?"✓ "+count+" jogo(s) preenchido(s).":"Nenhum jogo finalizado encontrado.";
-    if(isAdmin)msg+=" [total:"+total+" FT:"+ft+" ok:"+count+(unmatched.length?" unmatched:"+unmatched.join(","):"")+"]";
+    let msg=count>0?"✓ "+count+" jogo(s) atualizado(s).":"Nenhum jogo novo.";
+    if(isAdmin)msg+=" [total:"+data.matches.length+" finalizados:"+data.matches.filter(m=>m.score&&m.score.ft).length+"]";
     if(!silent||isAdmin){state.apiMsg=msg;state.saving=false;render();}
     else if(count>0)render();
   }catch(e){
-    const msg="Falha na requisição: "+(e.message||e);
-    if(!silent||isAdmin){state.apiMsg="⚠️ "+msg;state.saving=false;render();}
+    if(!silent||isAdmin){state.apiMsg="⚠️ Falha: "+(e.message||e);state.saving=false;render();}
   }
 }
 
