@@ -436,7 +436,7 @@ function grupos(body){
   [1,2,3].forEach(rod=>{
     body.appendChild(ce("div",{class:"round"},'<span class="tag">'+rod+'ª RODADA</span><span class="line"></span>'));
     const box=ce("div",{style:"display:grid;gap:7px"});
-    M.filter(m=>roundOf(m[0])===rod).forEach(m=>{const r=DB.results.matches[m[0]]||{};const done=r.h!==""&&r.a!==""&&r.h!=null&&r.a!=null;
+    M.filter(m=>roundOf(m[0])===rod).forEach(m=>{const r=DB.results.matches[m[0]]||DB.results.matches["m"+m[0]]||{};const done=r.h!==""&&r.a!==""&&r.h!=null&&r.a!=null;
       const row=ce("div",{class:"card match"+(done?" done":"")});row.appendChild(ce("div",{class:"meta"},'<span class="g">G'+m[1]+'</span><span>'+m[4]+' · '+m[5]+'</span>'));
       const mid=ce("div",{class:"mrow"});
       const H=done?+r.h:null,A=done?+r.a:null;
@@ -446,9 +446,9 @@ function grupos(body){
       mid.appendChild(ce("span",{class:"side l",style:sH},'<span>'+m[2]+'</span><span class="fl">'+fl(m[2])+'</span>'));
       if(isAdmin){
         const i1=ce("input",{class:"sc",type:"text",inputmode:"numeric",maxlength:"2"});i1.value=r.h==null?"":r.h;
-        i1.oninput=function(){this.value=this.value.replace(/[^\d]/g,"").slice(0,2);if(!DB.results.matches[m[0]])DB.results.matches[m[0]]={};DB.results.matches[m[0]].h=this.value;pushDB();};
+        i1.oninput=function(){this.value=this.value.replace(/[^\d]/g,"").slice(0,2);if(!DB.results.matches["m"+m[0]])DB.results.matches["m"+m[0]]={};DB.results.matches["m"+m[0]].h=this.value;pushDB();};
         const i2=ce("input",{class:"sc",type:"text",inputmode:"numeric",maxlength:"2"});i2.value=r.a==null?"":r.a;
-        i2.oninput=function(){this.value=this.value.replace(/[^\d]/g,"").slice(0,2);if(!DB.results.matches[m[0]])DB.results.matches[m[0]]={};DB.results.matches[m[0]].a=this.value;pushDB();};
+        i2.oninput=function(){this.value=this.value.replace(/[^\d]/g,"").slice(0,2);if(!DB.results.matches["m"+m[0]])DB.results.matches["m"+m[0]]={};DB.results.matches["m"+m[0]].a=this.value;pushDB();};
         mid.appendChild(i1);mid.appendChild(ce("span",{class:"x"},"×"));mid.appendChild(i2);
       } else {
         const scStyle=s=>winH&&s==="h"?";background:var(--soft);border-color:var(--gr);color:var(--gr)":winA&&s==="a"?";background:var(--soft);border-color:var(--gr);color:var(--gr)":draw?";background:#fff8e6;border-color:var(--gold);color:var(--gold)":"";
@@ -499,7 +499,7 @@ async function fetchAPI(silent){
       const home=apiTeam(mx.team1),away=apiTeam(mx.team2);
       if(!home||!away)return;
       const t=M.find(m=>m[2]===home&&m[3]===away);
-      if(t){DB.results.matches[t[0]]={h:String(mx.score.ft[0]),a:String(mx.score.ft[1])};count++;}
+      if(t){DB.results.matches["m"+t[0]]={h:String(mx.score.ft[0]),a:String(mx.score.ft[1])};count++;}
     });
     if(count>0)pushDB();
     let msg=count>0?"✓ "+count+" jogo(s) atualizado(s).":"Nenhum jogo novo.";
