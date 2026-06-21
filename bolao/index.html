@@ -215,7 +215,7 @@ function compute32(matches){
 // DB.guesses[player] = {matches:{}, bracket:{r32:[],r16:[],...}}
 // DB.results = {matches:{}, r1thirds:{jogoId:team}, winners:{k1:{1:team,...},k2:{...},...}}
 let DB={guesses:{},results:{matches:{},r1thirds:{},winners:{}},imported:{}};
-const state={tab:"ranking",apiMsg:"",saving:false,ready:false,impMsg:"",vp:"Raphael"};
+const state={tab:"ranking",apiMsg:"",saving:false,ready:false,impMsg:"",vp:"Raphael",openRounds:{1:false,2:true,3:true}};
 const isAdmin=new URLSearchParams(window.location.search).has("admin");
 const PLAYERS=["Raphael","Danillo","Lucas","Paulo"];
 const INIT={Raphael:"R",Danillo:"D",Lucas:"L",Paulo:"P"};
@@ -339,6 +339,14 @@ function render(){if(!state.ready)return;const app=$("#app");app.innerHTML="";ap
 function header(){const h=ce("div",{class:"hero"});const img=ce("img",{src:"https://res.cloudinary.com/dnnnn7njk/image/upload/v1781266046/topo_bola_yofe8e.png",alt:"Bolão da Copa 2026 — Raphael, Danillo, Lucas e Paulo"});h.appendChild(img);const n=PLAYERS.filter(p=>DB.imported[p]).length;const sub=ce("div",{style:"text-align:center;font-size:12.5px;color:var(--mut);margin:-6px 0 14px;font-weight:700"},n+"/4 planilhas importadas"+(isAdmin?" · 🔐 admin":""));const wrap=ce("div");wrap.appendChild(h);wrap.appendChild(sub);return wrap;}
 function tabs(){let items=[["ranking","🏆 Ranking"],["importar","📥 Importar"],["palpites","👁️ Palpites"],["grupos","📊 Grupos"],["mata","🏟️ Mata-mata"],["regras","ℹ️ Regras"]];if(!isAdmin)items=items.filter(x=>x[0]!=="importar");const w=ce("div",{class:"tabs"});items.forEach(it=>{const b=ce("button",{class:state.tab===it[0]?"on":""},it[1]);b.onclick=()=>{state.tab=it[0];render();};w.appendChild(b);});return w;}
 function sec(p,ic,t,s){const h=ce("div",{class:"sec"});h.appendChild(ce("span",{class:"ic"},ic));h.appendChild(ce("h2",null,t));p.appendChild(h);if(s)p.appendChild(ce("p",{class:"subt"},s));}
+function roundHeader(body,rod,countDone,countTotal){
+  const open=state.openRounds[rod];
+  const head=ce("div",{class:"round",style:"cursor:pointer;user-select:none"});
+  head.innerHTML='<span class="tag">'+rod+'ª RODADA'+(countTotal!=null?' · '+countDone+'/'+countTotal:'')+'</span><span class="line"></span><span style="font-size:13px;color:var(--mut);font-weight:700;margin-left:6px">'+(open?'▾ ocultar':'▸ ver jogos')+'</span>';
+  head.onclick=()=>{state.openRounds[rod]=!state.openRounds[rod];render();};
+  body.appendChild(head);
+  return open;
+}
 
 function importar(body){
   sec(body,"📥","Importar planilhas","");
@@ -375,9 +383,12 @@ function verPalpites(body){
   const fM=M.filter(m=>{const x=g.matches[m[0]]||g.matches["m"+m[0]];return x&&x.h!==""&&x.a!=="";}).length;
   body.appendChild(ce("div",{class:"card",style:"margin-bottom:14px;font-size:13px;color:var(--mut)"},'<b style="color:var(--ink)">'+p+'</b> — '+fM+'/72 placares preenchidos'));
   [1,2,3].forEach(rod=>{
-    body.appendChild(ce("div",{class:"round"},'<span class="tag">'+rod+'ª RODADA</span><span class="line"></span>'));
+    const jogosRod=M.filter(m=>roundOf(m[0])===rod);
+    const done=jogosRod.filter(m=>{const x=g.matches[m[0]]||g.matches["m"+m[0]];return x&&x.h!==""&&x.a!=="";}).length;
+    const open=roundHeader(body,rod,done,jogosRod.length);
+    if(!open)return;
     const box=ce("div",{style:"display:grid;gap:5px"});
-    M.filter(m=>roundOf(m[0])===rod).forEach(m=>{
+    jogosRod.forEach(m=>{
       const gm=g.matches[m[0]]||g.matches["m"+m[0]]||{};
       const hasGuess=gm.h!==""&&gm.h!=null&&gm.a!==""&&gm.a!=null;
       // comparar com resultado real pra mostrar se acertou
@@ -429,9 +440,12 @@ function grupos(body){
   });
   // jogos — admin pode editar, visitante só vê
   [1,2,3].forEach(rod=>{
-    body.appendChild(ce("div",{class:"round"},'<span class="tag">'+rod+'ª RODADA</span><span class="line"></span>'));
+    const jogosRod=M.filter(m=>roundOf(m[0])===rod);
+    const doneCount=jogosRod.filter(m=>{const r=DB.results.matches[m[0]]||DB.results.matches["m"+m[0]]||{};return r.h!==""&&r.a!==""&&r.h!=null&&r.a!=null;}).length;
+    const open=roundHeader(body,rod,doneCount,jogosRod.length);
+    if(!open)return;
     const box=ce("div",{style:"display:grid;gap:7px"});
-    M.filter(m=>roundOf(m[0])===rod).forEach(m=>{const r=DB.results.matches[m[0]]||DB.results.matches["m"+m[0]]||{};const done=r.h!==""&&r.a!==""&&r.h!=null&&r.a!=null;
+    jogosRod.forEach(m=>{const r=DB.results.matches[m[0]]||DB.results.matches["m"+m[0]]||{};const done=r.h!==""&&r.a!==""&&r.h!=null&&r.a!=null;
       const row=ce("div",{class:"card match"+(done?" done":"")});row.appendChild(ce("div",{class:"meta"},'<span class="g">G'+m[1]+'</span><span>'+m[4]+' · '+m[5]+'</span>'));
       const mid=ce("div",{class:"mrow"});
       const H=done?+r.h:null,A=done?+r.a:null;
