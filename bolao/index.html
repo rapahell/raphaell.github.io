@@ -225,10 +225,23 @@ const ce=(t,p,h)=>{const e=document.createElement(t);if(p)for(const k in p)e.set
 function avt(p,sz){sz=sz||43;return '<img src="'+AVATAR[p]+'" alt="'+p+'" style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;object-fit:cover;display:block">';}
 
 function ensure(){if(!DB.results)DB.results={};if(!DB.results.matches)DB.results.matches={};if(!DB.results.r1thirds)DB.results.r1thirds={};if(!DB.results.winners)DB.results.winners={};if(!DB.imported)DB.imported={};if(!DB.guesses)DB.guesses={};}
-function pushDB(){ensure();if(usingFirebase&&dbRef)set(dbRef,DB).catch(e=>console.error(e));else try{localStorage.setItem("bolaoCascata",JSON.stringify(DB));}catch(e){}}
+function pushDB(){
+  ensure();
+  // Nunca sobrescreve o banco se não há nenhum palpite importado — evita apagar dados acidentalmente
+  const temDados=Object.keys(DB.guesses||{}).length>0||Object.keys(DB.imported||{}).length>0;
+  if(!temDados)return;
+  if(usingFirebase&&dbRef)set(dbRef,DB).catch(e=>console.error(e));
+  else try{localStorage.setItem("bolaoCascata",JSON.stringify(DB));}catch(e){}
+}
 function startSync(){
-  if(usingFirebase&&dbRef){onValue(dbRef,snap=>{const v=snap.val();if(v){DB=v;}ensure();state.ready=true;$("#status").classList.add("hidden");render();},()=>fallback("Sem conexão Firebase — usando só este aparelho."));}
-  else fallback(null);
+  if(usingFirebase&&dbRef){
+    onValue(dbRef,snap=>{
+      const v=snap.val();
+      // Só substitui o DB local se o Firebase trouxer dados reais (com palpites ou importados)
+      if(v&&(Object.keys(v.guesses||{}).length>0||Object.keys(v.imported||{}).length>0)){DB=v;}
+      ensure();state.ready=true;$("#status").classList.add("hidden");render();
+    },()=>fallback("Sem conexão Firebase — usando só este aparelho."));
+  } else fallback(null);
 }
 function fallback(msg){try{const s=localStorage.getItem("bolaoCascata");if(s)DB=JSON.parse(s);}catch(e){}ensure();state.ready=true;const st=$("#status");if(msg){st.textContent=msg;st.style.color="#a35a00";}else st.classList.add("hidden");render();}
 
