@@ -209,6 +209,13 @@ const CHAV_PALPITES={
 
 const CHAV_PTS={r32:2,r16:4,r8:6,r4:8,r2:10,champ:20};
 
+const PALPITES_16AVOS={
+  "Raphael":{1:{h:0,a:1,winner:"Canadá"},2:{h:2,a:1,winner:"Brasil"},3:{h:2,a:1,winner:"Alemanha"},4:{h:2,a:0,winner:"Holanda"},5:{h:0,a:1,winner:"Noruega"},6:{h:3,a:1,winner:"França"},7:{h:1,a:0,winner:"México"},8:{h:3,a:1,winner:"Inglaterra"},9:{h:1,a:1,winner:null},10:{h:2,a:0,winner:"Estados Unidos"},11:{h:2,a:1,winner:"Espanha"},12:{h:2,a:0,winner:"Portugal"},13:{h:2,a:2,winner:null},14:{h:1,a:1,winner:null},15:{h:2,a:0,winner:"Argentina"},16:{h:1,a:1,winner:null}},
+  "Danillo":{1:{h:0,a:2,winner:"Canadá"},2:{h:2,a:0,winner:"Brasil"},3:{h:2,a:0,winner:"Alemanha"},4:{h:2,a:1,winner:"Holanda"},5:{h:1,a:2,winner:"Noruega"},6:{h:3,a:1,winner:"França"},7:{h:1,a:0,winner:"México"},8:{h:2,a:0,winner:"Inglaterra"},9:{h:2,a:2,winner:null},10:{h:3,a:1,winner:"Estados Unidos"},11:{h:3,a:1,winner:"Espanha"},12:{h:1,a:0,winner:"Portugal"},13:{h:1,a:0,winner:"Suíça"},14:{h:1,a:2,winner:"Egito"},15:{h:2,a:0,winner:"Argentina"},16:{h:2,a:1,winner:"Colômbia"}},
+  "Lucas":{1:{h:1,a:2,winner:"Canadá"},2:{h:2,a:0,winner:"Brasil"},3:{h:2,a:0,winner:"Alemanha"},4:{h:2,a:1,winner:"Holanda"},5:{h:1,a:3,winner:"Noruega"},6:{h:3,a:0,winner:"França"},7:{h:2,a:1,winner:"México"},8:{h:2,a:1,winner:"Inglaterra"},9:{h:2,a:1,winner:"Bélgica"},10:{h:2,a:0,winner:"Estados Unidos"},11:{h:2,a:0,winner:"Espanha"},12:{h:2,a:1,winner:"Portugal"},13:{h:1,a:0,winner:"Suíça"},14:{h:0,a:1,winner:"Egito"},15:{h:3,a:0,winner:"Argentina"},16:{h:2,a:1,winner:"Colômbia"}},
+  "Paulo":{1:{h:1,a:2,winner:"Canadá"},2:{h:2,a:1,winner:"Brasil"},3:{h:2,a:0,winner:"Alemanha"},4:{h:1,a:0,winner:"Holanda"},5:{h:1,a:2,winner:"Noruega"},6:{h:3,a:1,winner:"França"},7:{h:2,a:1,winner:"México"},8:{h:2,a:0,winner:"Inglaterra"},9:{h:1,a:1,winner:null},10:{h:2,a:0,winner:"Estados Unidos"},11:{h:2,a:0,winner:"Espanha"},12:{h:2,a:1,winner:"Portugal"},13:{h:1,a:0,winner:"Suíça"},14:{h:1,a:1,winner:null},15:{h:3,a:0,winner:"Argentina"},16:{h:1,a:0,winner:"Colômbia"}},
+};
+
 // Fases do chaveamento
 const FASES=[
   {k:"r32",label:"16-avos",n:32},
@@ -1006,19 +1013,19 @@ setTimeout(()=>{
   if(!DB.results.ko.r32[1]){
     DB.results.ko.r32[1]="Canadá";
   }
-  // Registrar palpites de placar do jogo 1 (16-avos) — feitos antes do jogo
-  // Jogo: África do Sul (mandante) x Canadá (visitante)
-  const palpitesJ1={Raphael:{h:0,a:1},Danillo:{h:0,a:2},Lucas:{h:0,a:2},Paulo:{h:0,a:2}};
+  // Registrar TODOS os palpites de placar dos 16-avos
   let mudou=false;
   PLAYERS.forEach(p=>{
     if(!DB.guesses[p])DB.guesses[p]={matches:{},bracket:{},bracket2:{}};
     if(!DB.guesses[p].bracket2)DB.guesses[p].bracket2={};
     if(!DB.guesses[p].bracket2.r32)DB.guesses[p].bracket2.r32={};
-    if(DB.guesses[p].bracket2.r32[1]==null&&DB.imported[p]){
-      const pl=palpitesJ1[p];
-      DB.guesses[p].bracket2.r32[1]={h:pl.h,a:pl.a,winner:pl.h>pl.a?"África do Sul":pl.a>pl.h?"Canadá":null};
-      mudou=true;
-    }
+    const meus=PALPITES_16AVOS[p]||{};
+    Object.keys(meus).forEach(jid=>{
+      if(DB.guesses[p].bracket2.r32[jid]==null){
+        DB.guesses[p].bracket2.r32[jid]=meus[jid];
+        mudou=true;
+      }
+    });
   });
   if(mudou)pushDB();
   render();
