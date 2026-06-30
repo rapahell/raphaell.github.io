@@ -1018,37 +1018,42 @@ function apostasPassaria16(body){
 }
 
 // ===== BOOT =====
-startSync();
-// Injetar resultado fixo que já conhecemos (África do Sul 0x1 Canadá)
-setTimeout(()=>{
+let jaInjetou=false;
+function injetarPalpites16(){
+  if(jaInjetou)return;
+  // Só injeta DEPOIS que o Firebase trouxe dados reais — evita zerar palpites
+  const temDadosReais=Object.keys(DB.imported||{}).length>0&&Object.keys(DB.guesses||{}).length>0;
+  if(!temDadosReais)return;
+  jaInjetou=true;
   ensure();
+  let mudou=false;
   if(!DB.results.ko2)DB.results.ko2={};
   if(!DB.results.ko2.r32)DB.results.ko2.r32={};
-  if(DB.results.ko2.r32[1]==null){
-    DB.results.ko2.r32[1]={h:0,a:1,pen:null};
-  }
+  if(DB.results.ko2.r32[1]==null){DB.results.ko2.r32[1]={h:0,a:1,pen:null};mudou=true;}
   if(!DB.results.ko)DB.results.ko={};
   if(!DB.results.ko.r32)DB.results.ko.r32={};
-  if(!DB.results.ko.r32[1]){
-    DB.results.ko.r32[1]="Canadá";
-  }
-  // Registrar TODOS os palpites de placar dos 16-avos
-  let mudou=false;
+  if(!DB.results.ko.r32[1]){DB.results.ko.r32[1]="Canadá";mudou=true;}
+  // Palpites dos 16-avos — NUNCA cria guesses vazio; só adiciona em quem já foi importado
   PLAYERS.forEach(p=>{
-    if(!DB.guesses[p])DB.guesses[p]={matches:{},bracket:{},bracket2:{}};
+    if(!DB.guesses[p]||!DB.imported[p])return;
     if(!DB.guesses[p].bracket2)DB.guesses[p].bracket2={};
     if(!DB.guesses[p].bracket2.r32)DB.guesses[p].bracket2.r32={};
     const meus=PALPITES_16AVOS[p]||{};
     Object.keys(meus).forEach(jid=>{
-      if(DB.guesses[p].bracket2.r32[jid]==null){
-        DB.guesses[p].bracket2.r32[jid]=meus[jid];
-        mudou=true;
-      }
+      if(DB.guesses[p].bracket2.r32[jid]==null){DB.guesses[p].bracket2.r32[jid]=meus[jid];mudou=true;}
     });
   });
   if(mudou)pushDB();
   render();
-},1000);
+}
+
+startSync();
+let tentativas=0;
+const injInterval=setInterval(()=>{
+  tentativas++;
+  injetarPalpites16();
+  if(jaInjetou||tentativas>10)clearInterval(injInterval);
+},1500);
 setTimeout(()=>fetchAPI(true),2500);
 setInterval(()=>fetchAPI(true),300000);
 </script>
