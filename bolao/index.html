@@ -318,10 +318,15 @@ function scoreFase2(p){
 }
 
 function scoreTotal(p){
-  const g=scoreGrupos(p);
-  const c=scoreChaveamento(p);
-  const f=scoreFase2(p);
-  return {total:g.pts+c.pts+f.pts,grupos:g,chav:c,fase2:f};
+  try{
+    const g=scoreGrupos(p);
+    const c=scoreChaveamento(p);
+    const f=scoreFase2(p);
+    return {total:g.pts+c.pts+f.pts,grupos:g,chav:c,fase2:f};
+  }catch(e){
+    console.error("Erro pontuação "+p,e);
+    return {total:0,grupos:{pts:0,ex:0,hit:0},chav:{pts:0,detail:{}},fase2:{pts:0,ex:0,hit:0}};
+  }
 }
 
 // ===== STANDINGS (grupos) =====
@@ -410,15 +415,29 @@ function handleFile(file,player){
 function render(){
   if(!state.ready)return;
   const app=$("#app");app.innerHTML="";
-  app.appendChild(renderHeader());
-  app.appendChild(renderTabs());
-  const body=ce("div");
-  if(state.tab==="ranking")ranking(body);
-  else if(state.tab==="fase2")fase2(body);
-  else if(state.tab==="fase1")fase1(body);
-  else if(state.tab==="importar")importar(body);
-  else if(state.tab==="regras")regras(body);
-  app.appendChild(body);
+  try{
+    app.appendChild(renderHeader());
+    app.appendChild(renderTabs());
+    const body=ce("div");
+    if(state.tab==="ranking")ranking(body);
+    else if(state.tab==="fase2")fase2(body);
+    else if(state.tab==="fase1")fase1(body);
+    else if(state.tab==="importar")importar(body);
+    else if(state.tab==="regras")regras(body);
+    app.appendChild(body);
+  }catch(e){
+    console.error("Erro ao renderizar:",e);
+    const err=ce("div",{class:"card",style:"margin-top:14px;text-align:center;padding:24px"});
+    err.innerHTML='<div style="font-size:15px;font-weight:700;color:var(--grd);margin-bottom:8px">Ops, algo deu errado nesta aba</div><div style="font-size:13px;color:var(--mut)">Tente recarregar a página (Cmd+Shift+R). Se persistir, troque de aba.</div>';
+    app.appendChild(err);
+    // botões de navegação de emergência
+    const nav=ce("div",{style:"display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap"});
+    ["ranking","fase2","fase1"].forEach(t=>{
+      const b=ce("button",{class:"btn ghost"});b.textContent=t==="ranking"?"Ranking":t==="fase2"?"2ª Fase":"1ª Fase";
+      b.onclick=()=>{state.tab=t;render();};nav.appendChild(b);
+    });
+    app.appendChild(nav);
+  }
 }
 
 function renderHeader(){
