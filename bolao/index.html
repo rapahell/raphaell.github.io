@@ -249,6 +249,19 @@ return icons[n]||'';}
 
 function ensure(){if(!DB.results)DB.results={};if(!DB.results.matches)DB.results.matches={};if(!DB.results.ko)DB.results.ko={};if(!DB.results.ko2)DB.results.ko2={};if(!DB.imported)DB.imported={};if(!DB.guesses)DB.guesses={};}
 
+// Conta o "peso" de dados (palpites + resultados) para detectar perda de dados
+function pesoDados(db){
+  if(!db)return 0;
+  let n=0;
+  Object.values(db.guesses||{}).forEach(g=>{
+    n+=Object.keys(g.matches||{}).length;
+    if(g.bracket2)Object.values(g.bracket2).forEach(f=>n+=Object.keys(f||{}).length);
+  });
+  n+=Object.keys(db.results?.matches||{}).length;
+  if(db.results?.ko)Object.values(db.results.ko).forEach(f=>n+=Object.keys(f||{}).length);
+  return n;
+}
+
 function pushDB(){
   ensure();
   const temDados=Object.keys(DB.guesses||{}).length>0||Object.keys(DB.imported||{}).length>0;
@@ -259,7 +272,21 @@ function pushDB(){
 function startSync(){
   onValue(dbRef,snap=>{
     const v=snap.val();
-    if(v&&(Object.keys(v.guesses||{}).length>0||Object.keys(v.imported||{}).length>0)){DB=v;}
+    if(v&&(Object.keys(v.guesses||{}).length>0||Object.keys(v.imported||{}).length>0)){
+      // Proteção anti-zeramento: se já temos dados locais e o Firebase
+      // mandar um peso muito menor (perda de dados), não aceita o retrocesso
+      const pesoLocal=pesoDados(DB);
+      const pesoRemoto=pesoDados(v);
+      if(pesoLocal>0&&pesoRemoto<pesoLocal*0.5){
+        // Firebase tem bem menos dados que o local — provável zeramento por aba antiga.
+        // Reescreve o Firebase com os dados bons locais em vez de aceitar a perda.
+        console.warn("Bloqueado retrocesso de dados (local:"+pesoLocal+" remoto:"+pesoRemoto+")");
+        set(dbRef,DB).catch(e=>console.error(e));
+        ensure();state.ready=true;$("#status").classList.add("hidden");render();
+        return;
+      }
+      DB=v;
+    }
     ensure();state.ready=true;$("#status").classList.add("hidden");render();
   },()=>{ensure();state.ready=true;$("#status").classList.add("hidden");render();});
 }
