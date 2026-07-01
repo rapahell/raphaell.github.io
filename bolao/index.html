@@ -164,7 +164,7 @@ const R32_GAMES=[
 // Times reais nos 16-avos (o bracket real — os 32 classificados)
 const R32_REAL_SET=new Set(R32_GAMES.flatMap(g=>[g.home,g.away]));
 // Oitavas: vencedor R32 jogo X vs jogo Y
-const R16_PAIRS=[[1,2],[3,4],[5,6],[7,8],[9,10],[11,12],[13,14],[15,16]];
+const R16_PAIRS=[[3,6],[1,4],[12,11],[10,9],[2,5],[7,8],[15,14],[13,16]];
 const R8_PAIRS=[[1,2],[3,4],[5,6],[7,8]];
 const R4_PAIRS=[[1,2],[3,4]];
 const R2_PAIRS=[[1,2]];
@@ -396,8 +396,10 @@ async function fetchAPI(silent){
         const g=R32_GAMES.find(x=>(x.home===home&&x.away===away)||(x.home===away&&x.away===home));
         if(g){
           const inv=g.home===away; // se invertido
-          const h=inv?mx.score.ft[1]:mx.score.ft[0];
-          const a=inv?mx.score.ft[0]:mx.score.ft[1];
+          // Placar final: prorrogação (et) se houver, senão tempo normal (ft)
+          const fin=mx.score.et||mx.score.ft;
+          const h=inv?fin[1]:fin[0];
+          const a=inv?fin[0]:fin[1];
           if(!DB.results.ko2)DB.results.ko2={};
           if(!DB.results.ko2.r32)DB.results.ko2.r32={};
           DB.results.ko2.r32[g.id]={h:h,a:a,pen:null};
@@ -538,7 +540,25 @@ function fase2(body){
 
   const ko=DB.results.ko||{};
 
+  // Abas de fase (lado a lado) — clica e abre só aquela fase
+  const fasesNav=[
+    {k:"r32",l:"16-avos"},
+    {k:"r16",l:"Oitavas"},
+    {k:"r8",l:"Quartas"},
+    {k:"r4",l:"Semi"},
+    {k:"r2",l:"Final"},
+  ];
+  const fnav=ce("div",{style:"display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"});
+  fasesNav.forEach(({k,l})=>{
+    const b=ce("button",{class:"tbtn"+(state.fase2fase===k?" on":""),style:"flex:1 1 auto;justify-content:center;min-height:40px"});
+    b.textContent=l;b.onclick=()=>{state.fase2fase=k;render();};fnav.appendChild(b);
+  });
+  body.appendChild(fnav);
+
+  const faseAtiva=state.fase2fase;
+
   // === 16-AVOS ===
+  if(faseAtiva==="r32"){
   body.appendChild(ce("div",{class:"round"},'<span class="tag">16-avos de Final</span><span class="line"></span>'));
   const box32=ce("div",{style:"display:grid;gap:10px"});
   let dataAtual=null;
@@ -612,17 +632,18 @@ function fase2(body){
     box32.appendChild(card);
   });
   body.appendChild(box32);
+  return;
+  }
 
-  // === OITAVAS em diante — só mostra quando há vencedores suficientes ===
+  // === OITAVAS ===
+  if(faseAtiva==="r16"){
   const vencR32=Object.values(ko.r32||{});
   if(vencR32.length<2){
     body.appendChild(ce("div",{class:"card",style:"margin-top:16px;text-align:center;color:var(--mut);padding:24px"},
       icon("lock",18)+'<br><br>Oitavas liberadas quando os 16-avos terminarem.'));
     return;
   }
-
-  // Oitavas
-  body.appendChild(ce("div",{class:"round",style:"margin-top:20px"},'<span class="tag">Oitavas de Final</span><span class="line"></span>'));
+  body.appendChild(ce("div",{class:"round"},'<span class="tag">Oitavas de Final</span><span class="line"></span>'));
   const box16=ce("div",{style:"display:grid;gap:7px"});
   R16_PAIRS.forEach(([a,b],idx)=>{
     const tA=(ko.r32||{})[a]||null, tB=(ko.r32||{})[b]||null;
@@ -648,21 +669,25 @@ function fase2(body){
     box16.appendChild(row);
   });
   body.appendChild(box16);
+  return;
+  }
 
-  // Quartas, Semis, Final — só se oitavas tiverem resultados
-  const vencR16=Object.values(ko.r16||{});
-  if(vencR16.length<2)return;
-
+  // === QUARTAS / SEMI / FINAL ===
   const fasesPares=[
     {key:"r8",label:"Quartas de Final",pairs:R8_PAIRS,src:"r16"},
     {key:"r4",label:"Semifinais",pairs:R4_PAIRS,src:"r8"},
     {key:"r2",label:"Final",pairs:R2_PAIRS,src:"r4"},
   ];
-
-  fasesPares.forEach(({key,label,pairs,src})=>{
+  const faseInfo=fasesPares.find(f=>f.key===faseAtiva);
+  if(faseInfo){
+    const {key,label,pairs,src}=faseInfo;
     const srcVenc=ko[src]||{};
-    if(Object.keys(srcVenc).length<2)return;
-    body.appendChild(ce("div",{class:"round",style:"margin-top:20px"},'<span class="tag">'+label+'</span><span class="line"></span>'));
+    if(Object.keys(srcVenc).length<2){
+      body.appendChild(ce("div",{class:"card",style:"margin-top:16px;text-align:center;color:var(--mut);padding:24px"},
+        icon("lock",18)+'<br><br>'+label+' liberada quando a fase anterior terminar.'));
+      return;
+    }
+    body.appendChild(ce("div",{class:"round"},'<span class="tag">'+label+'</span><span class="line"></span>'));
     const box=ce("div",{style:"display:grid;gap:7px"});
     pairs.forEach(([a,b],idx)=>{
       const tA=srcVenc[a]||null, tB=srcVenc[b]||null;
@@ -688,16 +713,15 @@ function fase2(body){
       box.appendChild(row);
     });
     body.appendChild(box);
-  });
-
-  // Campeão
-  const finalVenc=ko.r2||{};
-  if(Object.keys(finalVenc).length>0){
-    const champ=finalVenc[1]||null;
-    if(champ){
-      const card=ce("div",{class:"card",style:"margin-top:20px;text-align:center;border:2px solid var(--gold);padding:20px"});
-      card.innerHTML='<div style="font-size:11px;font-weight:800;color:var(--mut);letter-spacing:2px">CAMPEÃO</div><div style="font-size:36px;margin:8px 0 4px">'+fl(champ)+'</div><div style="font-size:22px;font-weight:800;color:var(--grd)">'+champ+'</div>';
-      body.appendChild(card);
+    // Campeão (só na aba Final)
+    if(key==="r2"){
+      const finalVenc=ko.r2||{};
+      const champ=finalVenc[1]||null;
+      if(champ){
+        const card=ce("div",{class:"card",style:"margin-top:20px;text-align:center;border:2px solid var(--gold);padding:20px"});
+        card.innerHTML='<div style="font-size:11px;font-weight:800;color:var(--mut);letter-spacing:2px">CAMPEÃO</div><div style="font-size:36px;margin:8px 0 4px">'+fl(champ)+'</div><div style="font-size:22px;font-weight:800;color:var(--grd)">'+champ+'</div>';
+        body.appendChild(card);
+      }
     }
   }
 }
