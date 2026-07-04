@@ -163,8 +163,24 @@ const R32_GAMES=[
 ];
 // Times reais nos 16-avos (o bracket real — os 32 classificados)
 const R32_REAL_SET=new Set(R32_GAMES.flatMap(g=>[g.home,g.away]));
+// Os 16 que passaram para as oitavas (vencedores dos 16-avos) — derivado de DB.results.ko.r32
+function r16RealSet(){
+  const ko=DB.results?.ko?.r32||{};
+  return new Set(Object.values(ko));
+}
 // Oitavas: vencedor R32 jogo X vs jogo Y
 const R16_PAIRS=[[3,6],[1,4],[12,11],[10,9],[2,5],[7,8],[15,14],[13,16]];
+// Metadados das oitavas (data/hora Brasília) — indexado pela posição no R16_PAIRS (idx+1)
+const R16_INFO={
+  1:{data:"04/07",hora:"18:00"}, // Paraguai × França
+  2:{data:"04/07",hora:"14:00"}, // Canadá × Marrocos
+  3:{data:"06/07",hora:"16:00"}, // Portugal × Espanha
+  4:{data:"06/07",hora:"21:00"}, // EUA × Bélgica
+  5:{data:"05/07",hora:"17:00"}, // Brasil × Noruega
+  6:{data:"05/07",hora:"21:00"}, // México × Inglaterra
+  7:{data:"07/07",hora:"13:00"}, // Argentina × Egito
+  8:{data:"07/07",hora:"17:00"}, // Suíça × Colômbia
+};
 const R8_PAIRS=[[1,2],[3,4],[5,6],[7,8]];
 const R4_PAIRS=[[1,2],[3,4]];
 const R2_PAIRS=[[1,2]];
@@ -199,9 +215,9 @@ const CHAV_PALPITES={
   },
   "Paulo":{
     r32:["Suíça","Canadá","Brasil","Marrocos","Estados Unidos","Turquia","Costa do Marfim","Equador","Holanda","Japão","Egito","Espanha","Uruguai","França","Noruega","Argentina","Áustria","Portugal","Colômbia","Inglaterra","Croácia","R. Tcheca","México","Paraguai","Alemanha","Gana","Irã","Senegal","RD Congo","Coreia do Sul","Escócia","Suécia"],
-    r16:["Holanda","França","Brasil","Inglaterra","Espanha","Bélgica","Argentina","Portugal"],
-    r8:["França","Espanha","Brasil","Argentina"],
-    r4:["Espanha","Brasil"],
+    r16:["Suíça","Holanda","Alemanha","França","Brasil","Noruega","México","Inglaterra","Colômbia","Espanha","Estados Unidos","Bélgica","Argentina","Egito","Croácia","Portugal"],
+    r8:["Holanda","França","Espanha","Bélgica","Brasil","Inglaterra","Argentina","Portugal"],
+    r4:["França","Espanha","Brasil","Argentina"],
     r2:["Brasil","Espanha"],
     champ:["Brasil"]
   }
@@ -214,6 +230,13 @@ const PALPITES_16AVOS={
   "Danillo":{1:{h:0,a:2,winner:"Canadá"},2:{h:2,a:0,winner:"Brasil"},3:{h:2,a:0,winner:"Alemanha"},4:{h:2,a:1,winner:"Holanda"},5:{h:1,a:2,winner:"Noruega"},6:{h:3,a:1,winner:"França"},7:{h:1,a:0,winner:"México"},8:{h:2,a:0,winner:"Inglaterra"},9:{h:2,a:2,winner:null},10:{h:3,a:1,winner:"Estados Unidos"},11:{h:3,a:1,winner:"Espanha"},12:{h:1,a:0,winner:"Portugal"},13:{h:1,a:0,winner:"Suíça"},14:{h:1,a:2,winner:"Egito"},15:{h:2,a:0,winner:"Argentina"},16:{h:2,a:1,winner:"Colômbia"}},
   "Lucas":{1:{h:1,a:2,winner:"Canadá"},2:{h:2,a:0,winner:"Brasil"},3:{h:2,a:0,winner:"Alemanha"},4:{h:2,a:1,winner:"Holanda"},5:{h:1,a:3,winner:"Noruega"},6:{h:3,a:0,winner:"França"},7:{h:2,a:1,winner:"México"},8:{h:2,a:1,winner:"Inglaterra"},9:{h:2,a:1,winner:"Bélgica"},10:{h:2,a:0,winner:"Estados Unidos"},11:{h:2,a:0,winner:"Espanha"},12:{h:2,a:1,winner:"Portugal"},13:{h:1,a:0,winner:"Suíça"},14:{h:0,a:1,winner:"Egito"},15:{h:3,a:0,winner:"Argentina"},16:{h:2,a:1,winner:"Colômbia"}},
   "Paulo":{1:{h:1,a:2,winner:"Canadá"},2:{h:2,a:1,winner:"Brasil"},3:{h:2,a:0,winner:"Alemanha"},4:{h:1,a:0,winner:"Holanda"},5:{h:1,a:2,winner:"Noruega"},6:{h:3,a:1,winner:"França"},7:{h:2,a:1,winner:"México"},8:{h:2,a:0,winner:"Inglaterra"},9:{h:1,a:1,winner:null},10:{h:2,a:0,winner:"Estados Unidos"},11:{h:2,a:0,winner:"Espanha"},12:{h:2,a:1,winner:"Portugal"},13:{h:1,a:0,winner:"Suíça"},14:{h:1,a:1,winner:null},15:{h:3,a:0,winner:"Argentina"},16:{h:1,a:0,winner:"Colômbia"}},
+};
+
+const PALPITES_OITAVAS={
+  "Raphael":{1:{h:1,a:3,winner:"França"},2:{h:0,a:1,winner:"Marrocos"}},
+  "Danillo":{1:{h:0,a:3,winner:"França"},2:{h:0,a:2,winner:"Marrocos"}},
+  "Lucas":{1:{h:0,a:3,winner:"França"},2:{h:0,a:1,winner:"Marrocos"}},
+  "Paulo":{1:{h:0,a:3,winner:"França"},2:{h:1,a:2,winner:"Marrocos"}},
 };
 
 // Fases do chaveamento
@@ -312,8 +335,11 @@ function scoreChaveamento(p){
   const ko=DB.results.ko||{};
   let pts=0,detail={};
   FASES.forEach(f=>{
-    // r32: compara com o bracket real (R32_REAL_SET), não com DB.results.ko
-    const reaisSet = f.k==="r32" ? R32_REAL_SET : new Set(Object.values(ko[f.k]||{}));
+    // r32: os 32 do bracket · r16: os 16 vencedores dos 16-avos (já conhecidos)
+    let reaisSet;
+    if(f.k==="r32")reaisSet=R32_REAL_SET;
+    else if(f.k==="r16")reaisSet=r16RealSet();
+    else reaisSet=new Set(Object.values(ko[f.k]||{}));
     const pSet=new Set(palpite[f.k]||[]);
     let acc=0;
     pSet.forEach(t=>{if(reaisSet.has(t))acc++;});
@@ -411,6 +437,31 @@ async function fetchAPI(silent){
           if(!venc&&mx.score.p){const ph=inv?mx.score.p[1]:mx.score.p[0];const pa=inv?mx.score.p[0]:mx.score.p[1];venc=ph>pa?g.home:g.away;DB.results.ko2.r32[g.id].pen=venc;}
           if(venc)DB.results.ko.r32[g.id]=venc;
           count++;
+        }
+      }
+      // Oitavas (Round of 16): casar pelos vencedores dos 16-avos
+      if(round.indexOf("Round of 16")>=0){
+        // Descobrir qual oitava (id) tem esses dois times como vencedores
+        for(let idx=0;idx<R16_PAIRS.length;idx++){
+          const [ga,gb]=R16_PAIRS[idx];
+          const tA=(DB.results.ko?.r32||{})[ga], tB=(DB.results.ko?.r32||{})[gb];
+          if(!tA||!tB)continue;
+          const match=(tA===home&&tB===away)||(tA===away&&tB===home);
+          if(match){
+            const inv=tA===away;
+            const fin=mx.score.et||mx.score.ft;
+            const h=inv?fin[1]:fin[0];
+            const a=inv?fin[0]:fin[1];
+            if(!DB.results.ko2)DB.results.ko2={};
+            if(!DB.results.ko2.r16)DB.results.ko2.r16={};
+            DB.results.ko2.r16[idx+1]={h:h,a:a,pen:null};
+            if(!DB.results.ko.r16)DB.results.ko.r16={};
+            let venc=h>a?tA:a>h?tB:null;
+            if(!venc&&mx.score.p){const ph=inv?mx.score.p[1]:mx.score.p[0];const pa=inv?mx.score.p[0]:mx.score.p[1];venc=ph>pa?tA:tB;DB.results.ko2.r16[idx+1].pen=venc;}
+            if(venc)DB.results.ko.r16[idx+1]=venc;
+            count++;
+            break;
+          }
         }
       }
     });
@@ -644,29 +695,75 @@ function fase2(body){
     return;
   }
   body.appendChild(ce("div",{class:"round"},'<span class="tag">Oitavas de Final</span><span class="line"></span>'));
-  const box16=ce("div",{style:"display:grid;gap:7px"});
-  R16_PAIRS.forEach(([a,b],idx)=>{
+  const box16=ce("div",{style:"display:grid;gap:10px"});
+  // Ordenar oitavas por data/hora
+  const oitavasOrd=R16_PAIRS.map(([a,b],idx)=>({idx,a,b,info:R16_INFO[idx+1]||{data:"",hora:""}}));
+  oitavasOrd.sort((x,y)=>{
+    const dx=(x.info.data||"").split("/").reverse().join("")+((x.info.hora||"").replace(":",""));
+    const dy=(y.info.data||"").split("/").reverse().join("")+((y.info.hora||"").replace(":",""));
+    return dx<dy?-1:dx>dy?1:0;
+  });
+  let dataAtualO=null;
+  oitavasOrd.forEach(({idx,a,b,info})=>{
+    const id=idx+1;
     const tA=(ko.r32||{})[a]||null, tB=(ko.r32||{})[b]||null;
-    const winner=(ko.r16||{})[idx+1]||null;
-    const row=ce("div",{class:"ko-game"});
-    row.innerHTML='<span class="gnum">J'+(idx+1)+'</span>';
+    const winner=(ko.r16||{})[id]||null;
+    const placar=(DB.results.ko2?.r16||{})[id]||null;
+    const temPlacar=placar&&placar.h!=null;
+    // Separador de data
+    if(info.data&&info.data!==dataAtualO){
+      dataAtualO=info.data;
+      const sep=ce("div",{style:"display:flex;align-items:center;gap:8px;margin:10px 0 2px"});
+      sep.innerHTML='<span style="font-size:11px;font-weight:800;color:#fff;background:var(--grl);padding:3px 10px;border-radius:999px">'+info.data+'</span><span style="flex:1;height:1px;background:var(--line)"></span>';
+      box16.appendChild(sep);
+    }
+    const card=ce("div",{class:"card",style:"padding:11px 13px"});
+    const row=ce("div",{class:"ko-game",style:"border:none;padding:0;margin:0;background:transparent"});
+    const ginfo=ce("div",{style:"display:flex;flex-direction:column;align-items:center;min-width:50px;gap:2px"});
+    ginfo.innerHTML='<span style="font-size:10px;font-weight:700;color:var(--mut)">O'+id+'</span><span style="font-size:11px;font-weight:800;color:var(--grd)">'+(info.hora||'')+'</span>';
+    row.appendChild(ginfo);
     [tA,tB].forEach((team,si)=>{
       const isWin=winner&&winner===team;
       const slot=ce("div",{class:"team"+(isWin?" win":!team?" empty":"")});
-      slot.innerHTML=team?'<span style="font-size:18px">'+fl(team)+'</span><span style="flex:1">'+team+'</span>'+(isWin?icon("check-circle",14):''):'<span>a definir</span>';
+      slot.innerHTML=team?'<span style="font-size:18px">'+fl(team)+'</span><span style="flex:1;font-size:13px">'+team+'</span>'+(isWin?icon("check-circle",14):''):'<span>a definir</span>';
       if(isAdmin&&team){
         slot.onclick=()=>{
           if(!DB.results.ko.r16)DB.results.ko.r16={};
-          const id=idx+1;
           if(DB.results.ko.r16[id]===team)delete DB.results.ko.r16[id];
           else DB.results.ko.r16[id]=team;
           pushDB();render();
         };
       }
-      if(si===0){row.appendChild(slot);row.appendChild(ce("span",{class:"vs"},"×"));}
-      else row.appendChild(slot);
+      if(si===0){
+        row.appendChild(slot);
+        const scDiv=ce("div",{style:"display:flex;flex-direction:column;align-items:center;gap:2px;min-width:40px"});
+        if(temPlacar){scDiv.innerHTML='<span style="font-size:17px;font-weight:800;color:var(--grd)">'+placar.h+'–'+placar.a+'</span>'+(placar.pen?'<span style="font-size:9px;color:var(--gold);font-weight:700">pen</span>':'');}
+        else{scDiv.innerHTML='<span style="font-size:13px;color:var(--mut);font-weight:700">×</span>';}
+        row.appendChild(scDiv);
+      } else row.appendChild(slot);
     });
-    box16.appendChild(row);
+    card.appendChild(row);
+    // Apostas de cada um
+    const apDiv=ce("div",{style:"margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);display:grid;gap:5px"});
+    let temAlguma=false;
+    PLAYERS.forEach(p=>{
+      const ap=DB.guesses[p]?.bracket2?.r16?.[id];
+      if(!ap||ap.h==null)return;
+      temAlguma=true;
+      const chip=ce("div",{style:"display:flex;align-items:center;gap:7px;font-size:12px"});
+      let tag='';
+      if(temPlacar){
+        const exato=ap.h===placar.h&&ap.a===placar.a;
+        const desf=(ap.h>ap.a&&placar.h>placar.a)||(ap.h<ap.a&&placar.h<placar.a)||(ap.h===ap.a&&placar.h===placar.a);
+        if(exato)tag='<span style="color:#155724;font-weight:800;margin-left:auto">✓ exato +5</span>';
+        else if(desf)tag='<span style="color:#1b6fb5;font-weight:700;margin-left:auto">✓ desfecho +2</span>';
+        else tag='<span style="color:#a02020;font-weight:600;margin-left:auto">✗ errou</span>';
+      }
+      chip.innerHTML='<img src="'+AVATAR[p]+'" style="width:22px;height:22px;border-radius:50%;object-fit:cover"><span style="font-weight:700;min-width:62px">'+p+'</span><span><span style="font-size:14px">'+(tA?fl(tA):'')+'</span> <b>'+ap.h+'</b> × <b>'+ap.a+'</b> <span style="font-size:14px">'+(tB?fl(tB):'')+'</span></span>'+tag;
+      apDiv.appendChild(chip);
+    });
+    if(temAlguma)card.appendChild(apDiv);
+    box16.appendChild(card);
   });
   body.appendChild(box16);
   return;
@@ -790,18 +887,27 @@ function ranking(body){
       const det=ce("div",{style:"border-top:1px solid var(--line);padding:10px 14px;background:#fafbfc"});
       const ko=DB.results.ko||{};
       FASES.forEach(f=>{
-        const reaisSet=f.k==="r32"?R32_REAL_SET:new Set(Object.values(ko[f.k]||{}));
-        if(reaisSet.size===0)return;
         const lista=CHAV_PALPITES[p]?.[f.k]||[];
-        const acertos=lista.filter(t=>reaisSet.has(t));
         if(lista.length===0)return;
-        const faseNome={r32:"16-avos",r16:"Oitavas",r8:"Quartas",r4:"Semi",r2:"Final",champ:"Campeão"}[f.k];
-        const block=ce("div",{style:"margin-bottom:10px"});
-        block.innerHTML='<div style="font-size:11px;font-weight:800;color:var(--mut);margin-bottom:4px">'+faseNome+' · '+CHAV_PTS[f.k]+'pts cada · <span style="color:var(--grd)">+'+(acertos.length*CHAV_PTS[f.k])+'pts</span></div>';
+        const reaisSet=f.k==="r32"?R32_REAL_SET:f.k==="r16"?r16RealSet():new Set(Object.values(ko[f.k]||{}));
+        const jaValendo=reaisSet.size>0; // fase já aconteceu (tem quem passou marcado)
+        const acertos=lista.filter(t=>reaisSet.has(t));
+        const faseNome={r32:"16-avos",r16:"Oitavas",r8:"Quartas",r4:"Semifinal",r2:"Final",champ:"Campeão"}[f.k];
+        const block=ce("div",{style:"margin-bottom:11px"});
+        // Cabeçalho da fase
+        let cab='<div style="font-size:12px;font-weight:800;color:var(--grd);margin-bottom:5px;display:flex;align-items:center;gap:6px">'+faseNome+' <span style="font-size:10px;color:var(--mut);font-weight:600">('+CHAV_PTS[f.k]+'pts cada)</span>';
+        if(jaValendo)cab+='<span style="margin-left:auto;color:var(--grd);font-weight:800">'+acertos.length+'/'+lista.length+' · +'+(acertos.length*CHAV_PTS[f.k])+'pts</span>';
+        else cab+='<span style="margin-left:auto;color:var(--mut);font-weight:600;font-style:italic">aguardando</span>';
+        cab+='</div>';
+        block.innerHTML=cab;
         const tags=ce("div",{style:"display:flex;flex-wrap:wrap;gap:4px"});
         lista.forEach(t=>{
-          const ok=reaisSet.has(t);
-          tags.appendChild(ce("span",{style:"font-size:11px;padding:2px 7px;border-radius:999px;font-weight:600;background:"+(ok?"#d4edda":"#f0f0f0")+";color:"+(ok?"#155724":"#999")},fl(t)+" "+t+(ok?" ✓":"")));
+          const ok=jaValendo&&reaisSet.has(t);
+          const errou=jaValendo&&!reaisSet.has(t);
+          let bg="#eef1f6",cor="#555"; // pendente (fase não aconteceu)
+          if(ok){bg="#d4edda";cor="#155724";}
+          else if(errou){bg="#fde8ea";cor="#a02020";}
+          tags.appendChild(ce("span",{style:"font-size:11px;padding:2px 7px;border-radius:999px;font-weight:600;background:"+bg+";color:"+cor},fl(t)+" "+t+(ok?" ✓":errou?" ✗":"")));
         });
         block.appendChild(tags);
         det.appendChild(block);
@@ -992,7 +1098,7 @@ function apostasPassaria(body){
 
   // Outras fases: cards por jogador
   const ko=DB.results.ko||{};
-  const reaisSet=new Set(Object.values(ko[fase]||{}));
+  const reaisSet=fase==="r16"?r16RealSet():new Set(Object.values(ko[fase]||{}));
   const temReal=reaisSet.size>0;
   const ptsFase={r16:4,r8:6,r4:8,r2:10,champ:20}[fase];
   const grid=ce("div",{style:"display:grid;grid-template-columns:repeat(2,1fr);gap:8px"});
@@ -1092,6 +1198,12 @@ function injetarPalpites16(){
     const meus=PALPITES_16AVOS[p]||{};
     Object.keys(meus).forEach(jid=>{
       if(DB.guesses[p].bracket2.r32[jid]==null){DB.guesses[p].bracket2.r32[jid]=meus[jid];mudou=true;}
+    });
+    // Palpites das oitavas
+    if(!DB.guesses[p].bracket2.r16)DB.guesses[p].bracket2.r16={};
+    const meusOit=(typeof PALPITES_OITAVAS!=="undefined"?PALPITES_OITAVAS[p]:null)||{};
+    Object.keys(meusOit).forEach(jid=>{
+      if(DB.guesses[p].bracket2.r16[jid]==null){DB.guesses[p].bracket2.r16[jid]=meusOit[jid];mudou=true;}
     });
   });
   if(mudou)pushDB();
