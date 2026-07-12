@@ -194,6 +194,11 @@ const R8_INFO={
   4:{data:"11/07",hora:"22:00"}, // Argentina × Suíça
 };
 const R8_PAIRS=[[1,2],[3,4],[5,6],[7,8]];
+// Metadados das semifinais (data/hora Brasília)
+const R4_INFO={
+  1:{data:"14/07",hora:"16:00"}, // França × Espanha
+  2:{data:"15/07",hora:"16:00"}, // Inglaterra × Argentina
+};
 const R4_PAIRS=[[1,2],[3,4]];
 const R2_PAIRS=[[1,2]];
 // Resultado fixo já conhecido: África do Sul 0x1 Canadá (28/06)
@@ -258,6 +263,13 @@ const PALPITES_QUARTAS={
   "Danillo":{1:{h:2,a:1,winner:"França"},2:{h:2,a:1,winner:"Espanha"},3:{h:1,a:2,winner:"Inglaterra"},4:{h:2,a:1,winner:"Argentina"}},
 };
 
+const PALPITES_SEMI={
+  "Lucas":{1:{h:2,a:1,winner:"França"},2:{h:1,a:2,winner:"Argentina"}},
+  "Raphael":{1:{h:1,a:0,winner:"França"},2:{h:2,a:1,winner:"Inglaterra"}},
+  "Danillo":{1:{h:2,a:1,winner:"França"},2:{h:2,a:1,winner:"Inglaterra"}},
+  "Paulo":{1:{h:2,a:1,winner:"França"},2:{h:1,a:0,winner:"Inglaterra"}},
+};
+
 // Fases do chaveamento
 const FASES=[
   {k:"r32",label:"16-avos",n:32},
@@ -280,7 +292,7 @@ const isAdmin=new URLSearchParams(window.location.search).has("admin");
 
 let DB={guesses:{},results:{matches:{},ko:{}},imported:{}};
 // DB.results.ko = { r32:{1:"Alemanha",...}, r16:{1:"França",...}, ... }
-const state={tab:"ranking",apiMsg:"",saving:false,ready:false,impMsg:"",vp:"Raphael",openRounds:{1:false,2:true,3:true},openFase1:{1:false,2:true,3:true},fase1sub:"grupos",fase2view:"chaveamento",fase2fase:"r8",chavAberto:{}};
+const state={tab:"ranking",apiMsg:"",saving:false,ready:false,impMsg:"",vp:"Raphael",openRounds:{1:false,2:true,3:true},openFase1:{1:false,2:true,3:true},fase1sub:"grupos",fase2view:"chaveamento",fase2fase:"r4",chavAberto:{}};
 
 const $=(s,e)=>(e||document).querySelector(s);
 const ce=(t,p,h)=>{const e=document.createElement(t);if(p)for(const k in p)e.setAttribute(k,p[k]);if(h!=null)e.innerHTML=h;return e;};
@@ -828,10 +840,10 @@ function fase2(body){
     }
     body.appendChild(ce("div",{class:"round"},'<span class="tag">'+label+'</span><span class="line"></span>'));
     const box=ce("div",{style:"display:grid;gap:10px"});
-    const infoMap=key==="r8"?(typeof R8_INFO!=="undefined"?R8_INFO:{}):{};
+    const infoMap=key==="r8"?(typeof R8_INFO!=="undefined"?R8_INFO:{}):key==="r4"?(typeof R4_INFO!=="undefined"?R4_INFO:{}):{};
     // ordenar por data/hora quando houver info
     let ordem=pairs.map(([a,b],idx)=>({a,b,idx,info:infoMap[idx+1]||{data:"",hora:""}}));
-    if(key==="r8"){
+    if(key==="r8"||key==="r4"){
       ordem.sort((x,y)=>{
         const dx=(x.info.data||"").split("/").reverse().join("")+((x.info.hora||"").replace(":",""));
         const dy=(y.info.data||"").split("/").reverse().join("")+((y.info.hora||"").replace(":",""));
@@ -1300,6 +1312,12 @@ function injetarPalpites16(){
     const meusQua=(typeof PALPITES_QUARTAS!=="undefined"?PALPITES_QUARTAS[p]:null)||{};
     Object.keys(meusQua).forEach(jid=>{
       if(DB.guesses[p].bracket2.r8[jid]==null){DB.guesses[p].bracket2.r8[jid]=meusQua[jid];mudou=true;}
+    });
+    // Palpites das semifinais
+    if(!DB.guesses[p].bracket2.r4)DB.guesses[p].bracket2.r4={};
+    const meusSemi=(typeof PALPITES_SEMI!=="undefined"?PALPITES_SEMI[p]:null)||{};
+    Object.keys(meusSemi).forEach(jid=>{
+      if(DB.guesses[p].bracket2.r4[jid]==null){DB.guesses[p].bracket2.r4[jid]=meusSemi[jid];mudou=true;}
     });
   });
   if(mudou)pushDB();
