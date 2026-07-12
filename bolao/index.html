@@ -173,6 +173,11 @@ function r8RealSet(){
   const ko=DB.results?.ko?.r16||{};
   return new Set(Object.values(ko));
 }
+// Os 4 que passaram para as semis (vencedores das quartas) — derivado de DB.results.ko.r8
+function r4RealSet(){
+  const ko=DB.results?.ko?.r8||{};
+  return new Set(Object.values(ko));
+}
 // Oitavas: vencedor R32 jogo X vs jogo Y
 const R16_PAIRS=[[3,6],[1,4],[12,11],[10,9],[2,5],[7,8],[15,14],[13,16]];
 // Metadados das oitavas (data/hora Brasília) — indexado pela posição no R16_PAIRS (idx+1)
@@ -371,6 +376,7 @@ function scoreChaveamento(p){
     if(f.k==="r32")reaisSet=R32_REAL_SET;
     else if(f.k==="r16")reaisSet=r16RealSet();
     else if(f.k==="r8")reaisSet=r8RealSet();
+    else if(f.k==="r4")reaisSet=r4RealSet();
     else reaisSet=new Set(Object.values(ko[f.k]||{}));
     const pSet=new Set(palpite[f.k]||[]);
     let acc=0;
@@ -991,7 +997,7 @@ function ranking(body){
       FASES.forEach(f=>{
         const lista=CHAV_PALPITES[p]?.[f.k]||[];
         if(lista.length===0)return;
-        const reaisSet=f.k==="r32"?R32_REAL_SET:f.k==="r16"?r16RealSet():f.k==="r8"?r8RealSet():new Set(Object.values(ko[f.k]||{}));
+        const reaisSet=f.k==="r32"?R32_REAL_SET:f.k==="r16"?r16RealSet():f.k==="r8"?r8RealSet():f.k==="r4"?r4RealSet():new Set(Object.values(ko[f.k]||{}));
         const jaValendo=reaisSet.size>0; // fase já aconteceu (tem quem passou marcado)
         const acertos=lista.filter(t=>reaisSet.has(t));
         const faseNome={r32:"16-avos",r16:"Oitavas",r8:"Quartas",r4:"Semifinal",r2:"Final",champ:"Campeão"}[f.k];
@@ -1200,7 +1206,7 @@ function apostasPassaria(body){
 
   // Outras fases: cards por jogador
   const ko=DB.results.ko||{};
-  const reaisSet=fase==="r16"?r16RealSet():fase==="r8"?r8RealSet():new Set(Object.values(ko[fase]||{}));
+  const reaisSet=fase==="r16"?r16RealSet():fase==="r8"?r8RealSet():fase==="r4"?r4RealSet():new Set(Object.values(ko[fase]||{}));
   const temReal=reaisSet.size>0;
   const ptsFase={r16:4,r8:6,r4:8,r2:10,champ:20}[fase];
   const grid=ce("div",{style:"display:grid;grid-template-columns:repeat(2,1fr);gap:8px"});
