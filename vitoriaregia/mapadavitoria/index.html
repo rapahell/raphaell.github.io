@@ -1,1 +1,1335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa da Vitória — Vitória-Régia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,800;0,900;1,700;1,900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --g900: #0d2410;
+  --g800: #163d1b;
+  --g700: #1f5827;
+  --g600: #2d7a3a;
+  --g500: #4ea93b;
+  --g400: #72c45e;
+  --g300: #a4dca0;
+  --g200: #cff0c8;
+  --g100: #e8f7e4;
+  --g050: #f4fbf2;
+  --amarelo: #c8f03a;
+  --amarelo-dark: #9fbe20;
+  --amarelo-bg: #f5fcd8;
+  --magenta: #c4185a;
+  --fundo: #f6f9f4;
+  --texto: #0c1a0e;
+  --texto-2: #354a38;
+  --texto-3: #6a7d6c;
+  --borda: #dae5db;
+  --grid: rgba(0,0,0,0.042);
+}
 
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='40' viewBox='0 0 32 40'%3E%3Cellipse cx='16' cy='38' rx='5' ry='2' fill='rgba(0,0,0,0.18)'/%3E%3Cpath d='M16 0C9.37 0 4 5.37 4 12c0 9 12 26 12 26S28 21 28 12C28 5.37 22.63 0 16 0z' fill='%234ea93b'/%3E%3Ccircle cx='16' cy='12' r='5' fill='%23ffffff'/%3E%3C/svg%3E") 16 38, pointer;
+}
+a, button, [role=button] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='40' viewBox='0 0 32 40'%3E%3Cellipse cx='16' cy='38' rx='5' ry='2' fill='rgba(0,0,0,0.18)'/%3E%3Cpath d='M16 0C9.37 0 4 5.37 4 12c0 9 12 26 12 26S28 21 28 12C28 5.37 22.63 0 16 0z' fill='%230d2410'/%3E%3Ccircle cx='16' cy='12' r='5' fill='%234ea93b'/%3E%3C/svg%3E") 16 38, pointer;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 62px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%; background: transparent; border-bottom: 1px solid transparent;
+  transition: background .35s, border-color .35s, backdrop-filter .35s;
+}
+nav.scrolled { background: rgba(246,249,244,0.96); backdrop-filter: blur(18px); border-bottom-color: var(--borda); }
+.nav-logo img {
+  height: 36px; width: auto; display: block;
+  filter: brightness(0) saturate(100%) invert(10%) sepia(30%) saturate(800%) hue-rotate(90deg);
+  transition: filter .4s;
+}
+nav.scrolled .nav-logo img { filter: none; }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nl { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.82); text-decoration: none; padding: 7px 14px; border-radius: 20px; transition: background .18s, color .35s; }
+nav.scrolled .nl { color: var(--texto-2); }
+.nl:hover { background: rgba(255,255,255,.15); }
+nav.scrolled .nl:hover { background: var(--g100); color: var(--g700); }
+.nav-cta { font-size: 13px; font-weight: 700; color: var(--g900); background: var(--amarelo); padding: 8px 20px; border-radius: 20px; text-decoration: none; transition: background .18s, transform .15s; }
+.nav-cta:hover { background: #b5d832; transform: scale(1.02); }
+
+/* ── BOTÕES ── */
+.btn-solid { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--g900); background: var(--amarelo); padding: 13px 28px; border-radius: 28px; text-decoration: none; transition: background .18s, transform .15s; }
+.btn-solid:hover { background: #b5d832; transform: translateY(-1px); }
+.btn-solid svg { width: 15px; height: 15px; fill: none; stroke: var(--g900); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.btn-ghost { display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; color: white; background: rgba(255,255,255,.1); padding: 13px 24px; border-radius: 28px; text-decoration: none; border: 1px solid rgba(255,255,255,.22); backdrop-filter: blur(8px); transition: background .18s; }
+.btn-ghost:hover { background: rgba(255,255,255,.18); }
+.btn-outline-green { display: block; width: 100%; text-align: center; font-size: 14px; font-weight: 700; color: var(--g600); background: var(--g050); padding: 14px 24px; border-radius: 28px; text-decoration: none; border: 2px solid var(--g200); transition: background .18s, border-color .18s, transform .15s; }
+.btn-outline-green:hover { background: var(--g100); border-color: var(--g500); transform: translateY(-1px); }
+.btn-fill-green { display: block; width: 100%; text-align: center; font-size: 14px; font-weight: 700; color: white; background: var(--g500); padding: 14px 24px; border-radius: 28px; text-decoration: none; transition: background .18s, transform .15s; }
+.btn-fill-green:hover { background: var(--g700); transform: translateY(-1px); }
+.btn-wa { display: inline-flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 700; color: white; background: #25d366; padding: 14px 36px; border-radius: 28px; text-decoration: none; transition: background .18s, transform .15s; }
+.btn-wa:hover { background: #1dbb56; transform: translateY(-1px); }
+.btn-wa svg { width: 20px; height: 20px; fill: white; flex-shrink: 0; }
+
+/* ── REVEAL ── */
+.r { opacity: 0; transform: translateY(24px); transition: opacity .65s ease, transform .65s ease; }
+.r.v { opacity: 1; transform: none; }
+.d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero {
+  margin-top: 62px; min-height: 80vh; background: var(--g900);
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .5; }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(5,18,7,.97) 0%, rgba(5,18,7,.6) 55%, rgba(10,28,12,.4) 100%); }
+.hero-content { position: relative; z-index: 2; padding: 0 5% 80px; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 28px; background: rgba(255,255,255,.1); color: rgba(255,255,255,.8); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,.18); backdrop-filter: blur(8px); }
+.bdot { width: 6px; height: 6px; border-radius: 50%; background: var(--amarelo); flex-shrink: 0; }
+.hero h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(52px, 9vw, 118px); font-weight: 900; line-height: .93; letter-spacing: -.01em; color: white; margin-bottom: 20px; }
+.hero h1 .ha { color: var(--amarelo); }
+.hero-sub { font-size: clamp(14px, 1.5vw, 17px); font-weight: 600; color: rgba(255,255,255,.65); line-height: 1.6; max-width: 560px; margin-bottom: 40px; text-transform: uppercase; letter-spacing: .06em; }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ══════════════════════════════════════
+   NARRATIVA — bloco scrollável
+══════════════════════════════════════ */
+.narrativa { background: white; border-bottom: 1px solid var(--borda); }
+.nwrap { max-width: 820px; margin: 0 auto; padding: 96px 5%; display: flex; flex-direction: column; }
+
+/* eyebrow (pequeno, acima do título grande) */
+.nlabel { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--g500); margin-bottom: 12px; }
+.nlabel::before { content: ''; width: 20px; height: 2px; background: var(--g500); border-radius: 2px; display: block; }
+
+/* título de seção grande (era nlabel) */
+.sec-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(40px, 5.5vw, 68px); font-weight: 900; line-height: .93;
+  letter-spacing: -.02em; color: var(--texto); margin-bottom: 10px;
+}
+.sec-title .g { color: var(--g500); }
+.sec-title .y { color: var(--amarelo); }
+
+/* subtítulo de seção (era ntitle) */
+.sec-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(18px, 2.2vw, 26px); font-weight: 700; line-height: 1.15;
+  letter-spacing: -.005em; color: var(--texto-3); margin-bottom: 20px;
+}
+.sec-sub .g { color: var(--g600); }
+
+/* placeholder de imagem */
+.img-slot {
+  width: 100%; border-radius: 16px; border: 2px dashed var(--borda);
+  background: var(--g050); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+  color: var(--texto-3); font-size: 11px; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; padding: 40px 20px;
+  text-align: center;
+}
+.img-slot svg { width: 32px; height: 32px; stroke: var(--g300); fill: none; stroke-width: 1.5; }
+.img-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.img-duo .img-slot { aspect-ratio: 1; }
+
+/* frase de impacto */
+.frase-impacto {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(26px, 4vw, 48px); font-weight: 900; line-height: 1.05;
+  letter-spacing: -.01em; color: var(--texto); margin-top: 32px;
+}
+.frase-impacto em { font-style: normal; color: var(--magenta); }
+
+/* divisor */
+.ndiv { height: 1px; background: var(--borda); margin: 64px 0; }
+
+/* balão de fala padrão (verde) */
+.candidato-row { display: flex; align-items: flex-start; gap: 18px; }
+.cand-foto {
+  flex-shrink: 0; width: 68px; height: 68px; border-radius: 50%;
+  border: 2px dashed var(--borda); background: var(--g050);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.cand-foto svg { width: 26px; height: 26px; stroke: var(--g300); fill: none; stroke-width: 1.5; }
+.cand-foto img { width: 100%; height: 100%; object-fit: cover; }
+.speech {
+  flex: 1; background: var(--g100); border: 1px solid var(--g200);
+  border-radius: 0 16px 16px 16px; padding: 16px 20px;
+  font-size: 15px; font-style: italic; font-weight: 500; color: var(--g700); line-height: 1.68;
+}
+/* balão de fala negativo (magenta) */
+.speech.neg {
+  background: #fce8f0;
+  border-color: #f5b8d0;
+  color: #8c0f3e;
+}
+
+/* bloco texto adversários */
+.nbig { font-size: clamp(18px, 2.5vw, 24px); font-weight: 700; color: var(--texto); line-height: 1.35; margin-top: 36px; }
+.nlead { font-size: 16px; color: var(--texto-2); line-height: 1.82; margin-top: 14px; max-width: 640px; }
+
+.alerta {
+  margin-top: 28px; padding: 20px 28px;
+  background: #fce8f0; border: 2px solid #e8749f;
+  border-radius: 14px; font-size: 20px; font-weight: 800;
+  color: var(--magenta); letter-spacing: -.01em;
+  font-family: 'Barlow Condensed', sans-serif;
+  line-height: 1.2;
+}
+.alerta strong { color: #8c0f3e; }
+
+/* título H2 dentro da narrativa (mantido para narrativa/mapa-ia) */
+.ntitle { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(40px, 5.5vw, 68px); font-weight: 900; line-height: .93; letter-spacing: -.02em; color: var(--texto); margin-bottom: 20px; }
+.ntitle .g { color: var(--g500); }
+
+/* ══════════════════════════════════════
+   MAPA / IA — fundo escuro
+══════════════════════════════════════ */
+.mapa-ia { background: var(--g900); padding: 96px 5%; border-bottom: 1px solid rgba(255,255,255,.06); }
+.mapa-ia-inner { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+.mapa-ia .sub { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 28px; }
+.mapa-ia .nbody { font-size: 16px; color: rgba(255,255,255,.68); line-height: 1.82; }
+.mapa-ia .nbody + .nbody { margin-top: 14px; }
+.mia-cards { display: flex; flex-direction: column; gap: 14px; padding-top: 8px; }
+.mia-card { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; padding: 22px 24px; display: flex; gap: 14px; align-items: flex-start; }
+.mia-ico { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; background: rgba(200,240,58,.15); display: flex; align-items: center; justify-content: center; }
+.mia-ico svg { width: 18px; height: 18px; stroke: var(--amarelo); fill: none; stroke-width: 2; }
+.mia-ico.g2 { background: rgba(78,169,59,.18); }
+.mia-ico.g2 svg { stroke: var(--g400); }
+.mia-card h4 { font-size: 13px; font-weight: 700; color: white; margin-bottom: 4px; }
+.mia-card p { font-size: 13px; color: rgba(255,255,255,.55); line-height: 1.65; }
+
+/* ══════════════════════════════════════
+   JORNADA — timeline
+══════════════════════════════════════ */
+.jornada { padding: 96px 5%; background: rgba(232,247,228,.72); border-bottom: 1px solid var(--borda); }
+.jornada-inner { max-width: 860px; margin: 0 auto; }
+.jornada-header { margin-bottom: 64px; }
+
+.tl { position: relative; }
+.tl-track { position: absolute; top: 44px; left: calc(12.5% + 16px); right: calc(12.5% + 16px); height: 2px; background: var(--g200); z-index: 0; }
+.tl-fill { height: 100%; background: linear-gradient(90deg, var(--g500), var(--g200)); border-radius: 2px; }
+.tl-steps { display: grid; grid-template-columns: repeat(4,1fr); position: relative; z-index: 1; }
+.tl-step { display: flex; flex-direction: column; align-items: center; padding: 0 10px; }
+.tl-node { width: 88px; height: 88px; border-radius: 50%; background: white; border: 2px solid var(--borda); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; margin-bottom: 24px; position: relative; z-index: 2; transition: border-color .2s, box-shadow .2s; }
+.tl-node:hover { border-color: var(--g500); box-shadow: 0 0 0 6px var(--g100); }
+.tl-n { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--g500); }
+.tl-node svg { width: 24px; height: 24px; stroke: var(--g700); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tl-step.on .tl-node { background: var(--g500); border-color: var(--g500); box-shadow: 0 0 0 6px var(--g100); }
+.tl-step.on .tl-node svg { stroke: white; }
+.tl-step.on .tl-n { color: rgba(255,255,255,.8); }
+.tl-body { text-align: center; }
+.tl-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--g600); background: var(--g100); padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+.tl-step.on .tl-tag { background: var(--g500); color: white; }
+.tl-body h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 19px; font-weight: 800; letter-spacing: -.01em; color: var(--texto); margin-bottom: 8px; line-height: 1.15; }
+.tl-body p { font-size: 12px; color: var(--texto-3); line-height: 1.7; }
+
+/* ══════════════════════════════════════
+   PONTOS DO MAPA
+══════════════════════════════════════ */
+.pontos { padding: 96px 5%; background: white; border-bottom: 1px solid var(--borda); }
+.pontos-inner { max-width: 860px; margin: 0 auto; }
+.pontos-header { margin-bottom: 52px; }
+.pontos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ponto { background: var(--g050); border: 1px solid var(--borda); border-radius: 14px; padding: 28px 24px; position: relative; overflow: hidden; }
+.ponto-num { font-family: 'Barlow Condensed', sans-serif; font-size: 90px; font-weight: 900; letter-spacing: -.04em; color: var(--g100); position: absolute; top: -10px; right: 6px; line-height: 1; user-select: none; z-index: 0; }
+.ponto-ico { width: 36px; height: 36px; border-radius: 9px; background: var(--g100); margin-bottom: 12px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
+.ponto-ico svg { width: 16px; height: 16px; stroke: var(--g600); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ponto h4 { font-size: 13px; font-weight: 700; color: var(--texto); margin-bottom: 6px; position: relative; z-index: 1; }
+.ponto p { font-size: 12px; color: var(--texto-3); line-height: 1.72; position: relative; z-index: 1; }
+.ponto-sub { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; position: relative; z-index: 1; }
+.ponto-sub span { font-size: 11px; color: var(--texto-2); line-height: 1.6; }
+.ponto-sub strong { color: var(--g600); }
+
+/* ══════════════════════════════════════
+   EQUIPE
+══════════════════════════════════════ */
+.equipe { background: var(--g900); padding: 96px 5%; border-bottom: 1px solid rgba(255,255,255,.06); }
+.equipe-inner { max-width: 1100px; margin: 0 auto; }
+.equipe-header { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; margin-bottom: 64px; }
+/* sec-title e sec-sub em contextos dark */
+.equipe-header .sec-title { color: white; }
+.equipe-header .sec-sub { color: rgba(255,255,255,.5); }
+.equipe-header .nlabel { color: var(--amarelo); }
+.equipe-header .nlabel::before { background: var(--amarelo); }
+.mapa-ia .nlabel { color: var(--amarelo); }
+.mapa-ia .nlabel::before { background: var(--amarelo); }
+.mapa-ia .sec-title { color: white; }
+.mapa-ia .sec-sub { color: rgba(255,255,255,.45); }
+.manifesto-marca { font-family: 'Barlow Condensed', sans-serif; font-size: 34px; font-weight: 900; color: var(--amarelo); letter-spacing: -.01em; line-height: 1; margin-bottom: 8px; }
+.manifesto-linha { font-size: 14px; color: rgba(255,255,255,.52); line-height: 1.7; }
+.manifesto-sep { height: 1px; background: rgba(255,255,255,.1); margin: 18px 0; }
+.manifesto-poesia { display: flex; flex-direction: column; gap: 2px; }
+.manifesto-poesia span { font-family: 'Barlow Condensed', sans-serif; font-size: 19px; font-weight: 700; color: rgba(255,255,255,.42); letter-spacing: -.005em; line-height: 1.3; }
+.manifesto-poesia span.dest { color: rgba(255,255,255,.72); }
+
+.equipe-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; }
+.membro { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.13); border-radius: 18px; padding: 26px 20px; display: flex; flex-direction: column; }
+.membro-av { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,.15); border: 2px solid rgba(255,255,255,.2); margin-bottom: 16px; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; color: white; }
+.membro-av img { width: 100%; height: 100%; object-fit: cover; }
+.membro-nome { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 800; color: white; margin-bottom: 4px; line-height: 1.1; }
+.membro-cargo { font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--amarelo); margin-bottom: 16px; }
+.btn-curriculo { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: white; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); padding: 7px 14px; border-radius: 20px; text-decoration: none; transition: background .18s; margin-top: auto; width: fit-content; }
+.btn-curriculo:hover { background: rgba(255,255,255,.22); }
+.btn-curriculo svg { width: 12px; height: 12px; fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(6,18,8,.72); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .3s; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box { background: white; border-radius: 24px; overflow: hidden; width: 100%; max-width: 600px; max-height: 90vh; display: flex; flex-direction: column; transform: translateY(20px) scale(.97); transition: transform .3s; box-shadow: 0 32px 80px rgba(0,0,0,.35); position: relative; }
+.modal-overlay.open .modal-box { transform: none; }
+.modal-header { display: flex; align-items: flex-end; gap: 24px; padding: 32px 32px 24px; background: var(--g900); flex-shrink: 0; }
+.modal-foto { width: 88px; height: 88px; border-radius: 50%; flex-shrink: 0; background: var(--g700); border: 3px solid rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 800; color: white; overflow: hidden; }
+.modal-foto img { width: 100%; height: 100%; object-fit: cover; }
+.modal-nome { font-family: 'Barlow Condensed', sans-serif; font-size: 30px; font-weight: 900; color: white; line-height: 1; margin-bottom: 6px; }
+.modal-cargo { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--amarelo); }
+.modal-close { position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.12); border: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; transition: background .18s; }
+.modal-close:hover { background: rgba(255,255,255,.25); }
+.modal-body { padding: 28px 32px; overflow-y: auto; flex: 1; }
+.modal-body p { font-size: 14px; color: var(--texto-2); line-height: 1.82; margin-bottom: 12px; }
+.modal-body p:last-child { margin-bottom: 0; }
+.modal-tag { display: inline-flex; background: var(--g100); color: var(--g700); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 18px; }
+
+/* ══════════════════════════════════════
+   PREÇOS
+══════════════════════════════════════ */
+.precos { padding: 96px 5%; background: rgba(232,247,228,.72); border-bottom: 1px solid var(--borda); }
+.precos-inner { max-width: 860px; margin: 0 auto; }
+.precos-header { margin-bottom: 52px; }
+.precos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.preco-card { background: white; border: 1px solid var(--borda); border-radius: 22px; padding: 44px 38px; transition: box-shadow .25s; }
+.preco-card:hover { box-shadow: 0 8px 48px rgba(78,169,59,.1); }
+.preco-card.dest { border: 2px solid var(--g500); }
+.pc-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; margin-bottom: 24px; }
+.pc-tag.n { background: var(--g050); color: var(--texto-3); border: 1px solid var(--borda); }
+.pc-tag.y { background: var(--amarelo); color: var(--g900); }
+.pc-nome { font-family: 'Barlow Condensed', sans-serif; font-size: 30px; font-weight: 900; color: var(--texto); letter-spacing: -.015em; margin-bottom: 8px; line-height: 1.05; }
+.pc-nome .g { color: var(--g500); }
+.pc-desc { font-size: 13px; color: var(--texto-3); line-height: 1.65; margin-bottom: 20px; }
+.pc-div { height: 1px; background: var(--borda); margin: 18px 0; }
+.pc-val { font-family: 'Barlow Condensed', sans-serif; font-size: 58px; font-weight: 900; color: var(--texto); letter-spacing: -.04em; line-height: 1; }
+.pc-val sup { font-size: 20px; font-weight: 700; vertical-align: super; }
+.pc-parc { font-size: 12px; color: var(--texto-3); margin-top: 6px; margin-bottom: 24px; }
+.pc-lista { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 8px; }
+.pc-lista li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--texto-2); line-height: 1.5; }
+.pc-ck { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; background: var(--g100); display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.pc-ck svg { width: 10px; height: 10px; stroke: var(--g500); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ══════════════════════════════════════
+   EXCLUSIVIDADE
+══════════════════════════════════════ */
+.excl { background: var(--g700); padding: 88px 5%; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 1px solid rgba(255,255,255,.06); }
+.excl-inner { max-width: 560px; }
+.excl-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--amarelo); color: var(--g900); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; margin-bottom: 24px; }
+.excl h2 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(38px, 5vw, 60px); font-weight: 900; line-height: .95; color: white; margin-bottom: 16px; }
+.excl h2 .y { color: var(--amarelo); }
+.excl p { font-size: 16px; color: rgba(255,255,255,.7); line-height: 1.8; margin-bottom: 36px; }
+
+/* ══════════════════════════════════════
+   CTA FINAL
+══════════════════════════════════════ */
+.cta-final { padding: 100px 5%; background: white; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px; border-bottom: 1px solid var(--borda); }
+.cta-final .nlabel { justify-content: center; }
+.cta-final h2 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(38px, 5vw, 60px); font-weight: 900; line-height: .95; color: var(--texto); }
+.cta-final h2 .g { color: var(--g500); }
+
+/* ── FOOTER ── */
+footer { padding: 26px 5%; background: rgba(246,249,244,.95); border-top: 1px solid var(--borda); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+footer img { display: block; height: 40px; width: auto; max-width: 180px; object-fit: contain; object-position: left center; }
+footer p { font-size: 12px; color: var(--texto-3); }
+footer a { color: var(--g500); text-decoration: none; font-weight: 600; }
+
+/* ── ICEBERG INTERATIVO ── */
+.iceberg-wrap {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0,0,0,.18);
+  background: #0a1f2e;
+  margin-bottom: 32px;
+  position: relative;
+}
+/* janela = exatamente 50% da altura proporcional 16:9 → ratio 9/16 * 0.5 = 28.125% */
+.iceberg-window {
+  width: 100%;
+  padding-bottom: 28.125%; /* 50% de 56.25% */
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  cursor: grab;
+}
+.iceberg-window.dragging { cursor: grabbing; }
+.iceberg-img {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  pointer-events: none;
+}
+/* gradiente na borda inferior: faz a água "desaparecer" suavemente */
+.iceberg-grad-top {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  background: linear-gradient(to top, rgba(246,249,244,1) 0%, rgba(246,249,244,0) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+/* ícone animado de scroll/mouse */
+.iceberg-handle {
+  position: absolute;
+  bottom: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: opacity .4s;
+}
+.iceberg-handle.hidden { opacity: 0; pointer-events: none; }
+
+/* ícone de mouse */
+.ice-mouse {
+  width: 28px; height: 44px;
+  border: 2.5px solid rgba(255,255,255,.85);
+  border-radius: 14px;
+  position: relative;
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(4px);
+}
+.ice-mouse::before {
+  content: '';
+  position: absolute;
+  top: 6px; left: 50%; transform: translateX(-50%);
+  width: 3px; height: 8px;
+  background: white;
+  border-radius: 2px;
+  animation: ice-scroll 1.5s ease-in-out infinite;
+}
+@keyframes ice-scroll {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  80%  { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+}
+/* setinha animada abaixo do mouse */
+.ice-arrows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.ice-arrows span {
+  display: block;
+  width: 10px; height: 10px;
+  border-right: 2.5px solid white;
+  border-bottom: 2.5px solid white;
+  transform: rotate(45deg);
+  animation: ice-fade 1.5s ease-in-out infinite;
+  border-radius: 1px;
+}
+.ice-arrows span:nth-child(1) { animation-delay: 0s;    opacity: .4; }
+.ice-arrows span:nth-child(2) { animation-delay: .2s;   opacity: .7; }
+.ice-arrows span:nth-child(3) { animation-delay: .4s;   opacity: 1; }
+@keyframes ice-fade {
+  0%, 100% { opacity: .2; }
+  50%       { opacity: 1; }
+}
+
+/* ── TV ANTIGA ── */
+.tv-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/7;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 28px;
+  background: #000;
+  box-shadow: 0 8px 40px rgba(0,0,0,.35);
+}
+.tv-video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  /* leve desaturação para parecer mais antigo */
+  filter: saturate(0.75) contrast(1.05) brightness(0.92);
+}
+/* scanlines — linhas horizontais finas */
+.tv-scanlines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.18) 2px,
+    rgba(0,0,0,0.18) 4px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+/* ruído granulado — pseudo-elemento animado com SVG de ruído */
+.tv-noise {
+  position: absolute; inset: -50%;
+  width: 200%; height: 200%;
+  opacity: 0.045;
+  pointer-events: none;
+  z-index: 3;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  animation: tv-grain .12s steps(1) infinite;
+}
+@keyframes tv-grain {
+  0%   { transform: translate(0,0); }
+  10%  { transform: translate(-3%,-4%); }
+  20%  { transform: translate(5%, 2%); }
+  30%  { transform: translate(-1%, 6%); }
+  40%  { transform: translate(4%,-2%); }
+  50%  { transform: translate(-5%, 3%); }
+  60%  { transform: translate(2%, 5%); }
+  70%  { transform: translate(-4%, 1%); }
+  80%  { transform: translate(3%,-5%); }
+  90%  { transform: translate(-2%, 4%); }
+  100% { transform: translate(0,0); }
+}
+/* vinheta nas bordas */
+.tv-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center,
+    transparent 55%,
+    rgba(0,0,0,0.55) 100%
+  );
+  pointer-events: none;
+  z-index: 4;
+}
+/* linha horizontal de brilho piscando (flicker) */
+.tv-flicker {
+  position: absolute;
+  top: -20%; left: 0; right: 0;
+  height: 30%;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(255,255,255,0.025) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 5;
+  animation: tv-flicker 6s ease-in-out infinite;
+}
+@keyframes tv-flicker {
+  0%   { top: -20%; opacity: 0; }
+  8%   { opacity: 1; }
+  30%  { top: 110%; opacity: 0.6; }
+  31%  { opacity: 0; top: 110%; }
+  100% { opacity: 0; top: 110%; }
+}
+
+/* ── MARCADORES DE IMAGEM ── */
+.img-mark {
+  width: 100%;
+  border-radius: 14px;
+  border: 2px dashed #b0c4b1;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(78,169,59,0.04),
+    rgba(78,169,59,0.04) 8px,
+    rgba(78,169,59,0.01) 8px,
+    rgba(78,169,59,0.01) 16px
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 80px;
+}
+.img-mark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(232,247,228,0.5);
+}
+.img-mark-label {
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--g600);
+  letter-spacing: .04em;
+  text-align: center;
+  padding: 16px 24px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 8px;
+  border: 1px solid var(--g200);
+  max-width: 80%;
+  line-height: 1.5;
+}
+/* versão escura para seções dark */
+.bg-dark-mark {
+  border-color: rgba(200,240,58,0.3);
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(200,240,58,0.04),
+    rgba(200,240,58,0.04) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+.bg-dark-mark::before { background: rgba(13,36,16,0.3); }
+.bg-dark-mark .img-mark-label {
+  background: rgba(13,36,16,0.7);
+  border-color: rgba(200,240,58,0.2);
+  color: rgba(200,240,58,0.8);
+}
+
+
+@media (max-width: 960px) {
+  .mapa-ia-inner { grid-template-columns: 1fr; }
+  .equipe-header { grid-template-columns: 1fr; gap: 36px; }
+  .equipe-grid { grid-template-columns: repeat(3,1fr); }
+  .precos-grid { grid-template-columns: 1fr; }
+  .tl-steps { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .tl-track { display: none; }
+  .pontos-grid { grid-template-columns: 1fr; }
+  .img-duo { grid-template-columns: 1fr; }
+}
+@media (max-width: 960px) {
+  .mapa-ia-inner { grid-template-columns: 1fr; }
+  .equipe-header { grid-template-columns: 1fr; gap: 36px; }
+  .equipe-grid { grid-template-columns: repeat(3,1fr); }
+  .precos-grid { grid-template-columns: 1fr; }
+  .tl-steps { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .tl-track { display: none; }
+  .pontos-grid { grid-template-columns: 1fr; }
+  .img-duo { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  /* ── NAV ── */
+  .nl { display: none; }
+  .nav-cta { font-size: 12px; padding: 7px 14px; }
+
+  /* ── HERO MOBILE ── */
+  .hero {
+    min-height: 100svh;
+    justify-content: flex-start; /* texto no topo */
+  }
+  /* troca a imagem de fundo no mobile */
+  .hero-img {
+    content: url("https://res.cloudinary.com/dnnnn7njk/image/upload/v1780492300/topomobile_bqydlx.jpg");
+    object-position: center top;
+  }
+  /* overlay mais forte no topo para legibilidade do texto */
+  .hero-overlay {
+    background: linear-gradient(to bottom,
+      rgba(5,18,7,.92) 0%,
+      rgba(5,18,7,.75) 45%,
+      rgba(5,18,7,.15) 100%
+    );
+  }
+  /* conteúdo ocupa só a metade superior */
+  .hero-content {
+    padding: 24px 5% 0;
+    max-width: 100%;
+  }
+  .hero h1 { font-size: 48px; margin-bottom: 14px; }
+  .hero-sub { font-size: 12px; margin-bottom: 28px; }
+  .hero-btns { flex-direction: column; gap: 10px; }
+  .btn-solid, .btn-ghost { width: 100%; justify-content: center; }
+
+  /* ── NARRATIVA ── */
+  .nwrap { padding: 56px 5%; }
+  .frase-impacto { font-size: 26px; }
+  .nbig { font-size: 18px; }
+  .nlead { font-size: 15px; }
+  .sec-title { font-size: 36px; }
+  .sec-sub { font-size: 16px; }
+  .ntitle { font-size: 36px; }
+
+  /* ── TV / ICEBERG ── */
+  .tv-wrap { aspect-ratio: 16/9; }
+  .iceberg-window { padding-bottom: 35%; }
+
+  /* ── TIMELINE ── */
+  .tl-steps { grid-template-columns: 1fr; gap: 32px; }
+  .tl-node { width: 72px; height: 72px; }
+
+  /* ── EQUIPE ── */
+  .equipe-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .equipe-header { grid-template-columns: 1fr; gap: 28px; }
+  .manifesto-marca { font-size: 26px; }
+  .manifesto-poesia span { font-size: 15px; }
+  .membro { padding: 20px 14px; }
+  .membro-nome { font-size: 16px; }
+
+  /* ── PREÇOS ── */
+  .preco-card { padding: 32px 22px; }
+  .pc-val { font-size: 46px; }
+
+  /* ── PONTOS ── */
+  .pontos-grid { grid-template-columns: 1fr; }
+  .pontos { padding: 56px 5%; }
+  .jornada { padding: 56px 5%; }
+  .precos { padding: 56px 5%; }
+  .equipe { padding: 56px 5%; }
+  .excl { padding: 56px 5%; }
+  .cta-final { padding: 64px 5%; }
+
+  /* ── MAPA IA ── */
+  .mapa-ia { padding: 56px 5%; }
+  .mapa-ia-inner { grid-template-columns: 1fr; gap: 36px; }
+  .mia-cards { gap: 10px; }
+
+  /* ── MODAL ── */
+  .modal-box { max-height: 95vh; }
+  .modal-header { padding: 24px 20px 18px; gap: 16px; }
+  .modal-nome { font-size: 24px; }
+  .modal-body { padding: 20px; }
+
+  /* ── ASPECTOS DAS IMAGENS PANORÂMICAS ── */
+  [style*="aspect-ratio:21/6"] { aspect-ratio: 4/3 !important; }
+  [style*="aspect-ratio:16/7"] { aspect-ratio: 4/3 !important; }
+  [style*="aspect-ratio:21/7"] { aspect-ratio: 4/3 !important; }
+
+  /* ── FOOTER ── */
+  footer { flex-direction: column; align-items: flex-start; gap: 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navEl">
+  <a href="https://vitoria-regia.com" class="nav-logo">
+    <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1778022429/mapavitoria_logo_c9ypgn.png" alt="Mapa da Vitória">
+  </a>
+  <div class="nav-links">
+    <a href="#jornada" class="nl">Como funciona</a>
+    <a href="#equipe" class="nl">Equipe</a>
+    <a href="#precos" class="nav-cta">Ver investimento</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <img class="hero-img" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1779529819/topo_mv_skhxbq.jpg" alt="">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge r"><div class="bdot"></div>Eleições 2026 · Comunicação Política</div>
+    <h1 class="r"><span class="ha">2026</span> não<br>será para<br>amadores.</h1>
+    <p class="hero-sub r">A IA mudou totalmente os rumos do marketing político</p>
+    <div class="hero-btns r">
+      <a href="#precos" class="btn-solid">
+        Quero meu Mapa da Vitória
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#jornada" class="btn-ghost">Como funciona</a>
+    </div>
+  </div>
+</div>
+
+<!-- NARRATIVA SCROLLÁVEL -->
+<section class="narrativa">
+  <div class="nwrap">
+
+    <!-- BLOCO 1: iceberg interativo + frase impacto -->
+    <div class="r">
+
+      <!-- ICEBERG — janela = 50% da altura 16:9, revelar o fundo do mar ao arrastar -->
+      <div class="iceberg-wrap">
+        <div class="iceberg-window" id="icebergWindow">
+          <img
+            src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1780460512/iceberg_bz5lxz.jpg"
+            alt="Iceberg da comunicação política"
+            class="iceberg-img"
+            id="icebergImg"
+            draggable="false"
+          >
+          <div class="iceberg-grad-top"></div>
+          <!-- handle: ícone de mouse + setas animadas -->
+          <div class="iceberg-handle" id="icebergHandle">
+            <div class="ice-mouse"></div>
+            <div class="ice-arrows">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="frase-impacto">
+        Quem posta por postar já perdeu o caminho e <em>vai perder as eleições.</em>
+      </div>
+    </div>
+
+    <div class="ndiv r"></div>
+
+    <!-- BLOCO 2: candidato (balão) + adversários -->
+    <div class="r">
+      <div class="candidato-row">
+        <div class="cand-foto" id="candFoto1">
+          <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1779529653/avatar_politico2_vc0kqo.png" alt="Candidato">
+        </div>
+        <div class="speech neg">
+          "Mas com o Chat GPT eu vou rachar de fazer post e um deles vai viralizar!"
+        </div>
+      </div>
+      <p class="nbig">Adivinhe? Seus adversários estão apostando na mesma "estratégia"</p>
+      <p class="nlead">Isso significa que o eleitor será bombardeado por uma avalanche de textos genéricos, vídeos sintéticos e artes automáticas.</p>
+      <div class="alerta">Resultado: Comunicação ruidosa e sem credibilidade.</div>
+      <!-- VÍDEO: feed poluído com efeito TV antiga -->
+      <div class="tv-wrap">
+        <video
+          class="tv-video"
+          src="https://res.cloudinary.com/dnnnn7njk/video/upload/v1780462753/anime_essa_imagem__u4gsiq.mp4"
+          autoplay loop muted playsinline
+        ></video>
+        <!-- scanlines -->
+        <div class="tv-scanlines"></div>
+        <!-- ruído/grain animado -->
+        <div class="tv-noise"></div>
+        <!-- vinheta nas bordas -->
+        <div class="tv-vignette"></div>
+        <!-- brilho horizontal piscando -->
+        <div class="tv-flicker"></div>
+      </div>
+    </div>
+
+    <div class="ndiv r"></div>
+
+    <!-- BLOCO 3: ENCONTRE A SUA DIREÇÃO + candidato foto -->
+    <div class="r">
+      <h2 class="sec-title">Encontre a sua direção</h2>
+      <p class="sec-sub">Narrativas coesas e estratégicas vencem <span class="g">eleições</span></p>
+      <p class="nlead">Cada postagem, discurso e ação de campo precisam estar em total sintonia para fortalecer uma narrativa coesa e estratégica — e neste ponto a maioria das campanhas se perdem.</p>
+      <p class="nlead" style="margin-top:14px;">Muitas vezes até começam bem, mas logo vão se dispersando e quando vê estão tentando ir em todas as direções, agradar todos os públicos, copiando conteúdos de outros candidatos.</p>
+      <!-- imagem: mapa -->
+      <div style="margin-top:28px; border-radius:14px; overflow:hidden; aspect-ratio:16/7; box-shadow:0 8px 32px rgba(0,0,0,.12);">
+        <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1780463065/mapa_hitk4p.jpg" alt="Encontre a sua direção" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>
+      <!-- balão do candidato: "Tá, mas como eu faço então..." -->
+      <div class="candidato-row" style="margin-top:36px;">
+        <div class="cand-foto">
+          <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1779529653/avatar_politico2_vc0kqo.png" alt="Candidato">
+        </div>
+        <div class="speech">
+          "Tá, mas como eu faço então para encontrar a minha direção?"
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MAPA DA VITÓRIA — IA + talento -->
+<section class="mapa-ia">
+  <div class="mapa-ia-inner r">
+    <div>
+      <h2 class="sec-title" style="color:white;">A Solução</h2>
+      <p class="sec-sub" style="color:rgba(255,255,255,.6); margin-bottom:4px;">Vamos traçar o seu <span style="color:var(--amarelo);">Mapa da Vitória</span></p>
+      <p style="font-size:13px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:28px;">Juntando inteligência artificial ao talento natural</p>
+      <p class="nbody">Utilizamos Inteligência Artificial para processar dados sobre o seu perfil, o histórico do eleitorado e os movimentos dos adversários.</p>
+      <p class="nbody">A IA atua como um radar, identificando padrões, oportunidades e riscos que passariam despercebidos aos olhos humanos.</p>
+      <p class="nbody">Com o terreno mapeado pela tecnologia, entra em curso a sensibilidade estratégica. Nossa equipe especializada interpreta esses dados e com ele cria narrativas estratégicas.</p>
+    </div>
+    <div class="mia-cards">
+      <div class="mia-card">
+        <div class="mia-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+        <div>
+          <h4>IA como radar estratégico</h4>
+          <p>Processa dados do seu perfil, histórico do eleitorado e movimentos dos adversários — padrões invisíveis ao olho humano.</p>
+        </div>
+      </div>
+      <div class="mia-card">
+        <div class="mia-ico g2"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <div>
+          <h4>Sensibilidade estratégica humana</h4>
+          <p>Nossa equipe interpreta os dados e cria narrativas que ressoam de verdade com o eleitorado.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JORNADA -->
+<section class="jornada" id="jornada">
+  <div class="jornada-inner">
+    <div class="jornada-header r">
+      <h2 class="sec-title">Como será a sua jornada</h2>
+      <p class="sec-sub">O passo a passo para desenhar o seu <span class="g">Mapa da Vitória</span></p>
+    </div>
+    <div class="tl r">
+      <div class="tl-track"><div class="tl-fill"></div></div>
+      <div class="tl-steps">
+
+        <div class="tl-step on">
+          <div class="tl-node"><div class="tl-n">01</div><svg viewBox="0 0 24 24"><path d="M9 12h6M9 16h6M9 8h2M5 4h14a1 1 0 011 1v15a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z"/></svg></div>
+          <div class="tl-body">
+            <div class="tl-tag">Contratação</div>
+            <h3>Formulário exclusivo</h3>
+            <p>Você receberá um formulário exclusivo de coleta de dados. Este é o momento de nos contar sobre sua trajetória, objetivos e o cenário da sua região.</p>
+          </div>
+        </div>
+
+        <div class="tl-step">
+          <div class="tl-node"><div class="tl-n">02</div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+          <div class="tl-body">
+            <div class="tl-tag">Reunião Online</div>
+            <h3>Reunião de aprofundamento</h3>
+            <p>Neste encontro online, faremos o reconhecimento detalhado da sua identidade política e refinaremos os pontos do seu perfil.</p>
+          </div>
+        </div>
+
+        <div class="tl-step">
+          <div class="tl-node"><div class="tl-n">03</div><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+          <div class="tl-body">
+            <div class="tl-tag">Análise + IA</div>
+            <h3>Estratégia e análise</h3>
+            <p>Nosso time cruza sua essência com inteligência de dados e sensibilidade política para desenhar o seu mapa de narrativa estratégica.</p>
+          </div>
+        </div>
+
+        <div class="tl-step">
+          <div class="tl-node"><div class="tl-n">04</div><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="tl-body">
+            <div class="tl-tag">Entrega</div>
+            <h3>Entrega do Mapa</h3>
+            <p>Na data estipulada, entregaremos e apresentaremos o seu Mapa da Vitória, explicando detalhadamente cada ponto do guia prático.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PONTOS DO MAPA -->
+<section class="pontos">
+  <div class="pontos-inner">
+    <div class="pontos-header r">
+      <h2 class="sec-title">Os pontos do seu Mapa da Vitória</h2>
+      <p class="sec-sub">Por onde passaremos para traçar o seu <span class="g">caminho</span></p>
+    </div>
+    <!-- imagem: candidato -->
+    <div class="r" style="margin-bottom:36px; border-radius:14px; overflow:hidden; aspect-ratio:21/6; box-shadow:0 8px 32px rgba(0,0,0,.1);">
+      <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1780463681/candidato_uptire.png" alt="Candidato" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+    <div class="pontos-grid r">
+
+      <div class="ponto">
+        <div class="ponto-num">01</div>
+        <div class="ponto-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
+        <h4>Visão Geral e Objetivo Estratégico</h4>
+        <p>Definição do cargo, contexto eleitoral e o objetivo central que guiará as ações de comunicação.</p>
+      </div>
+
+      <div class="ponto">
+        <div class="ponto-num">02</div>
+        <div class="ponto-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h4>Análise SWOT</h4>
+        <p>Diagnóstico das Forças e Fraquezas internas, cruzadas com as Oportunidades e Ameaças do cenário externo.</p>
+      </div>
+
+      <div class="ponto">
+        <div class="ponto-num">03</div>
+        <div class="ponto-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <h4>Linha Narrativa e Mensagens-Chave</h4>
+        <p>Criação do conceito central da campanha e das mensagens que serão repetidas para fixar sua imagem na mente do eleitor.</p>
+      </div>
+
+      <div class="ponto">
+        <div class="ponto-num">04</div>
+        <div class="ponto-ico"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <h4>Estratégia dos 3 Atos (Funil de Votos)</h4>
+        <div class="ponto-sub">
+          <span><strong>Ato 1 – Apresentação:</strong> Capturar a atenção e humanizar o candidato</span>
+          <span><strong>Ato 2 – Sensibilização:</strong> Gerar identificação e mostrar conhecimento dos problemas reais</span>
+          <span><strong>Ato 3 – Mobilização:</strong> Chamada para a ação, pedido de voto e conversão final</span>
+        </div>
+      </div>
+
+      <div class="ponto">
+        <div class="ponto-num">05</div>
+        <div class="ponto-ico"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <h4>Canais e Ferramentas Digitais</h4>
+        <p>Diretrizes para estruturação dos canais de distribuição (site, redes sociais, aplicativos), de acordo com a estratégia.</p>
+      </div>
+
+      <div class="ponto">
+        <div class="ponto-num">06</div>
+        <div class="ponto-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <h4>Ações Offline e de Campo</h4>
+        <p>Planejamento de agendas, visitas, reuniões comunitárias e eventos de massa.</p>
+      </div>
+
+      <div class="ponto">
+        <div class="ponto-num">07</div>
+        <div class="ponto-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h4>Gestão de Crise e Reputação</h4>
+        <p>Protocolos de monitoramento ativo e resposta rápida para proteger sua imagem contra ataques e fake news.</p>
+      </div>
+
+      <div class="ponto">
+        <div class="ponto-num">08</div>
+        <div class="ponto-ico"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></div>
+        <h4>Estrutura de Equipe</h4>
+        <p>Definição dos papéis essenciais, desde o estrategista e redator até o gestor de tráfego e videomaker.</p>
+      </div>
+
+      <div class="ponto">
+        <div class="ponto-num">09</div>
+        <div class="ponto-ico"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <h4>Métricas de Acompanhamento</h4>
+        <p>Definição de KPIs claros (engajamento, alcance, conversão de leads e pesquisas de opinião) para avaliar o sucesso em tempo real.</p>
+      </div>
+
+      <div class="ponto">
+        <div class="ponto-num">10</div>
+        <div class="ponto-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <h4>Cronograma de Implementação</h4>
+        <p>Um passo a passo temporal, do lançamento da pré-campanha até o dia da eleição.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPE -->
+<section class="equipe" id="equipe">
+  <div class="equipe-inner">
+    <div class="equipe-header r">
+      <div>
+        <h2 class="sec-title" style="color:white;">Os seus guias</h2>
+        <p class="sec-sub" style="color:rgba(255,255,255,.55);">Quem vai te acompanhar nesta <span style="color:var(--amarelo);">caminhada</span></p>
+      </div>
+      <div>
+        <div class="manifesto-marca">Vitória-Régia</div>
+        <div class="manifesto-linha">agência e produtora</div>
+        <div class="manifesto-linha">propaganda e audiovisual</div>
+        <div class="manifesto-linha" style="color:rgba(255,255,255,.8); font-weight:600;">corporativo, política e arte</div>
+        <div class="manifesto-sep"></div>
+        <div class="manifesto-poesia">
+          <span class="dest">grandes ideias brotam aqui</span>
+          <span>imagens que comunicam</span>
+          <span>identidades que florescem</span>
+          <span>&nbsp;</span>
+          <span>juntos,</span>
+          <span class="dest">semeamos conceitos</span>
+          <span class="dest">oxigenamos contextos</span>
+          <span class="dest">cultivamos histórias</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="equipe-grid r">
+      <div class="membro">
+        <div class="membro-av"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1778024493/VITOR_avsnyz.jpg" alt="Vitor Duarte"></div>
+        <div class="membro-nome">Vitor Duarte</div>
+        <div class="membro-cargo">Fundador · Roteirista · Diretor</div>
+        <button class="btn-curriculo" onclick="openModal('vitor')">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Ver currículo
+        </button>
+      </div>
+      <div class="membro">
+        <div class="membro-av"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1778024494/VINICIUS_d9mb6r.jpg" alt="Vinicius Vilela"></div>
+        <div class="membro-nome">Vinicius Vilela</div>
+        <div class="membro-cargo">Estrategista · Branding</div>
+        <button class="btn-curriculo" onclick="openModal('vinicius')">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Ver currículo
+        </button>
+      </div>
+      <div class="membro">
+        <div class="membro-av"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1778024492/RAPHAEL_jv09mb.jpg" alt="Raphael Faria"></div>
+        <div class="membro-nome">Raphael Faria</div>
+        <div class="membro-cargo">Dir. de Criação · Arte</div>
+        <button class="btn-curriculo" onclick="openModal('raphael')">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Ver currículo
+        </button>
+      </div>
+      <div class="membro">
+        <div class="membro-av"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1778024492/BRENO_rycguh.jpg" alt="Breno Zanetti"></div>
+        <div class="membro-nome">Breno Zanetti</div>
+        <div class="membro-cargo">Designer · Id. Visual</div>
+        <button class="btn-curriculo" onclick="openModal('breno')">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Ver currículo
+        </button>
+      </div>
+      <div class="membro">
+        <div class="membro-av"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1778024492/FELIPE_tasbtn.jpg" alt="Felipe Cândido"></div>
+        <div class="membro-nome">Felipe Cândido</div>
+        <div class="membro-cargo">Jornalista · Assessoria</div>
+        <button class="btn-curriculo" onclick="openModal('felipe')">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Ver currículo
+        </button>
+      </div>
+      <div class="membro">
+        <div class="membro-av"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1780460852/paulo_lcp9kj.jpg" alt="Paulo Cavalcanti"></div>
+        <div class="membro-nome">Paulo Cavalcanti</div>
+        <div class="membro-cargo">Jornalista · Advogado · Assessoria Política</div>
+        <button class="btn-curriculo" onclick="openModal('paulo')">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Ver currículo
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-header">
+      <div class="modal-foto" id="modalFoto"></div>
+      <div><div class="modal-nome" id="modalNome"></div><div class="modal-cargo" id="modalCargo"></div></div>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- PREÇOS -->
+<section class="precos" id="precos">
+  <div class="precos-inner">
+    <div class="precos-header r">
+      <h2 class="sec-title">Escolha o seu ponto de partida</h2>
+      <p class="sec-sub">O investimento que te coloca na frente da <span class="g">maioria</span></p>
+    </div>
+    <!-- imagem: mãos dadas -->
+    <div class="r" style="margin-bottom:36px; border-radius:14px; overflow:hidden; aspect-ratio:21/6; box-shadow:0 8px 32px rgba(0,0,0,.1);">
+      <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1780492333/maosdadas_afms3l.jpg" alt="Parceria" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+    <div class="precos-grid r">
+
+      <div class="preco-card">
+        <div class="pc-tag n">Opção 01</div>
+        <div class="pc-nome">Mapa da <span class="g">Vitória</span></div>
+        <p class="pc-desc">O manual completo da sua candidatura. Ideal para quem já possui equipe e precisa de uma bússola clara e técnica para direcionar as ações de comunicação.</p>
+        <div class="pc-div"></div>
+        <div class="pc-val"><sup>R$</sup>2.997</div>
+        <ul class="pc-lista">
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Diagnóstico 360° e Análise SWOT</li>
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Linha Narrativa e Mensagens-Chave</li>
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Estratégia de Funil de Votos (3 Atos)</li>
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Protocolos de Gestão de Crise</li>
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Estruturação de equipe</li>
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Métricas de acompanhamento</li>
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Cronograma de implementação</li>
+        </ul>
+        <a href="https://pay.kiwify.com.br/fB49bjp" class="btn-outline-green" target="_blank">Quero meu Mapa da Vitória</a>
+      </div>
+
+      <div class="preco-card dest">
+        <div class="pc-tag y">★ Mais completo</div>
+        <div class="pc-nome">Mapa da <span class="g">Vitória-Régia</span></div>
+        <p class="pc-desc">Além de toda a estratégia do Mapa da Vitória, nossa equipe de criação desenvolve a marca e identidade visual da sua campanha, garantindo unidade visual e impacto imediato.</p>
+        <div class="pc-div"></div>
+        <div class="pc-val"><sup>R$</sup>4.997</div>
+        <ul class="pc-lista">
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Tudo o que contém no Mapa da Vitória</li>
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Criação de Logotipo e Slogan da Campanha</li>
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Definição de Paleta de Cores e Tipografia</li>
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Enxoval de peças (Santinho, faixas, bandeira)</li>
+          <li><div class="pc-ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Manual de Identidade Visual e Aplicações</li>
+        </ul>
+        <a href="https://pay.kiwify.com.br/pVONsyG" class="btn-fill-green" target="_blank">Quero o Mapa da Vitória-Régia</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EXCLUSIVIDADE -->
+<section class="excl">
+  <div class="excl-inner r">
+    <div class="excl-tag">
+      <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1778025125/brasil_balz2l.png" alt="Brasil" style="height:18px;width:auto;border-radius:2px;">
+      Exclusividade garantida
+    </div>
+    <h2>Vagas <span class="y">limitadas</span><br>por região</h2>
+    <p>Para garantir a profundidade técnica e a qualidade que a sua candidatura exige, atendemos um número limitado de candidatos por região/segmento.</p>
+    <a href="https://pay.kiwify.com.br/fB49bjp" class="btn-solid" target="_blank">Garantir minha vaga agora →</a>
+  </div>
+</section>
+
+<!-- CTA FINAL — DÚVIDAS -->
+<section class="cta-final">
+  <div class="nlabel r">Dúvidas?</div>
+  <h2 class="r">Fale com a <span class="g">gente</span></h2>
+  <a href="https://wa.me/5562999034716" class="btn-wa r" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Fale com a gente no WhatsApp
+  </a>
+</section>
+
+<footer>
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1778022429/mapavitoria_logo_c9ypgn.png" alt="Mapa da Vitória" style="height:40px;width:auto;max-width:180px;object-fit:contain;object-position:left;">
+    <p>© 2026 <a href="https://vitoria-regia.com">Vitória-Régia Comunicação</a> · Goiânia, GO</p>
+  </div>
+  <p>Política · Branding · Audiovisual</p>
+</footer>
+
+<script>
+/* Reveal */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('v'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+/* Nav */
+const navEl = document.getElementById('navEl');
+window.addEventListener('scroll', () => navEl.classList.toggle('scrolled', scrollY > 40), { passive: true });
+
+/* Currículos */
+const curriculos = {
+  vitor: {
+    foto: 'https://res.cloudinary.com/dnnnn7njk/image/upload/v1778024493/VITOR_avsnyz.jpg',
+    nome: 'Vitor Duarte',
+    cargo: 'Sócio-fundador · Publicitário · Roteirista · Diretor de Cena',
+    bio: [
+      'Sócio-fundador da Vitória-Régia Comunicação. Publicitário. Roteirista. Diretor de cena.',
+      'Bacharel em Comunicação Social, Publicidade e Propaganda, pela Universidade Federal de Goiás (UFG).',
+      'Vencedor no Núcleo SESI Dramaturgia com o texto "Destros Sinistros" (2016).',
+      'Vencedor no GO Film Festival com o curta "Cidade Organoléptica" (2016).'
+    ]
+  },
+  vinicius: {
+    foto: 'https://res.cloudinary.com/dnnnn7njk/image/upload/v1778024494/VINICIUS_d9mb6r.jpg',
+    nome: 'Vinicius Vilela',
+    cargo: 'Estrategista · Branding · Gestão de Contas',
+    bio: [
+      'Profissional de Comunicação Social, com formação em Publicidade e Propaganda pela PUC Goiás e mais de 15 anos de experiência nas áreas de publicidade, branding, gestão de contas e comunicação institucional, atuando em grandes agências, empresas privadas e no setor público.',
+      'Possui sólida trajetória no atendimento e gestão de marcas de grande porte.'
+    ]
+  },
+  raphael: {
+    foto: 'https://res.cloudinary.com/dnnnn7njk/image/upload/v1778024492/RAPHAEL_jv09mb.jpg',
+    nome: 'Raphael Faria',
+    cargo: 'Diretor de Criação · Publicitário · Diretor de Arte',
+    bio: [
+      'Diretor de criação na agência Vitória-Régia Comunicação, publicitário e diretor de arte, bacharel em Comunicação Social, Publicidade e Propaganda pela Universidade Federal de Goiás.',
+      'Especialista em Criação Publicitária pela Escola Cuca (SP) e em Assessoria de Comunicação e Marketing pela UFG. Atua no mercado desde 2008.'
+    ]
+  },
+  breno: {
+    foto: 'https://res.cloudinary.com/dnnnn7njk/image/upload/v1778024492/BRENO_rycguh.jpg',
+    nome: 'Breno Zanetti',
+    cargo: 'Designer · Identidade Visual · Design Editorial',
+    bio: [
+      'Designer, graduado em Design Gráfico pela Universidade Federal de Goiás (UFG) e pós-graduado em Gestão de Projetos pela Fundação Getúlio Vargas (FGV).',
+      'Possui mais de 15 anos de experiência em design gráfico, atuando em órgãos públicos e empresas privadas, com foco em criação de marcas, identidade visual, design editorial e digital.'
+    ]
+  },
+  felipe: {
+    foto: 'https://res.cloudinary.com/dnnnn7njk/image/upload/v1778024492/FELIPE_tasbtn.jpg',
+    nome: 'Felipe Cândido',
+    cargo: 'Jornalista · Comunicação Institucional · Assessoria de Imprensa',
+    bio: [
+      'Jornalista formado pela Universidade Federal de Goiás, com pós-graduação em Comunicação e Marketing.',
+      'Possui ampla experiência em comunicação institucional, assessoria de imprensa e gestão de comunicação pública e corporativa, atuando há mais de 19 anos em órgãos públicos, entidades de classe e veículos de imprensa.'
+    ]
+  },
+  paulo: {
+    foto: 'https://res.cloudinary.com/dnnnn7njk/image/upload/v1780460852/paulo_lcp9kj.jpg',
+    nome: 'Paulo Cavalcanti',
+    cargo: 'Jornalista · Advogado · Assessoria de Imprensa Política',
+    bio: [
+      'Jornalista formado pela Universidade Federal de Goiás, com pós-graduação em Assessoria e Gestão da Comunicação. Advogado formado pela Pontifícia Universidade Católica de Goiás.',
+      'Possui mais de 12 anos de experiência em assessoria de imprensa na área política, com atuação no Poder Legislativo e em campanhas eleitorais.',
+      'Tem experiência em gestão da comunicação pública e institucional, além de conhecimento jurídico voltado principalmente às áreas eleitoral e da comunicação.'
+    ]
+  }
+};
+
+function openModal(key) {
+  const d = curriculos[key]; if (!d) return;
+  document.getElementById('modalFoto').innerHTML = `<img src="${d.foto}" alt="${d.nome}">`;
+  document.getElementById('modalNome').textContent = d.nome;
+  document.getElementById('modalCargo').textContent = d.cargo;
+  document.getElementById('modalBody').innerHTML = '<div class="modal-tag">Currículo</div>' + d.bio.map(p=>`<p>${p}</p>`).join('');
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) { if (e.target===document.getElementById('modalOverlay')) closeModal(); }
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeModal(); });
+/* ── ICEBERG INTERATIVO ── */
+(function() {
+  const win    = document.getElementById('icebergWindow');
+  const img    = document.getElementById('icebergImg');
+  const handle = document.getElementById('icebergHandle');
+  if (!win || !img) return;
+
+  let currentTop = 0;
+  let minTop = 0;
+  let isDragging = false;
+  let startY = 0;
+  let startTop = 0;
+  let moved = false;
+
+  function recalc() {
+    // altura da janela via offsetHeight (funciona com padding-bottom trick)
+    const winH = win.offsetHeight;
+    // altura real da imagem renderizada (largura * ratio)
+    const imgRenderedH = img.offsetWidth * (img.naturalHeight / img.naturalWidth || 0.5625);
+    minTop = winH - imgRenderedH;
+    currentTop = Math.max(minTop, Math.min(0, currentTop));
+    img.style.top = currentTop + 'px';
+  }
+
+  function onLoad() { recalc(); }
+  img.addEventListener('load', onLoad);
+  if (img.complete && img.naturalWidth) recalc();
+  window.addEventListener('resize', recalc);
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function onStart(y) {
+    isDragging = true; moved = false;
+    startY = y; startTop = currentTop;
+    win.classList.add('dragging');
+  }
+  function onMove(y) {
+    if (!isDragging) return;
+    const dy = y - startY;
+    if (Math.abs(dy) > 3) {
+      moved = true;
+      handle.classList.add('hidden');
+    }
+    currentTop = clamp(startTop + dy, minTop, 0);
+    img.style.top = currentTop + 'px';
+  }
+  function onEnd() { isDragging = false; win.classList.remove('dragging'); }
+
+  win.addEventListener('mousedown',  e => { e.preventDefault(); onStart(e.clientY); });
+  window.addEventListener('mousemove', e => onMove(e.clientY));
+  window.addEventListener('mouseup',   onEnd);
+
+  win.addEventListener('touchstart', e => onStart(e.touches[0].clientY), { passive: true });
+  window.addEventListener('touchmove', e => onMove(e.touches[0].clientY), { passive: true });
+  window.addEventListener('touchend',  onEnd);
+})();
+</script>
+</body>
+</html>
