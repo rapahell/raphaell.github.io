@@ -116,6 +116,62 @@ input,select{font-family:inherit;font-size:15px;}
 </style>
 </head>
 <body>
+<!-- ===== Overlay de homenagem (Paulo campeão) ===== -->
+<div id="homenagem" style="position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden">
+
+  <!-- Tela de entrada (antes do vídeo) -->
+  <div id="entradaHom" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(circle at 50% 40%,#12234a,#000)">
+    <div style="font-size:52px;margin-bottom:10px">🏆</div>
+    <div style="color:#fff;font-weight:900;font-size:clamp(22px,6vw,34px);line-height:1.15;max-width:520px">Bolão Copa 2026</div>
+    <div style="color:rgba(255,255,255,.7);font-weight:600;font-size:15px;margin-top:8px;max-width:420px">Uma homenagem especial antes de você entrar</div>
+    <button id="btnEntrar"
+      style="margin-top:28px;padding:16px 34px;border:0;border-radius:999px;background:linear-gradient(135deg,#f6c445,#e8a317);color:#1a1a1a;font-weight:900;font-size:17px;cursor:pointer;box-shadow:0 8px 24px rgba(230,163,23,.45)">
+      ▶ Clique para entrar no bolão
+    </button>
+  </div>
+
+  <!-- Vídeo (só aparece após o clique) -->
+  <video id="vidHomenagem" playsinline
+    style="max-width:100%;max-height:100vh;width:auto;height:auto;object-fit:contain;background:#000;display:none">
+    <source src="https://res.cloudinary.com/dnnnn7njk/video/upload/f_auto,q_auto/v1784042989/paulo_campeao_f2ti1w.mp4" type="video/mp4">
+    <source src="https://res.cloudinary.com/dnnnn7njk/video/upload/v1784042989/paulo_campeao_f2ti1w.mp4" type="video/mp4">
+    <source src="https://res.cloudinary.com/dnnnn7njk/video/upload/v1784042989/paulo_campeao_f2ti1w.mov" type="video/quicktime">
+  </video>
+
+  <button id="pularHom"
+    style="position:absolute;bottom:24px;right:24px;padding:10px 20px;border:0;border-radius:999px;background:rgba(255,255,255,.15);color:#fff;font-weight:800;font-size:14px;cursor:pointer;backdrop-filter:blur(4px);display:none">
+    Pular ▶
+  </button>
+</div>
+<script>
+(function(){
+  var ov=document.getElementById('homenagem');
+  var entrada=document.getElementById('entradaHom');
+  var btn=document.getElementById('btnEntrar');
+  var v=document.getElementById('vidHomenagem');
+  var pular=document.getElementById('pularHom');
+  var done=false;
+  function fechar(){
+    if(done)return; done=true;
+    ov.style.transition='opacity .5s ease';
+    ov.style.opacity='0';
+    setTimeout(function(){ ov.remove(); },500);
+    try{ v.pause(); }catch(e){}
+  }
+  btn.addEventListener('click',function(){
+    entrada.style.display='none';
+    v.style.display='block';
+    pular.style.display='block';
+    v.muted=false;               // som garantido: play veio de um clique
+    v.currentTime=0;
+    v.play().catch(function(){ fechar(); }); // se falhar, não trava a página
+  });
+  pular.addEventListener('click',fechar);
+  v.addEventListener('ended',fechar);
+  v.addEventListener('error',function(){ if(v.style.display!=='none')fechar(); });
+})();
+</script>
+<!-- ===== fim overlay ===== -->
 <div class="wrap">
   <div id="status" class="card" style="margin-bottom:16px;text-align:center;color:var(--mut)">Carregando…</div>
   <div id="app"></div>
@@ -963,7 +1019,10 @@ function ranking(body){
         const d=s.chav.detail[f.k];
         if(d&&d.pts>0)l2.appendChild(ce("span",{style:"background:#e8f4e8;color:#1a5c1a"},faseNomes[f.k]+": +"+d.pts));
       });
-      if(fase2Pts>0)l2.appendChild(ce("span",{style:"background:#e8f0ff;color:var(--grd)"},"Elim.: +"+fase2Pts));
+      if(fase2Pts>0){
+        l2.appendChild(ce("span",{style:"background:#e8f0ff;color:var(--grd)"},"Elim.: +"+fase2Pts));
+        if(s.fase2.ex>0)l2.appendChild(ce("span",{style:"background:#e8f0ff;color:var(--grd)"},"✅ "+s.fase2.ex+" exato(s)"));
+      }
       bd.appendChild(l2);
     }
     mid.appendChild(bd);
