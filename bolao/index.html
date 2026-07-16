@@ -234,6 +234,11 @@ function r4RealSet(){
   const ko=DB.results?.ko?.r8||{};
   return new Set(Object.values(ko));
 }
+// Os 2 que chegaram à final (vencedores das semis) — derivado de DB.results.ko.r4
+function r2RealSet(){
+  const ko=DB.results?.ko?.r4||{};
+  return new Set(Object.values(ko));
+}
 // Oitavas: vencedor R32 jogo X vs jogo Y
 const R16_PAIRS=[[3,6],[1,4],[12,11],[10,9],[2,5],[7,8],[15,14],[13,16]];
 // Metadados das oitavas (data/hora Brasília) — indexado pela posição no R16_PAIRS (idx+1)
@@ -262,8 +267,34 @@ const R4_INFO={
 };
 const R4_PAIRS=[[1,2],[3,4]];
 const R2_PAIRS=[[1,2]];
+// Final (19/07) e Disputa de 3º lugar (18/07) — horário de Brasília
+const R2_INFO={1:{data:"19/07",hora:"16:00"}};
+const R3_INFO={1:{data:"18/07",hora:"16:00"}};
+// Os 2 perdedores das semis (disputam o 3º lugar) — derivado de ko.r8 (semifinalistas) e ko.r4 (vencedores)
+function terceiroPares(){
+  const semis=DB.results?.ko?.r8||{};   // 4 semifinalistas
+  const venc=DB.results?.ko?.r4||{};    // quem venceu cada semi
+  const vSet=new Set(Object.values(venc));
+  const out=[];
+  // R4_PAIRS = [[1,2],[3,4]] -> semi 1 = semis[1] x semis[2]; semi 2 = semis[3] x semis[4]
+  R4_PAIRS.forEach(([a,b])=>{
+    const tA=semis[a],tB=semis[b];
+    if(tA&&vSet.has(tA)&&tB)out.push(tB);
+    else if(tB&&vSet.has(tB)&&tA)out.push(tA);
+  });
+  return out; // [perdedorSemi1, perdedorSemi2]
+}
 // Resultado fixo já conhecido: África do Sul 0x1 Canadá (28/06)
-const KO2_FIXOS={r32:{1:{h:0,a:1,pen:null,winner:"Canadá"}}};
+// Semis: França 0x2 Espanha (14/07) · Inglaterra 1x2 Argentina (15/07)
+const KO2_FIXOS={
+  r32:{1:{h:0,a:1,pen:null,winner:"Canadá"}},
+  r4:{
+    1:{h:0,a:2,pen:null,winner:"Espanha"},
+    2:{h:1,a:2,pen:null,winner:"Argentina"},
+  },
+};
+// Vencedores das semis (define final e 3º lugar)
+const KO_FIXOS={r4:{1:"Espanha",2:"Argentina"}};
 
 // Palpites de chaveamento de cada jogador (extraídos das planilhas/docs)
 const CHAV_PALPITES={
@@ -331,6 +362,19 @@ const PALPITES_SEMI={
   "Paulo":{1:{h:2,a:1,winner:"França"},2:{h:1,a:0,winner:"Inglaterra"}},
 };
 
+// FINAL: Espanha (h) × Argentina (a) — 19/07
+const PALPITES_FINAL={
+  "Raphael":{1:{h:1,a:0,winner:"Espanha"}},
+  "Danillo":{1:{h:2,a:0,winner:"Espanha"}},
+  "Paulo":{1:{h:1,a:2,winner:"Argentina"}},
+};
+// 3º LUGAR: França (h) × Inglaterra (a) — 18/07
+const PALPITES_TERCEIRO={
+  "Raphael":{1:{h:2,a:2}},
+  "Danillo":{1:{h:1,a:1}},
+  "Paulo":{1:{h:3,a:0}},
+};
+
 // Fases do chaveamento
 const FASES=[
   {k:"r32",label:"16-avos",n:32},
@@ -353,7 +397,7 @@ const isAdmin=new URLSearchParams(window.location.search).has("admin");
 
 let DB={guesses:{},results:{matches:{},ko:{}},imported:{}};
 // DB.results.ko = { r32:{1:"Alemanha",...}, r16:{1:"França",...}, ... }
-const state={tab:"ranking",apiMsg:"",saving:false,ready:false,impMsg:"",vp:"Raphael",openRounds:{1:false,2:true,3:true},openFase1:{1:false,2:true,3:true},fase1sub:"grupos",fase2view:"chaveamento",fase2fase:"r4",chavAberto:{}};
+const state={tab:"ranking",apiMsg:"",saving:false,ready:false,impMsg:"",vp:"Raphael",openRounds:{1:false,2:true,3:true},openFase1:{1:false,2:true,3:true},fase1sub:"grupos",fase2view:"chaveamento",fase2fase:"r2",chavAberto:{}};
 
 const $=(s,e)=>(e||document).querySelector(s);
 const ce=(t,p,h)=>{const e=document.createElement(t);if(p)for(const k in p)e.setAttribute(k,p[k]);if(h!=null)e.innerHTML=h;return e;};
@@ -433,6 +477,7 @@ function scoreChaveamento(p){
     else if(f.k==="r16")reaisSet=r16RealSet();
     else if(f.k==="r8")reaisSet=r8RealSet();
     else if(f.k==="r4")reaisSet=r4RealSet();
+    else if(f.k==="r2")reaisSet=r2RealSet();
     else reaisSet=new Set(Object.values(ko[f.k]||{}));
     const pSet=new Set(palpite[f.k]||[]);
     let acc=0;
@@ -448,13 +493,14 @@ function scoreFase2(p){
   const g=pg(p);
   const ko=DB.results.ko||{};
   let pts=0,ex=0,hit=0;
-  // Para cada jogo do mata-mata que tem resultado
-  FASES.forEach(f=>{
-    const jogos=DB.results.ko2?.[f.k]||{};// placar dos jogos
+  // Para cada jogo do mata-mata que tem resultado (inclui a disputa de 3º lugar)
+  const chaves=FASES.map(f=>f.k).concat(["r3"]);
+  chaves.forEach(k=>{
+    const jogos=DB.results.ko2?.[k]||{};// placar dos jogos
     // jogos = {1:{h,a,pen:"home"/"away"}, ...}
     Object.entries(jogos).forEach(([id,real])=>{
       if(real.h==null||real.h==="")return;
-      const pred=g.bracket2?.[f.k]?.[id];
+      const pred=g.bracket2?.[k]?.[id];
       if(!pred||pred.h==null||pred.h==="")return;
       const rh=+real.h,ra=+real.a,gh=+pred.h,ga=+pred.a;
       if(gh===rh&&ga===ra){pts+=5;ex++;hit++;}
@@ -715,6 +761,7 @@ function fase2(body){
     {k:"r16",l:"Oitavas"},
     {k:"r8",l:"Quartas"},
     {k:"r4",l:"Semi"},
+    {k:"r3",l:"3º lugar"},
     {k:"r2",l:"Final"},
   ];
   const fnav=ce("div",{style:"display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"});
@@ -885,6 +932,79 @@ function fase2(body){
   return;
   }
 
+  // === DISPUTA DE 3º LUGAR (caso especial: perdedores das semis) ===
+  if(faseAtiva==="r3"){
+    const perd=terceiroPares();
+    if(perd.length<2){
+      body.appendChild(ce("div",{class:"card",style:"margin-top:16px;text-align:center;color:var(--mut);padding:24px"},
+        icon("lock",18)+'<br><br>Disputa de 3º lugar liberada quando as semifinais terminarem.'));
+      return;
+    }
+    const info=(typeof R3_INFO!=="undefined"?R3_INFO[1]:null)||{data:"",hora:""};
+    body.appendChild(ce("div",{class:"round"},'<span class="tag">Disputa de 3º Lugar</span><span class="line"></span>'));
+    const box=ce("div",{style:"display:grid;gap:10px"});
+    if(info.data){
+      const sep=ce("div",{style:"display:flex;align-items:center;gap:8px;margin:10px 0 2px"});
+      sep.innerHTML='<span style="font-size:11px;font-weight:800;color:#fff;background:var(--grl);padding:3px 10px;border-radius:999px">'+info.data+'</span><span style="flex:1;height:1px;background:var(--line)"></span>';
+      box.appendChild(sep);
+    }
+    const tA=perd[0],tB=perd[1];
+    const winner=(ko.r3||{})[1]||null;
+    const placar=(DB.results.ko2?.r3||{})[1]||null;
+    const temPlacar=placar&&placar.h!=null;
+    const card=ce("div",{class:"card",style:"padding:11px 13px"});
+    const row=ce("div",{class:"ko-game",style:"border:none;padding:0;margin:0;background:transparent"});
+    const ginfo=ce("div",{style:"display:flex;flex-direction:column;align-items:center;min-width:50px;gap:2px"});
+    ginfo.innerHTML='<span style="font-size:10px;font-weight:700;color:var(--mut)">3º</span>'+(info.hora?'<span style="font-size:11px;font-weight:800;color:var(--grd)">'+info.hora+'</span>':'');
+    row.appendChild(ginfo);
+    [tA,tB].forEach((team,si)=>{
+      const isWin=winner&&winner===team;
+      const slot=ce("div",{class:"team"+(isWin?" win":!team?" empty":"")});
+      slot.innerHTML=team?'<span style="font-size:18px">'+fl(team)+'</span><span style="flex:1;font-size:13px">'+team+'</span>'+(isWin?icon("check-circle",14):''):'<span>a definir</span>';
+      if(isAdmin&&team){
+        slot.onclick=()=>{
+          if(!DB.results.ko.r3)DB.results.ko.r3={};
+          if(DB.results.ko.r3[1]===team)delete DB.results.ko.r3[1];
+          else DB.results.ko.r3[1]=team;
+          pushDB();render();
+        };
+      }
+      if(si===0){
+        row.appendChild(slot);
+        const scDiv=ce("div",{style:"display:flex;flex-direction:column;align-items:center;gap:2px;min-width:40px"});
+        if(temPlacar)scDiv.innerHTML='<span style="font-size:17px;font-weight:800;color:var(--grd)">'+placar.h+'–'+placar.a+'</span>'+(placar.pen?'<span style="font-size:9px;color:var(--gold);font-weight:700">pen</span>':'');
+        else scDiv.innerHTML='<span style="font-size:13px;color:var(--mut);font-weight:700">×</span>';
+        row.appendChild(scDiv);
+      } else row.appendChild(slot);
+    });
+    card.appendChild(row);
+    const apDiv=ce("div",{style:"margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);display:grid;gap:5px"});
+    let temAlguma=false;
+    PLAYERS.forEach(p=>{
+      const ap=DB.guesses[p]?.bracket2?.r3?.[1];
+      if(!ap||ap.h==null)return;
+      temAlguma=true;
+      const chip=ce("div",{style:"display:flex;align-items:center;gap:7px;font-size:12px"});
+      let tag='';
+      if(temPlacar){
+        const exato=ap.h===placar.h&&ap.a===placar.a;
+        const desf=(ap.h>ap.a&&placar.h>placar.a)||(ap.h<ap.a&&placar.h<placar.a)||(ap.h===ap.a&&placar.h===placar.a);
+        if(exato)tag='<span style="color:#155724;font-weight:800;margin-left:auto">✓ exato +5</span>';
+        else if(desf)tag='<span style="color:#1b6fb5;font-weight:700;margin-left:auto">✓ desfecho +2</span>';
+        else tag='<span style="color:#a02020;font-weight:600;margin-left:auto">✗ errou</span>';
+      }
+      chip.innerHTML='<img src="'+AVATAR[p]+'" style="width:22px;height:22px;border-radius:50%;object-fit:cover"><span style="font-weight:700;min-width:62px">'+p+'</span><span><span style="font-size:14px">'+(tA?fl(tA):'')+'</span> <b>'+ap.h+'</b> × <b>'+ap.a+'</b> <span style="font-size:14px">'+(tB?fl(tB):'')+'</span></span>'+tag;
+      apDiv.appendChild(chip);
+    });
+    if(temAlguma)card.appendChild(apDiv);
+    box.appendChild(card);
+    body.appendChild(box);
+    const nota=ce("div",{class:"card",style:"font-size:11.5px;color:var(--mut);padding:11px 14px;margin-top:10px"});
+    nota.innerHTML='<b style="color:var(--grd)">Nota:</b> a disputa de 3º lugar pontua apenas pelo placar (exato +5 · desfecho +2). Não vale pontos de chaveamento.';
+    body.appendChild(nota);
+    return;
+  }
+
   // === QUARTAS / SEMI / FINAL ===
   const fasesPares=[
     {key:"r8",label:"Quartas de Final",pairs:R8_PAIRS,src:"r16"},
@@ -902,7 +1022,7 @@ function fase2(body){
     }
     body.appendChild(ce("div",{class:"round"},'<span class="tag">'+label+'</span><span class="line"></span>'));
     const box=ce("div",{style:"display:grid;gap:10px"});
-    const infoMap=key==="r8"?(typeof R8_INFO!=="undefined"?R8_INFO:{}):key==="r4"?(typeof R4_INFO!=="undefined"?R4_INFO:{}):{};
+    const infoMap=key==="r8"?(typeof R8_INFO!=="undefined"?R8_INFO:{}):key==="r4"?(typeof R4_INFO!=="undefined"?R4_INFO:{}):key==="r2"?(typeof R2_INFO!=="undefined"?R2_INFO:{}):{};
     // ordenar por data/hora quando houver info
     let ordem=pairs.map(([a,b],idx)=>({a,b,idx,info:infoMap[idx+1]||{data:"",hora:""}}));
     if(key==="r8"||key==="r4"){
@@ -1056,7 +1176,7 @@ function ranking(body){
       FASES.forEach(f=>{
         const lista=CHAV_PALPITES[p]?.[f.k]||[];
         if(lista.length===0)return;
-        const reaisSet=f.k==="r32"?R32_REAL_SET:f.k==="r16"?r16RealSet():f.k==="r8"?r8RealSet():f.k==="r4"?r4RealSet():new Set(Object.values(ko[f.k]||{}));
+        const reaisSet=f.k==="r32"?R32_REAL_SET:f.k==="r16"?r16RealSet():f.k==="r8"?r8RealSet():f.k==="r4"?r4RealSet():f.k==="r2"?r2RealSet():new Set(Object.values(ko[f.k]||{}));
         const jaValendo=reaisSet.size>0; // fase já aconteceu (tem quem passou marcado)
         const acertos=lista.filter(t=>reaisSet.has(t));
         const faseNome={r32:"16-avos",r16:"Oitavas",r8:"Quartas",r4:"Semifinal",r2:"Final",champ:"Campeão"}[f.k];
@@ -1265,7 +1385,7 @@ function apostasPassaria(body){
 
   // Outras fases: cards por jogador
   const ko=DB.results.ko||{};
-  const reaisSet=fase==="r16"?r16RealSet():fase==="r8"?r8RealSet():fase==="r4"?r4RealSet():new Set(Object.values(ko[fase]||{}));
+  const reaisSet=fase==="r16"?r16RealSet():fase==="r8"?r8RealSet():fase==="r4"?r4RealSet():fase==="r2"?r2RealSet():new Set(Object.values(ko[fase]||{}));
   const temReal=reaisSet.size>0;
   const ptsFase={r16:4,r8:6,r4:8,r2:10,champ:20}[fase];
   const grid=ce("div",{style:"display:grid;grid-template-columns:repeat(2,1fr);gap:8px"});
@@ -1357,6 +1477,15 @@ function injetarPalpites16(){
   if(!DB.results.ko)DB.results.ko={};
   if(!DB.results.ko.r32)DB.results.ko.r32={};
   if(!DB.results.ko.r32[1]){DB.results.ko.r32[1]="Canadá";mudou=true;}
+  // Resultados reais das SEMIS (libera Final e 3º lugar)
+  if(!DB.results.ko2.r4)DB.results.ko2.r4={};
+  Object.keys(KO2_FIXOS.r4||{}).forEach(jid=>{
+    if(DB.results.ko2.r4[jid]==null){DB.results.ko2.r4[jid]=KO2_FIXOS.r4[jid];mudou=true;}
+  });
+  if(!DB.results.ko.r4)DB.results.ko.r4={};
+  Object.keys(KO_FIXOS.r4||{}).forEach(jid=>{
+    if(!DB.results.ko.r4[jid]){DB.results.ko.r4[jid]=KO_FIXOS.r4[jid];mudou=true;}
+  });
   // Palpites dos 16-avos — NUNCA cria guesses vazio; só adiciona em quem já foi importado
   PLAYERS.forEach(p=>{
     if(!DB.guesses[p]||!DB.imported[p])return;
@@ -1383,6 +1512,18 @@ function injetarPalpites16(){
     const meusSemi=(typeof PALPITES_SEMI!=="undefined"?PALPITES_SEMI[p]:null)||{};
     Object.keys(meusSemi).forEach(jid=>{
       if(DB.guesses[p].bracket2.r4[jid]==null){DB.guesses[p].bracket2.r4[jid]=meusSemi[jid];mudou=true;}
+    });
+    // Palpites da FINAL
+    if(!DB.guesses[p].bracket2.r2)DB.guesses[p].bracket2.r2={};
+    const meusFin=(typeof PALPITES_FINAL!=="undefined"?PALPITES_FINAL[p]:null)||{};
+    Object.keys(meusFin).forEach(jid=>{
+      if(DB.guesses[p].bracket2.r2[jid]==null){DB.guesses[p].bracket2.r2[jid]=meusFin[jid];mudou=true;}
+    });
+    // Palpites da DISPUTA DE 3º LUGAR
+    if(!DB.guesses[p].bracket2.r3)DB.guesses[p].bracket2.r3={};
+    const meusTer=(typeof PALPITES_TERCEIRO!=="undefined"?PALPITES_TERCEIRO[p]:null)||{};
+    Object.keys(meusTer).forEach(jid=>{
+      if(DB.guesses[p].bracket2.r3[jid]==null){DB.guesses[p].bracket2.r3[jid]=meusTer[jid];mudou=true;}
     });
   });
   if(mudou)pushDB();
