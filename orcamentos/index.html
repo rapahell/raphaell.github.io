@@ -1,1 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de Orçamento // Raphael Faria Criativo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap');
 
+  :root {
+    --ink: #000;
+    --paper: #ffffff;
+    --bg: #d8d8d8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    -webkit-font-smoothing: none;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+    align-items: start;
+  }
+
+  /* ============ FORMULÁRIO ============ */
+  .panel {
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    box-shadow: 8px 8px 0 var(--ink);
+    padding: 22px;
+    position: sticky;
+    top: 24px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+  }
+
+  .panel h1 {
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+  }
+
+  .field { margin-bottom: 14px; text-align: left; }
+
+  .field label {
+    display: block;
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+
+  .field input, .field textarea {
+    width: 100%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 8px 10px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .field input:focus, .field textarea:focus { outline: 2px solid var(--ink); outline-offset: 1px; }
+  .field textarea { resize: vertical; min-height: 44px; }
+
+  /* campo número + botão de incremento */
+  .num-row { display: flex; gap: 6px; }
+  .num-row input { flex: 1; }
+  .num-plus {
+    flex: 0 0 auto;
+    width: 42px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 1;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .num-plus:hover { background: var(--ink); color: var(--paper); }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .sec-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 20px 0 10px;
+    padding-top: 12px;
+    border-top: 2px dashed var(--ink);
+  }
+  .sec-label:first-of-type { border-top: none; }
+
+  /* itens */
+  .item-card {
+    border: 2px solid var(--ink);
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #f4f4f4;
+  }
+  .item-card .item-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .item-card .del {
+    border: 2px solid var(--ink); background: var(--paper); cursor: pointer;
+    font-family: inherit; font-weight: 800; font-size: 10px; padding: 2px 8px;
+  }
+  .item-card .del:hover { background: var(--ink); color: var(--paper); }
+
+  button.btn {
+    width: 100%;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  button.btn:hover { background: var(--ink); color: var(--paper); }
+  button.btn.solid { background: var(--ink); color: var(--paper); }
+  button.btn.solid:hover { background: #333; }
+
+  .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+
+  /* ============ PREVIEW (folha) ============ */
+  .preview-wrap { display: flex; justify-content: center; }
+
+  .sheet {
+    width: 100%;
+    max-width: 760px;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    padding: 34px 40px 40px;
+    box-shadow: 10px 10px 0 var(--ink);
+  }
+
+  .header { border-bottom: 3px solid var(--ink); padding-bottom: 18px; margin-bottom: 22px; }
+  .logo-img { display: block; max-width: 230px; width: 48%; height: auto; }
+  .header-meta { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .doc-tag { border: 2px solid var(--ink); padding: 6px 14px; font-weight: 800; font-size: 16px; letter-spacing: 3px; }
+  .doc-tag span { font-size: 11px; letter-spacing: 1px; opacity: 0.8; }
+
+  .strip {
+    height: 14px; margin: 20px 0;
+    background-image: repeating-linear-gradient(45deg, var(--ink) 0, var(--ink) 6px, transparent 6px, transparent 12px);
+    border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink);
+  }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; border: 2px solid var(--ink); margin-bottom: 24px; }
+  .info-cell { padding: 12px 16px; font-size: 12px; }
+  .info-cell.br { border-right: 2px solid var(--ink); }
+  .info-cell.bt { border-top: 2px solid var(--ink); }
+  .info-cell .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; display: block; margin-bottom: 5px; opacity: 0.7; }
+  .info-cell .val { font-weight: 700; font-size: 13px; min-height: 16px; }
+
+  .section-title { font-weight: 800; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+  .section-title::before { content: ">>"; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 22px; }
+  thead th { background: var(--ink); color: var(--paper); text-align: left; padding: 9px 12px; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; }
+  thead th.num { text-align: right; }
+  tbody td { padding: 11px 12px; border-bottom: 1px dashed var(--ink); vertical-align: top; }
+  tbody td.num { text-align: right; font-weight: 700; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 2px solid var(--ink); }
+  .desc-title { font-weight: 700; }
+  .desc-sub { font-size: 10px; opacity: 0.7; margin-top: 2px; white-space: pre-wrap; }
+
+  .totals { display: flex; justify-content: flex-end; margin-bottom: 26px; }
+  .totals-box { width: 300px; }
+  .totals-row { display: flex; justify-content: space-between; padding: 7px 12px; font-size: 12px; border-bottom: 1px dashed var(--ink); }
+  .totals-row.grand { background: var(--ink); color: var(--paper); font-weight: 800; font-size: 15px; letter-spacing: 1px; border: none; padding: 11px 12px; }
+
+  .payment { border: 2px solid var(--ink); padding: 16px 18px; margin-bottom: 22px; }
+  .pay-rows { display: flex; margin-top: 12px; }
+  .pay-step { flex: 1; border: 2px solid var(--ink); padding: 14px 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
+  .pay-step:first-child { border-right: none; }
+  .pay-step .pct { font-size: 26px; font-weight: 800; line-height: 1; }
+  .pay-step .when { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; min-height: 24px; display: flex; align-items: center; justify-content: center; }
+  .pay-step .pay-val { font-size: 16px; font-weight: 800; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--ink); }
+  .pix { margin-top: 16px; display: flex; align-items: center; gap: 14px; }
+  .pix-qr { width: 78px; height: 78px; border: 2px solid var(--ink); display: block; flex: 0 0 auto; }
+  .pix-info { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .pix .tag { background: var(--ink); color: var(--paper); padding: 3px 8px; font-weight: 800; font-size: 10px; letter-spacing: 2px; }
+  .pix .key { font-weight: 700; }
+
+  .obs { border: 2px dashed var(--ink); padding: 12px 16px; margin-bottom: 22px; font-size: 11px; white-space: pre-wrap; }
+  .obs .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; display: block; margin-bottom: 6px; font-weight: 800; }
+
+  .footer { border-top: 3px solid var(--ink); padding-top: 16px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+  .sign { text-align: center; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+  .sign-rf { max-width: 240px; }
+  .ass-img { display: block; max-width: 200px; width: 100%; height: auto; }
+  .sign .line { border-top: 1.5px solid var(--ink); margin-bottom: 6px; padding-top: 6px; }
+  .footer-note { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.7; text-align: right; }
+
+  /* ============ IMPRESSÃO ============ */
+  @media print {
+    @page { margin: 12mm; }
+    body { background: #fff; }
+    .app { display: block; padding: 0; max-width: 100%; }
+    .panel { display: none !important; }
+    .preview-wrap { display: block; }
+    .sheet { box-shadow: none; border: 2px solid #000; max-width: 100%; width: 100%; }
+    .no-print { display: none !important; }
+
+    /* manter cada bloco inteiro numa mesma página, sem cortar no meio */
+    .info-grid, .payment, .obs, .footer, .totals, thead, tbody tr {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    /* nunca deixar o rodapé/assinatura sozinho separado do que vem antes */
+    .payment, .footer { break-before: auto; }
+    thead { display: table-header-group; } /* cabeçalho da tabela repete se a tabela quebrar */
+  }
+
+  .share-msg { font-size: 11px; letter-spacing: 0.5px; text-align: center; margin-top: 4px; min-height: 14px; }
+  .share-msg.err { color: #b00; }
+  .pct-warn { font-size: 10px; letter-spacing: 0.5px; margin: -6px 0 12px; min-height: 12px; color: #b00; font-weight: 700; }
+
+  /* offscreen: preview fica fora da tela mas renderizável pelo html2pdf */
+  .offscreen {
+    position: absolute !important;
+    left: -9999px !important;
+    top: 0 !important;
+    width: 760px !important;
+  }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; gap: 0; padding: 16px 14px 40px; }
+    .panel {
+      position: static; max-height: none; overflow: visible;
+      box-shadow: 5px 5px 0 var(--ink); width: 100%;
+    }
+    /* no celular escondemos o preview da tela (continua no DOM pro PDF) */
+    .preview-wrap { position: absolute; left: -9999px; top: 0; width: 760px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ FORMULÁRIO ============ -->
+  <div class="panel no-print">
+    <h1>Gerar Orçamento</h1>
+
+    <div class="sec-label">Dados</div>
+    <div class="field">
+      <label>Cliente</label>
+      <input id="f_cliente" type="text" placeholder="Nome do cliente">
+    </div>
+    <div class="field">
+      <label>Responsável pelo projeto</label>
+      <input id="f_resp" type="text" placeholder="Nome do responsável">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Nº</label>
+        <div class="num-row">
+          <input id="f_numero" type="text" value="#599">
+          <button class="num-plus" id="nextNum" type="button" title="Próximo número">+</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Data</label>
+        <input id="f_data" type="text" placeholder="20/07/2026">
+      </div>
+    </div>
+    <div class="field">
+      <label>Validade da proposta</label>
+      <input id="f_validade" type="text" value="15 DIAS">
+    </div>
+
+    <div class="sec-label">Itens do escopo</div>
+    <div id="items"></div>
+    <button class="btn" id="addItem" type="button">+ Adicionar item</button>
+
+    <div class="sec-label">Valores</div>
+    <div class="field">
+      <label>Desconto (R$)</label>
+      <input id="f_desconto" type="number" min="0" step="0.01" value="0">
+    </div>
+
+    <div class="sec-label">Forma de Pagamento</div>
+    <div class="row2">
+      <div class="field">
+        <label>1ª parcela %</label>
+        <input id="f_p1" type="number" min="0" max="100" value="50">
+      </div>
+      <div class="field">
+        <label>2ª parcela %</label>
+        <input id="f_p2" type="number" min="0" max="100" value="50">
+      </div>
+    </div>
+    <div id="pctWarn" class="pct-warn"></div>
+    <div class="field">
+      <label>Chave PIX</label>
+      <input id="f_pix" type="text" value="pix@raphaelfaria.com.br">
+    </div>
+
+    <div class="sec-label">Observações (opcional)</div>
+    <div class="field">
+      <textarea id="f_obs" placeholder="Prazo de entrega, condições, etc."></textarea>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn solid" id="btnShare" type="button">↗ Gerar e compartilhar</button>
+      <button class="btn" id="btnPrint" type="button">↓ Salvar PDF</button>
+      <div id="shareMsg" class="share-msg"></div>
+    </div>
+  </div>
+
+  <!-- ============ PREVIEW ============ -->
+  <div class="preview-wrap">
+    <div class="sheet" id="sheet">
+      <div class="header">
+        <img class="logo-img" id="imgLogo" crossorigin="anonymous" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784561922/logo_nm9b6q.jpg" alt="Raphael Faria Criativo">
+        <div class="header-meta">
+          <div>DESIGN &nbsp;//&nbsp; DIREÇÃO DE ARTE &nbsp;//&nbsp; CRIAÇÃO</div>
+          <div class="doc-tag">ORÇAMENTO <span id="o_numero_top">#0599</span></div>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-cell br"><span class="label">Cliente</span><span class="val" id="o_cliente">—</span></div>
+        <div class="info-cell"><span class="label">Responsável pelo Projeto</span><span class="val" id="o_resp">—</span></div>
+        <div class="info-cell br bt"><span class="label">Data</span><span class="val" id="o_data">—</span></div>
+        <div class="info-cell bt"><span class="label">Validade da Proposta</span><span class="val" id="o_validade">15 DIAS</span></div>
+      </div>
+
+      <div class="section-title">Escopo do Projeto</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:52px">Item</th>
+            <th>Descrição</th>
+            <th class="num" style="width:60px">Qtd</th>
+            <th class="num" style="width:120px">Valor Unit.</th>
+            <th class="num" style="width:120px">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody id="o_rows"></tbody>
+      </table>
+
+      <div class="totals">
+        <div class="totals-box">
+          <div class="totals-row"><span>SUBTOTAL</span><span id="o_subtotal">R$ 0,00</span></div>
+          <div class="totals-row"><span>DESCONTO</span><span id="o_desconto">R$ 0,00</span></div>
+          <div class="totals-row grand"><span>TOTAL</span><span id="o_total">R$ 0,00</span></div>
+        </div>
+      </div>
+
+      <div class="strip"></div>
+
+      <div class="payment">
+        <div class="section-title" style="margin-bottom:4px;">Forma de Pagamento</div>
+        <div class="pay-rows">
+          <div class="pay-step">
+            <div class="pct" id="o_p1">50%</div>
+            <div class="when">na entrada</div>
+            <div class="pay-val" id="o_v1">R$ 0,00</div>
+          </div>
+          <div class="pay-step">
+            <div class="pct" id="o_p2">50%</div>
+            <div class="when">na entrega final dos arquivos</div>
+            <div class="pay-val" id="o_v2">R$ 0,00</div>
+          </div>
+        </div>
+        <div class="pix">
+          <img class="pix-qr" id="imgQR" crossorigin="anonymous" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784574902/qrcode_p0jlho.png" alt="QR Code PIX">
+          <div class="pix-info">
+            <span class="tag">PIX</span>
+            <span class="key" id="o_pix">pix@raphaelfaria.com.br</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="obs" id="o_obs_wrap" style="display:none;">
+        <span class="label">Observações</span>
+        <span id="o_obs"></span>
+      </div>
+
+      <div class="footer">
+        <div class="sign sign-rf">
+          <img class="ass-img" id="imgAss" crossorigin="anonymous" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784561996/ass_lyfzhs.png" alt="assinatura">
+        </div>
+        <div class="footer-note">RAPHAEL FARIA / CRIATIVO<br>proposta sujeita a alteração</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const brl = n => 'R$ ' + (Number(n)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  let items = [{desc:'', sub:'', qtd:1, val:0}];
+
+  const itemsBox = document.getElementById('items');
+
+  function renderItemForm(){
+    itemsBox.innerHTML = '';
+    items.forEach((it, i) => {
+      const card = document.createElement('div');
+      card.className = 'item-card';
+      card.innerHTML = `
+        <div class="item-head">
+          <span>ITEM ${String(i+1).padStart(2,'0')}</span>
+          <button class="del" data-del="${i}" type="button">excluir</button>
+        </div>
+        <div class="field"><label>Serviço</label><input data-f="desc" data-i="${i}" type="text" value="${esc(it.desc)}" placeholder="Ex: Identidade visual"></div>
+        <div class="field"><label>Detalhe</label><input data-f="sub" data-i="${i}" type="text" value="${esc(it.sub)}" placeholder="entregáveis / obs"></div>
+        <div class="row2">
+          <div class="field"><label>Qtd</label><input data-f="qtd" data-i="${i}" type="number" min="0" step="1" value="${it.qtd}"></div>
+          <div class="field"><label>Valor unit.</label><input data-f="val" data-i="${i}" type="number" min="0" step="0.01" value="${it.val}"></div>
+        </div>`;
+      itemsBox.appendChild(card);
+    });
+  }
+  function esc(s){ return String(s).replace(/"/g,'&quot;'); }
+
+  itemsBox.addEventListener('input', e => {
+    const f = e.target.dataset.f, i = e.target.dataset.i;
+    if(f===undefined) return;
+    items[i][f] = (f==='qtd'||f==='val') ? Number(e.target.value) : e.target.value;
+    render();
+  });
+  itemsBox.addEventListener('click', e => {
+    if(e.target.dataset.del!==undefined){
+      items.splice(Number(e.target.dataset.del),1);
+      if(items.length===0) items.push({desc:'',sub:'',qtd:1,val:0});
+      renderItemForm(); render();
+    }
+  });
+  document.getElementById('addItem').addEventListener('click', ()=>{
+    items.push({desc:'',sub:'',qtd:1,val:0}); renderItemForm(); render();
+  });
+
+  // campos simples
+  const bind = (id, fn) => document.getElementById(id).addEventListener('input', fn);
+  ['f_cliente','f_resp','f_numero','f_data','f_validade','f_desconto','f_p1','f_p2','f_pix','f_obs'].forEach(id=>bind(id,render));
+
+  function render(){
+    document.getElementById('o_cliente').textContent  = val('f_cliente') || '—';
+    document.getElementById('o_resp').textContent     = val('f_resp') || '—';
+    document.getElementById('o_numero_top').textContent = val('f_numero') || '—';
+    document.getElementById('o_data').textContent     = val('f_data') || '—';
+    document.getElementById('o_validade').textContent = val('f_validade') || '—';
+    document.getElementById('o_pix').textContent      = val('f_pix') || '—';
+    document.getElementById('o_p1').textContent = (val('f_p1')||0) + '%';
+    document.getElementById('o_p2').textContent = (val('f_p2')||0) + '%';
+
+    const rows = document.getElementById('o_rows');
+    rows.innerHTML = '';
+    let subtotal = 0;
+    items.forEach((it,i)=>{
+      const line = (Number(it.qtd)||0) * (Number(it.val)||0);
+      subtotal += line;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="num">${String(i+1).padStart(2,'0')}</td>
+        <td><div class="desc-title">${it.desc||'—'}</div>${it.sub?`<div class="desc-sub">${it.sub}</div>`:''}</td>
+        <td class="num">${it.qtd||0}</td>
+        <td class="num">${brl(it.val)}</td>
+        <td class="num">${brl(line)}</td>`;
+      rows.appendChild(tr);
+    });
+
+    const desc = Number(val('f_desconto'))||0;
+    const total = Math.max(0, subtotal - desc);
+    document.getElementById('o_subtotal').textContent = brl(subtotal);
+    document.getElementById('o_desconto').textContent = brl(desc);
+    document.getElementById('o_total').textContent    = brl(total);
+
+    // valores de cada parcela = total × percentual (a 2ª absorve a sobra do arredondamento)
+    const p1 = Number(val('f_p1'))||0;
+    const p2 = Number(val('f_p2'))||0;
+    const v1 = Math.round(total * p1) / 100 * 100 / 100; // mantém 2 casas
+    const val1 = Math.round(total * p1) / 100;
+    const val2 = Math.round((total * p2) )/100;
+    // para fechar exato: v2 = total - v1 quando soma = 100
+    const somaPct = p1 + p2;
+    let f1 = total * p1 / 100;
+    let f2 = total * p2 / 100;
+    f1 = Math.round(f1*100)/100;
+    if (somaPct === 100) { f2 = Math.round((total - f1)*100)/100; }
+    else { f2 = Math.round(f2*100)/100; }
+    document.getElementById('o_v1').textContent = brl(f1);
+    document.getElementById('o_v2').textContent = brl(f2);
+
+    // aviso se percentuais não somam 100
+    const warn = document.getElementById('pctWarn');
+    if (warn) warn.textContent = (somaPct !== 100) ? `⚠ As parcelas somam ${somaPct}% (não 100%)` : '';
+
+    const obs = val('f_obs');
+    document.getElementById('o_obs_wrap').style.display = obs ? 'block' : 'none';
+    document.getElementById('o_obs').textContent = obs;
+  }
+  const val = id => document.getElementById(id).value.trim();
+
+  // nome-base do arquivo: orcamento-0599-nome-do-cliente
+  function nomeArquivo(){
+    const numLimpo = String(numInput.value).replace(/\D/g,'') || 'sn';
+    const cli = (val('f_cliente') || 'cliente')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-z0-9]+/g,'-')
+      .replace(/^-+|-+$/g,'')
+      .slice(0,40) || 'cliente';
+    return `orcamento-${numLimpo}-${cli}`;
+  }
+
+  // ===== SALVAR PDF (impressão nativa — melhor no desktop) =====
+  document.getElementById('btnPrint').addEventListener('click', ()=>{
+    const tituloOriginal = document.title;
+    document.title = nomeArquivo();
+    window.print();
+    setTimeout(()=>{ document.title = tituloOriginal; }, 500);
+  });
+
+  // ===== GERAR + COMPARTILHAR (melhor no celular → WhatsApp) =====
+  const shareMsg = document.getElementById('shareMsg');
+  function setMsg(txt, err){ shareMsg.textContent = txt; shareMsg.className = 'share-msg' + (err?' err':''); }
+
+  document.getElementById('btnShare').addEventListener('click', async ()=>{
+    const btn = document.getElementById('btnShare');
+    btn.disabled = true;
+    setMsg('Gerando PDF…', false);
+    try {
+      const sheet = document.getElementById('sheet');
+      const nome = nomeArquivo() + '.pdf';
+
+      const opt = {
+        margin: 8,
+        filename: nome,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css','avoid-all'] }
+      };
+
+      // gera o PDF como Blob
+      const blob = await html2pdf().set(opt).from(sheet).outputPdf('blob');
+      const file = new File([blob], nome, { type: 'application/pdf' });
+
+      // tenta compartilhamento nativo com arquivo (celular)
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Orçamento — Raphael Faria Criativo',
+          text: `Segue o orçamento ${numInput.value}.`
+        });
+        setMsg('Compartilhado ✓', false);
+      } else {
+        // fallback: baixa o arquivo (desktop ou navegador sem share de arquivo)
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = nome; a.click();
+        URL.revokeObjectURL(url);
+        setMsg('PDF baixado (compartilhamento não suportado aqui)', false);
+      }
+    } catch (e) {
+      if (e && e.name === 'AbortError') { setMsg('', false); }  // usuário cancelou
+      else { console.error(e); setMsg('Erro ao gerar. Tente "Salvar PDF".', true); }
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // ===== Pré-carrega logo e assinatura como base64 (evita canvas contaminado no PDF) =====
+  async function inlineImg(id){
+    const img = document.getElementById(id);
+    if(!img) return;
+    const src = img.getAttribute('src');
+    if(src.startsWith('data:')) return; // já embutida
+    try {
+      const resp = await fetch(src, { mode: 'cors' });
+      const blob = await resp.blob();
+      const dataUrl = await new Promise((res, rej)=>{
+        const r = new FileReader();
+        r.onload = ()=>res(r.result);
+        r.onerror = rej;
+        r.readAsDataURL(blob);
+      });
+      img.setAttribute('src', dataUrl);
+    } catch(e) {
+      // se falhar (CORS/offline), mantém a URL original; o PDF ainda tenta com crossorigin
+      console.warn('Não consegui embutir imagem', id, e);
+    }
+  }
+  // roda ao abrir
+  inlineImg('imgLogo');
+  inlineImg('imgAss');
+  inlineImg('imgQR');
+  const NUM_KEY = 'rf_orc_num';
+  const numInput = document.getElementById('f_numero');
+
+  // formata número -> "#0599" (mínimo 4 dígitos, mantém maiores)
+  function fmtNum(n){ return '#' + String(n).padStart(4,'0'); }
+  // lê só os dígitos do campo
+  function currentNum(){ return parseInt(String(numInput.value).replace(/\D/g,''),10) || 599; }
+
+  // ao abrir: usa o número salvo, ou 599 na primeira vez
+  (function initNum(){
+    const saved = parseInt(localStorage.getItem(NUM_KEY),10);
+    numInput.value = fmtNum(Number.isFinite(saved) ? saved : 599);
+  })();
+
+  // sempre que o número muda no campo, salva
+  numInput.addEventListener('input', ()=>{
+    localStorage.setItem(NUM_KEY, currentNum());
+  });
+
+  // botão: avança para o próximo número
+  document.getElementById('nextNum').addEventListener('click', ()=>{
+    const next = currentNum() + 1;
+    numInput.value = fmtNum(next);
+    localStorage.setItem(NUM_KEY, next);
+    render();
+  });
+
+  // ===== Data automática (dia de hoje) =====
+  (function initData(){
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const yyyy = d.getFullYear();
+    document.getElementById('f_data').value = `${dd}/${mm}/${yyyy}`;
+  })();
+
+  renderItemForm(); render();
+</script>
+</body>
+</html>
