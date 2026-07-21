@@ -217,7 +217,7 @@
   .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
   .logo-img { display: block; max-width: 230px; width: 48%; height: auto; }
   .contact { text-align: right; font-size: 11px; line-height: 1.5; font-weight: 700; padding-top: 6px; }
-  .header-meta { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .header-meta { display: flex; justify-content: flex-end; align-items: flex-end; margin-top: 10px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
   .doc-tag { border: 2px solid var(--ink); padding: 6px 14px; font-weight: 800; font-size: 16px; letter-spacing: 3px; }
   .doc-tag span { font-size: 11px; letter-spacing: 1px; opacity: 0.8; }
 
@@ -247,8 +247,9 @@
   .desc-sub { font-size: 10px; opacity: 0.7; margin-top: 2px; white-space: pre-wrap; }
 
   .totals-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 26px; }
-  .obs-inline { flex: 1; border: 2px dashed var(--ink); padding: 12px 14px; font-size: 11px; line-height: 1.5; white-space: pre-wrap; align-self: stretch; }
+  .obs-inline { flex: 1; border: 2px dashed var(--ink); padding: 12px 14px; font-size: 11px; line-height: 1.5; align-self: flex-start; }
   .obs-inline .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; display: block; margin-bottom: 6px; font-weight: 800; }
+  .obs-inline .obs-text { display: block; white-space: pre-wrap; }
   .totals { display: flex; justify-content: flex-end; flex: 0 0 auto; }
   .totals-box { width: 300px; }
   .totals-row { display: flex; justify-content: space-between; padding: 7px 12px; font-size: 12px; border-bottom: 1px dashed var(--ink); }
@@ -295,13 +296,17 @@
     .form-full { padding: 16px 14px 40px; }
     .panel {
       position: static; max-height: none; overflow: visible;
-      box-shadow: 5px 5px 0 var(--ink); width: 100%;
+      box-shadow: var(--ui-shadow); width: 100%;
     }
     .preview-page { padding: 16px 12px 40px; }
     .preview-actions button { min-width: 100%; }
-    /* a folha é larga (760px); no celular deixamos rolar horizontal dentro da aba */
-    .preview-wrap { overflow-x: auto; }
-    .sheet { min-width: 700px; }
+    /* a folha é larga (760px); no celular deixamos rolar horizontal só na aba Preview */
+    #viewPreview .preview-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    #viewPreview .sheet { min-width: 700px; }
+    /* modal: folha se ajusta à largura da tela (sem corte) */
+    #viewModal { padding: 10px; }
+    .modal-inner { max-width: 100%; }
+    #viewModal .preview-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   }
 
   /* ============ IMPRESSÃO (vem por último para vencer as regras acima) ============ */
@@ -384,6 +389,8 @@
   .gate-box button:hover { background: var(--ui-accent-hover); }
   .gate-err { color: #d70015; font-size: 14px; font-weight: 500; min-height: 18px; margin-top: 12px; }
   .gate-credit { font-size: 12px; color: var(--ui-muted); margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--ui-border); line-height: 1.4; }
+  .gate-credit a { color: var(--ui-accent); text-decoration: none; font-weight: 500; }
+  .gate-credit a:hover { text-decoration: underline; }
 
   /* lista de salvos */
   .list-wrap { max-width: 780px; margin: 0 auto; padding: 44px 24px 60px; }
@@ -481,11 +488,11 @@
 <!-- ============ GATE DE SENHA ============ -->
 <div id="gate">
   <div class="gate-box">
-    <img class="gate-logo" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784663372/orca_topo_xihrjl.png" alt="Orca">
+    <img class="gate-logo" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784663372/orca_fsobx4.png" alt="Orca">
     <input id="gatePass" type="password" placeholder="senha" autocomplete="off">
     <button id="gateBtn" type="button">Entrar</button>
     <div class="gate-err" id="gateErr"></div>
-    <div class="gate-credit">Sistema de orçamentos desenvolvido por Raphael Faria</div>
+    <div class="gate-credit">Sistema de orçamentos desenvolvido por: <a href="mailto:contato@raphaelfaria.com.br">Raphael Faria</a></div>
   </div>
 </div>
 
@@ -555,7 +562,7 @@
 
     <div class="sec-label">Observações (opcional)</div>
     <div class="field">
-      <textarea id="f_obs" placeholder="Prazo de entrega, condições, etc."></textarea>
+      <textarea id="f_obs" rows="2" placeholder="Prazo de entrega, condições, etc."></textarea>
     </div>
 
     <button class="btn-preview" id="btnPreview" type="button">Gerar preview →</button>
@@ -586,7 +593,6 @@
           </div>
         </div>
         <div class="header-meta">
-          <div>DESIGN &nbsp;//&nbsp; DIREÇÃO DE ARTE &nbsp;//&nbsp; CRIAÇÃO</div>
           <div class="doc-tag">ORÇAMENTO <span id="o_numero_top">#0599</span></div>
         </div>
       </div>
@@ -615,7 +621,7 @@
       <div class="totals-wrap">
         <div class="obs-inline" id="o_obs_wrap" style="display:none;">
           <span class="label">Observações</span>
-          <span id="o_obs"></span>
+          <span class="obs-text" id="o_obs"></span>
         </div>
         <div class="totals">
           <div class="totals-box">
@@ -698,7 +704,6 @@
           </div>
         </div>
         <div class="header-meta">
-          <div>DESIGN &nbsp;//&nbsp; DIREÇÃO DE ARTE &nbsp;//&nbsp; CRIAÇÃO</div>
           <div class="doc-tag">ORÇAMENTO <span id="o_numero_top_m">#0599</span></div>
         </div>
       </div>
@@ -727,7 +732,7 @@
       <div class="totals-wrap">
         <div class="obs-inline" id="o_obs_wrap_m" style="display:none;">
           <span class="label">Observações</span>
-          <span id="o_obs_m"></span>
+          <span class="obs-text" id="o_obs_m"></span>
         </div>
         <div class="totals">
           <div class="totals-box">
@@ -792,6 +797,7 @@ const $ = id => document.getElementById(id);
 const brl = n => 'R$ ' + (Number(n)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const val = id => { const el = $(id); return el ? el.value.trim() : ''; };
 function esc(s){ return String(s).replace(/"/g,'&quot;'); }
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function hoje(){
   const d = new Date();
   return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
@@ -816,7 +822,7 @@ function renderItemForm(){
         <button class="del" data-del="${i}" type="button">excluir</button>
       </div>
       <div class="field"><label>Serviço</label><input data-f="desc" data-i="${i}" type="text" value="${esc(it.desc)}" placeholder="Ex: Identidade visual"></div>
-      <div class="field"><label>Detalhe</label><input data-f="sub" data-i="${i}" type="text" value="${esc(it.sub)}" placeholder="entregáveis / obs"></div>
+      <div class="field"><label>Detalhe</label><textarea data-f="sub" data-i="${i}" class="detalhe-area" rows="2" placeholder="entregáveis / obs (pode dar Enter para tópicos)">${esc(it.sub)}</textarea></div>
       <div class="row2">
         <div class="field"><label>Qtd</label><input data-f="qtd" data-i="${i}" type="number" min="0" step="1" value="${it.qtd}"></div>
         <div class="field"><label>Valor unit.</label><input data-f="val" data-i="${i}" type="number" min="0" step="0.01" value="${it.val}"></div>
@@ -940,9 +946,11 @@ function renderSheet(d, sfx){
     d.itens.forEach((it,i)=>{
       const line = (it.qtd||0)*(it.val||0);
       const tr = document.createElement('tr');
+      const descHtml = escHtml(it.desc||'—');
+      const subHtml = it.sub ? escHtml(it.sub) : '';
       tr.innerHTML = `
         <td class="num">${String(i+1).padStart(2,'0')}</td>
-        <td><div class="desc-title">${it.desc||'—'}</div>${it.sub?`<div class="desc-sub">${it.sub}</div>`:''}</td>
+        <td><div class="desc-title">${descHtml}</div>${subHtml?`<div class="desc-sub">${subHtml}</div>`:''}</td>
         <td class="num">${it.qtd||0}</td>
         <td class="num">${brl(it.val)}</td>
         <td class="num">${brl(line)}</td>`;
@@ -1011,7 +1019,7 @@ $('btnBackForm').addEventListener('click', ()=> showView('form'));
 
 /* ==================== NOME DE ARQUIVO ==================== */
 function nomeArquivo(d){
-  const num = d.numeroLimpo || 'sn';
+  const num = d.numeroLimpo || (d.numero ? String(d.numero).replace(/\D/g,'') : '') || 'sn';
   const cli = slug(d.cliente) || 'cliente';
   return `orcamento-${num}-${cli}`;
 }
@@ -1040,10 +1048,23 @@ const imagensProntas = Promise.allSettled(
 /* ==================== GERAR PDF (blob) ==================== */
 async function gerarPdfBlob(sheetEl, nome){
   await imagensProntas;
+  // garante que a folha seja renderizada na largura cheia (760px), mesmo no celular
+  const LARGURA = 760;
+  // escala menor no celular para evitar estouro de memória no iOS/Safari
+  const ehMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 900;
+  const escala = ehMobile ? 1.6 : 2;
   const opt = {
     margin: 8, filename: nome,
-    image: { type:'jpeg', quality:0.98 },
-    html2canvas: { scale:2, useCORS:true, backgroundColor:'#ffffff' },
+    image: { type:'jpeg', quality:0.95 },
+    html2canvas: {
+      scale: escala,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      width: LARGURA,
+      windowWidth: LARGURA,
+      scrollX: 0,
+      scrollY: 0
+    },
     jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
     pagebreak: { mode:['css','avoid-all'] }
   };
@@ -1054,22 +1075,38 @@ async function gerarPdfBlob(sheetEl, nome){
 async function compartilharOuBaixar(sheetEl, d, msgEl){
   const setMsg = (t,e)=>{ if(msgEl){ msgEl.textContent=t; msgEl.className = (msgEl.classList.contains('save-status')?'save-status':'share-msg') + (e?' err':''); } };
   setMsg('Gerando PDF…', false);
+
+  const nome = nomeArquivo(d) + '.pdf';
+  let blob;
+  // Etapa 1: gerar o PDF
   try {
-    const nome = nomeArquivo(d) + '.pdf';
-    const blob = await gerarPdfBlob(sheetEl, nome);
-    const file = new File([blob], nome, { type:'application/pdf' });
-    if (navigator.canShare && navigator.canShare({ files:[file] })) {
+    blob = await gerarPdfBlob(sheetEl, nome);
+  } catch(e){
+    console.error('Falha ao gerar PDF:', e);
+    setMsg('Não consegui gerar o PDF. Tente "Salvar PDF".', true);
+    return;
+  }
+
+  const baixar = ()=>{
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download=nome;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  };
+
+  // Etapa 2: compartilhar (celular) ou baixar (desktop / sem suporte)
+  const file = new File([blob], nome, { type:'application/pdf' });
+  if (navigator.canShare && navigator.canShare({ files:[file] })) {
+    try {
       await navigator.share({ files:[file], title:'Orçamento — Raphael Faria Criativo', text:`Segue o orçamento ${d.numero}.` });
       setMsg('Compartilhado ✓', false);
-    } else {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download=nome; a.click();
-      URL.revokeObjectURL(url);
-      setMsg('PDF baixado', false);
+    } catch(e){
+      if(e && e.name==='AbortError'){ setMsg('', false); }        // usuário cancelou
+      else { console.warn('Share falhou, baixando:', e); baixar(); setMsg('PDF baixado', false); }
     }
-  } catch(e){
-    if(e && e.name==='AbortError'){ setMsg('', false); }
-    else { console.error(e); setMsg('Erro ao gerar. Tente "Salvar PDF".', true); }
+  } else {
+    baixar();
+    setMsg('PDF baixado', false);
   }
 }
 
