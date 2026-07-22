@@ -298,6 +298,8 @@
 
   /* durante a geração do PDF: sem borda/sombra, respiro vem do padding interno */
   .sheet.capturando { border: none !important; box-shadow: none !important; padding: 22px 26px !important; min-width: 0 !important; }
+  .nav-short { display: none; }
+  .nav-full { display: inline; }
   .topbar-logo { height: 36px; width: auto; max-width: 168px; object-fit: contain; }
   .logo-desk { display: block; }
   .logo-mob { display: none; }
@@ -307,11 +309,13 @@
     html, body { max-width: 100%; overflow-x: hidden; }
 
     /* topbar compacta: logo pequena + abas menores */
-    .topbar { padding: 10px 14px; gap: 8px; }
+    .topbar { padding: 10px 10px; gap: 6px; }
     .logo-desk { display: none; }
-    .logo-mob { display: block; height: 36px; max-width: 56px; }
+    .logo-mob { display: block; height: 34px; max-width: 50px; }
     .topbar .nav { padding: 2px; gap: 0; }
-    .topbar .nav button { padding: 7px 11px; font-size: 13px; }
+    .topbar .nav button { padding: 7px 9px; font-size: 12px; }
+    .nav-full { display: none; }
+    .nav-short { display: inline; }
 
     .app { grid-template-columns: 1fr; gap: 0; padding: 16px 14px 40px; }
     .form-full { padding: 16px 14px 40px; }
@@ -329,6 +333,17 @@
     .budget-row { padding: 14px 16px; }
     .budget-row .b-info { min-width: 0; }
     .budget-row .b-cli, .budget-row .b-num { overflow-wrap: break-word; }
+    .budget-row .b-actions { flex-wrap: wrap; width: 100%; }
+    .b-status { flex: 1 1 100%; }
+
+    /* painel */
+    .cards { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card { padding: 14px 16px; }
+    .card-val { font-size: 20px; }
+    .dash-filtros { width: 100%; }
+    .dash-filtros select { flex: 1; }
+    .bar-val { min-width: 80px; font-size: 12px; }
+    .bars, .cli-list { padding: 14px 16px; }
 
     /* a folha é larga (760px); rola horizontal só dentro do próprio quadro */
     #viewPreview .preview-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -464,6 +479,66 @@
   .budget-row .b-actions button.b-del svg { pointer-events: none; display: block; }
   .list-status { text-align: center; font-size: 15px; color: var(--ui-muted); padding: 44px 0; }
 
+  /* ---- status na lista ---- */
+  .budget-row .b-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .b-badge {
+    font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 980px;
+    letter-spacing: 0.01em; white-space: nowrap;
+  }
+  .st-env { background: #eef2f7; color: #5b6472; }
+  .st-apr { background: #e6f2ff; color: #0071e3; }
+  .st-fin { background: #e6f7ec; color: #1d8a3f; }
+  .st-rec { background: #fdecec; color: #d70015; }
+  .b-status {
+    font-family: var(--ui-font); font-size: 13px; padding: 7px 10px;
+    border: 1px solid var(--ui-border-strong); border-radius: 980px;
+    background: var(--ui-surface); color: var(--ui-text); cursor: pointer;
+  }
+  .b-status:focus { outline: none; border-color: var(--ui-accent); box-shadow: 0 0 0 3px var(--ui-accent-soft); }
+  .budget-row .b-actions button.b-dup {
+    color: var(--ui-muted); padding: 8px 11px; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .budget-row .b-actions button.b-dup:hover { background: var(--ui-accent-soft); border-color: var(--ui-accent); color: var(--ui-accent); }
+  .budget-row .b-actions button.b-dup svg { pointer-events: none; display: block; }
+
+  /* ---- painel ---- */
+  .dash-filtros { display: flex; gap: 8px; }
+  .dash-filtros select {
+    font-family: var(--ui-font); font-size: 14px; padding: 9px 14px;
+    border: 1px solid var(--ui-border-strong); border-radius: 980px;
+    background: var(--ui-surface); color: var(--ui-text); cursor: pointer;
+  }
+  .dash-filtros select:focus { outline: none; border-color: var(--ui-accent); box-shadow: 0 0 0 3px var(--ui-accent-soft); }
+
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+  .card {
+    background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: 16px;
+    padding: 18px 20px; box-shadow: var(--ui-shadow);
+  }
+  .card-label { font-size: 13px; color: var(--ui-muted); font-weight: 500; margin-bottom: 8px; }
+  .card-hint { font-size: 11px; opacity: 0.7; }
+  .card-val { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--ui-text); }
+  .card-sub { font-size: 12px; color: var(--ui-muted); margin-top: 4px; }
+
+  .dash-block { margin-bottom: 30px; }
+  .dash-h2 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 14px; color: var(--ui-text); }
+  .dash-h2-hint { font-size: 12px; font-weight: 400; color: var(--ui-muted); }
+
+  .bars { background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: 16px; padding: 18px 20px; box-shadow: var(--ui-shadow); }
+  .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .bar-row:last-child { margin-bottom: 0; }
+  .bar-mes { flex: 0 0 42px; font-size: 13px; color: var(--ui-muted); }
+  .bar-track { flex: 1; background: var(--ui-surface-2); border-radius: 980px; height: 22px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--ui-accent); border-radius: 980px; min-width: 2px; transition: width .3s; }
+  .bar-val { flex: 0 0 auto; font-size: 13px; font-weight: 500; min-width: 96px; text-align: right; }
+
+  .cli-list { background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: 16px; padding: 6px 20px; box-shadow: var(--ui-shadow); }
+  .cli-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--ui-border); }
+  .cli-row:last-child { border-bottom: none; }
+  .cli-nome { font-size: 15px; font-weight: 500; }
+  .cli-meta { font-size: 12px; color: var(--ui-muted); margin-top: 2px; }
+  .cli-val { font-size: 15px; font-weight: 600; white-space: nowrap; }
+
   /* botao gerar preview */
   .btn-preview {
     width: 100%; font-family: var(--ui-font); font-weight: 500; font-size: 16px;
@@ -541,9 +616,10 @@
   <img class="topbar-logo logo-desk" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784663372/orca_topo_xihrjl.png" alt="Orca">
   <img class="topbar-logo logo-mob" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784663372/orca_fsobx4.png" alt="Orca">
   <div class="nav">
-    <button id="navForm" class="active" type="button">Formulário</button>
-    <button id="navPreview" type="button">Preview</button>
+    <button id="navForm" class="active" type="button"><span class="nav-full">Formulário</span><span class="nav-short">Novo</span></button>
+    <button id="navPreview" type="button"><span class="nav-full">Preview</span><span class="nav-short">Prévia</span></button>
     <button id="navList" type="button">Salvos</button>
+    <button id="navDash" type="button">Painel</button>
   </div>
 </div>
 
@@ -718,6 +794,63 @@
     </div>
     <div id="listContainer"></div>
     <div class="list-status" id="listStatus"></div>
+  </div>
+</div>
+
+<!-- ============ VIEW: PAINEL ============ -->
+<div id="viewDash" class="view">
+  <div class="list-wrap">
+    <div class="list-head">
+      <h1>Painel</h1>
+      <div class="dash-filtros">
+        <select id="dashAno"></select>
+        <select id="dashMes">
+          <option value="">Ano todo</option>
+          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+          <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+          <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+          <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- cartões de resumo -->
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Recebido <span class="card-hint">finalizados</span></div>
+        <div class="card-val" id="dashRecebido">R$ 0,00</div>
+        <div class="card-sub" id="dashRecebidoQtd">0 orçamentos</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Em andamento <span class="card-hint">aprovados</span></div>
+        <div class="card-val" id="dashAndamento">R$ 0,00</div>
+        <div class="card-sub" id="dashAndamentoQtd">0 orçamentos</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Aguardando <span class="card-hint">enviados</span></div>
+        <div class="card-val" id="dashAguardando">R$ 0,00</div>
+        <div class="card-sub" id="dashAguardandoQtd">0 orçamentos</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Taxa de aprovação</div>
+        <div class="card-val" id="dashTaxa">—</div>
+        <div class="card-sub" id="dashTaxaSub">sem dados</div>
+      </div>
+    </div>
+
+    <!-- por mês -->
+    <div class="dash-block">
+      <h2 class="dash-h2">Por mês <span class="dash-h2-hint">valores finalizados</span></h2>
+      <div id="dashMeses" class="bars"></div>
+    </div>
+
+    <!-- por cliente -->
+    <div class="dash-block">
+      <h2 class="dash-h2">Por cliente</h2>
+      <div id="dashClientes" class="cli-list"></div>
+    </div>
+
+    <div class="list-status" id="dashStatus"></div>
   </div>
 </div>
 
@@ -1282,6 +1415,7 @@ $('btnSave').addEventListener('click', async ()=>{
     const doc = Object.assign({}, dadosAtuais, {
       buscaCliente: (dadosAtuais.cliente||'').toLowerCase(),
       buscaNumero: dadosAtuais.numeroLimpo,
+      status: 'enviado',                                  // enviado → aprovado → finalizado / recusado
       criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
       criadoEmMs: Date.now()
     });
@@ -1302,19 +1436,22 @@ function showView(which){
   $('viewForm').classList.toggle('active', which==='form');
   $('viewPreview').classList.toggle('active', which==='preview');
   $('viewList').classList.toggle('active', which==='list');
+  $('viewDash').classList.toggle('active', which==='dash');
   $('navForm').classList.toggle('active', which==='form');
   $('navPreview').classList.toggle('active', which==='preview');
   $('navList').classList.toggle('active', which==='list');
+  $('navDash').classList.toggle('active', which==='dash');
   window.scrollTo(0,0);
   if(which==='list'){ carregarLista(); }
+  if(which==='dash'){ carregarPainel(); }
 }
 $('navForm').addEventListener('click', ()=>showView('form'));
 $('navPreview').addEventListener('click', ()=>{
-  // se ainda não gerou preview, avisa
   if(!dadosAtuais){ showView('form'); $('btnPreview').focus(); return; }
   showView('preview');
 });
 $('navList').addEventListener('click', ()=>showView('list'));
+$('navDash').addEventListener('click', ()=>showView('dash'));
 
 /* ==================== LISTA DE SALVOS ==================== */
 let todosSalvos = [];
@@ -1338,6 +1475,12 @@ async function carregarLista(){
     status.textContent = 'Erro ao carregar. Verifique as regras do Firestore.';
   }
 }
+const STATUS = {
+  enviado:    { label: 'Enviado',    cor: 'st-env' },
+  aprovado:   { label: 'Aprovado',   cor: 'st-apr' },
+  finalizado: { label: 'Finalizado', cor: 'st-fin' },
+  recusado:   { label: 'Recusado',   cor: 'st-rec' }
+};
 function renderLista(arr){
   const cont = $('listContainer');
   cont.innerHTML = '';
@@ -1345,15 +1488,23 @@ function renderLista(arr){
     const div = document.createElement('div');
     div.className = 'budget-row';
     const dataTxt = d.data || '';
+    const st = STATUS[d.status] ? d.status : 'enviado';
+    const opts = Object.keys(STATUS).map(k =>
+      `<option value="${k}"${k===st?' selected':''}>${STATUS[k].label}</option>`).join('');
     div.innerHTML = `
       <div class="b-info">
-        <div class="b-num">${d.numero || '#—'}</div>
-        <div class="b-cli">${d.cliente || '(sem cliente)'}</div>
+        <div class="b-top">
+          <span class="b-num">${d.numero || '#—'}</span>
+          <span class="b-badge ${STATUS[st].cor}">${STATUS[st].label}</span>
+        </div>
+        <div class="b-cli">${escHtml(d.cliente || '(sem cliente)')}</div>
         <div class="b-meta">${dataTxt} &nbsp;·&nbsp; ${brl(d.total||0)}</div>
       </div>
       <div class="b-actions">
+        <select class="b-status" data-status="${d._id}" title="Alterar status">${opts}</select>
         <button data-view="${d._id}" type="button">Ver</button>
         <button class="solid" data-pdf="${d._id}" type="button">PDF</button>
+        <button class="b-dup" data-dup="${d._id}" type="button" title="Duplicar orçamento" aria-label="Duplicar orçamento"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
         <button class="b-del" data-del="${d._id}" type="button" title="Excluir orçamento" aria-label="Excluir orçamento"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></button>
       </div>`;
     cont.appendChild(div);
@@ -1372,6 +1523,174 @@ $('searchInput').addEventListener('input', e => {
   renderLista(filtrado);
   $('listStatus').textContent = filtrado.length ? '' : 'Nenhum resultado.';
 });
+
+/* mudança de status */
+$('listContainer').addEventListener('change', async e => {
+  const id = e.target.dataset.status;
+  if(!id) return;
+  const novo = e.target.value;
+  if(!firebaseOK){ $('listStatus').textContent = 'Firebase não configurado.'; return; }
+  const sel = e.target;
+  sel.disabled = true;
+  try {
+    await db.collection('orcamentos').doc(id).update({ status: novo });
+    const item = todosSalvos.find(x => x._id === id);
+    if(item) item.status = novo;
+    // atualiza o badge sem recarregar tudo
+    const badge = sel.closest('.budget-row').querySelector('.b-badge');
+    if(badge){ badge.textContent = STATUS[novo].label; badge.className = 'b-badge ' + STATUS[novo].cor; }
+    atualizarDashboard();
+  } catch(err){
+    console.error(err);
+    $('listStatus').textContent = 'Erro ao atualizar status.';
+  } finally {
+    sel.disabled = false;
+  }
+});
+
+/* ==================== PAINEL ==================== */
+// extrai ano/mês do orçamento (usa a data dd/mm/aaaa, com fallback no timestamp)
+function anoMes(d){
+  const m = String(d.data||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if(m) return { ano: Number(m[3]), mes: Number(m[2]) };
+  if(d.criadoEmMs){ const dt = new Date(d.criadoEmMs); return { ano: dt.getFullYear(), mes: dt.getMonth()+1 }; }
+  return { ano: null, mes: null };
+}
+
+async function carregarPainel(){
+  if(!firebaseOK){ $('dashStatus').textContent = 'Firebase não configurado.'; return; }
+  if(!todosSalvos.length){ await carregarLista(); }
+  montarFiltroAnos();
+  atualizarDashboard();
+}
+
+function montarFiltroAnos(){
+  const sel = $('dashAno');
+  const anos = [...new Set(todosSalvos.map(d=>anoMes(d).ano).filter(Boolean))].sort((a,b)=>b-a);
+  const atual = new Date().getFullYear();
+  if(!anos.includes(atual)) anos.unshift(atual);
+  const anterior = sel.value;
+  sel.innerHTML = anos.map(a=>`<option value="${a}">${a}</option>`).join('');
+  sel.value = (anterior && anos.includes(Number(anterior))) ? anterior : String(atual);
+}
+
+function atualizarDashboard(){
+  const ano = Number($('dashAno').value) || new Date().getFullYear();
+  const mesFiltro = $('dashMes').value ? Number($('dashMes').value) : null;
+
+  // filtra pelo período
+  const doPeriodo = todosSalvos.filter(d=>{
+    const am = anoMes(d);
+    if(am.ano !== ano) return false;
+    if(mesFiltro && am.mes !== mesFiltro) return false;
+    return true;
+  });
+
+  const soma = (arr)=> arr.reduce((s,d)=> s + (Number(d.total)||0), 0);
+  const porStatus = (st)=> doPeriodo.filter(d=> (d.status||'enviado') === st);
+
+  const finalizados = porStatus('finalizado');
+  const aprovados   = porStatus('aprovado');
+  const enviados    = porStatus('enviado');
+  const recusados   = porStatus('recusado');
+
+  $('dashRecebido').textContent    = brl(soma(finalizados));
+  $('dashRecebidoQtd').textContent = `${finalizados.length} ${finalizados.length===1?'orçamento':'orçamentos'}`;
+  $('dashAndamento').textContent    = brl(soma(aprovados));
+  $('dashAndamentoQtd').textContent = `${aprovados.length} ${aprovados.length===1?'orçamento':'orçamentos'}`;
+  $('dashAguardando').textContent    = brl(soma(enviados));
+  $('dashAguardandoQtd').textContent = `${enviados.length} ${enviados.length===1?'orçamento':'orçamentos'}`;
+
+  // taxa de aprovação: (aprovados + finalizados) sobre os que tiveram resposta
+  const comResposta = aprovados.length + finalizados.length + recusados.length;
+  if(comResposta > 0){
+    const taxa = Math.round(((aprovados.length + finalizados.length) / comResposta) * 100);
+    $('dashTaxa').textContent = taxa + '%';
+    $('dashTaxaSub').textContent = `${aprovados.length + finalizados.length} de ${comResposta} respondidos`;
+  } else {
+    $('dashTaxa').textContent = '—';
+    $('dashTaxaSub').textContent = 'sem dados';
+  }
+
+  // por mês (finalizados do ano)
+  const nomesMes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const doAnoFinalizados = todosSalvos.filter(d=> anoMes(d).ano===ano && (d.status||'')==='finalizado');
+  const porMes = Array(12).fill(0);
+  doAnoFinalizados.forEach(d=>{ const m = anoMes(d).mes; if(m) porMes[m-1] += (Number(d.total)||0); });
+  const maxMes = Math.max(...porMes, 1);
+  $('dashMeses').innerHTML = porMes.map((v,i)=>`
+    <div class="bar-row">
+      <div class="bar-mes">${nomesMes[i]}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${v? Math.max(2,(v/maxMes)*100):0}%"></div></div>
+      <div class="bar-val">${v? brl(v) : '—'}</div>
+    </div>`).join('');
+
+  // por cliente (no período filtrado)
+  const mapa = {};
+  doPeriodo.forEach(d=>{
+    const nome = (d.cliente||'(sem cliente)').trim();
+    if(!mapa[nome]) mapa[nome] = { total:0, qtd:0, recebido:0 };
+    mapa[nome].qtd++;
+    mapa[nome].total += (Number(d.total)||0);
+    if((d.status||'')==='finalizado') mapa[nome].recebido += (Number(d.total)||0);
+  });
+  const clientes = Object.entries(mapa).sort((a,b)=> b[1].recebido - a[1].recebido || b[1].total - a[1].total);
+  $('dashClientes').innerHTML = clientes.length
+    ? clientes.map(([nome,v])=>`
+        <div class="cli-row">
+          <div>
+            <div class="cli-nome">${escHtml(nome)}</div>
+            <div class="cli-meta">${v.qtd} ${v.qtd===1?'orçamento':'orçamentos'} · ${brl(v.total)} em propostas</div>
+          </div>
+          <div class="cli-val">${v.recebido ? brl(v.recebido) : '—'}</div>
+        </div>`).join('')
+    : '<div class="cli-row"><div class="cli-meta">Nenhum orçamento neste período.</div></div>';
+
+  $('dashStatus').textContent = doPeriodo.length ? '' : 'Nenhum orçamento neste período.';
+}
+
+$('dashAno').addEventListener('change', atualizarDashboard);
+$('dashMes').addEventListener('change', atualizarDashboard);
+
+/* ==================== DUPLICAR ORÇAMENTO ==================== */
+function duplicarParaFormulario(d){
+  // dados principais
+  $('f_cliente').value   = d.cliente || '';
+  $('f_resp').value      = d.responsavel || '';
+  $('f_data').value      = hoje();                       // data de hoje, não a antiga
+  $('f_pix').value       = d.pix || 'pix@raphaelfaria.com.br';
+  $('f_obs').value       = d.obs || '';
+  $('f_desconto').value  = (d.descPct !== undefined) ? d.descPct : 0;
+
+  // data de entrega: volta para vazio (cada projeto tem a sua)
+  $('f_entrega').value = '';
+
+  // número: próximo da sequência
+  const proximo = currentNum() + 1;
+  numInput.value = fmtNum(proximo);
+  localStorage.setItem(NUM_KEY, proximo);
+
+  // itens
+  items = (Array.isArray(d.itens) && d.itens.length)
+    ? d.itens.map(it=>({desc:it.desc||'', sub:it.sub||'', qtd:Number(it.qtd)||1, val:Number(it.val)||0}))
+    : [{desc:'',sub:'',qtd:1,val:0}];
+  renderItemForm();
+
+  // parcelas
+  const pcs = getParcelas(d);
+  parcelas = pcs.map(p=>({ pct:Number(p.pct)||0, label:p.label||'' }));
+  renderParcelasForm();
+
+  // limpa preview anterior e leva ao formulário
+  dadosAtuais = null;
+  pdfPronto = null;
+  $('previewEmpty').style.display = 'flex';
+  $('sheetHost').style.display = 'none';
+  $('shareMsg').textContent = '';
+  $('btnShare').textContent = '↗ Gerar e compartilhar';
+  showView('form');
+  window.scrollTo(0,0);
+}
 
 /* ==================== MODAL: VER / PDF DO SALVO ==================== */
 let dadosModal = null;
@@ -1401,6 +1720,14 @@ $('listContainer').addEventListener('click', async e => {
       $('listStatus').textContent = 'Erro ao excluir. Tente novamente.';
       btn.disabled = false;
     }
+    return;
+  }
+
+  // ---- duplicar ----
+  if(btn.dataset.dup){
+    const d = todosSalvos.find(x => x._id === btn.dataset.dup);
+    if(!d) return;
+    duplicarParaFormulario(d);
     return;
   }
 
