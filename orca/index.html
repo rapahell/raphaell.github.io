@@ -296,8 +296,9 @@
   .share-msg.err { color: #dc2626; }
   .pct-warn { font-size: 12px; margin: -8px 0 14px; min-height: 14px; color: #dc2626; font-weight: 500; }
 
-  /* logos da topbar: horizontal no desktop, compacta no celular */
-  .topbar-logo { height: 30px; width: auto; max-width: 140px; object-fit: contain; }
+  /* durante a geração do PDF: sem borda/sombra, respiro vem do padding interno */
+  .sheet.capturando { border: none !important; box-shadow: none !important; padding: 22px 26px !important; min-width: 0 !important; }
+  .topbar-logo { height: 36px; width: auto; max-width: 168px; object-fit: contain; }
   .logo-desk { display: block; }
   .logo-mob { display: none; }
 
@@ -308,7 +309,7 @@
     /* topbar compacta: logo pequena + abas menores */
     .topbar { padding: 10px 14px; gap: 8px; }
     .logo-desk { display: none; }
-    .logo-mob { display: block; height: 30px; max-width: 46px; }
+    .logo-mob { display: block; height: 36px; max-width: 56px; }
     .topbar .nav { padding: 2px; gap: 0; }
     .topbar .nav button { padding: 7px 11px; font-size: 13px; }
 
@@ -404,7 +405,7 @@
     box-shadow: 0 12px 48px rgba(0,0,0,0.10);
     padding: 44px 38px; max-width: 380px; width: 100%; text-align: center;
   }
-  .gate-logo { display: block; height: 52px; width: auto; max-width: 200px; margin: 0 auto 28px; object-fit: contain; }
+  .gate-logo { display: block; height: 62px; width: auto; max-width: 240px; margin: 0 auto 28px; object-fit: contain; }
   .gate-box h2 { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; text-transform: none; margin-bottom: 6px; color: var(--ui-text); }
   .gate-box p { font-size: 15px; color: var(--ui-muted); margin-bottom: 26px; }
   .gate-box input {
@@ -531,7 +532,7 @@
     <input id="gatePass" type="password" placeholder="senha" autocomplete="off">
     <button id="gateBtn" type="button">Entrar</button>
     <div class="gate-err" id="gateErr"></div>
-    <div class="gate-credit">Sistema de orçamentos desenvolvido por: <a href="mailto:contato@raphaelfaria.com.br">Raphael Faria</a></div>
+    <div class="gate-credit">Sistema de orçamentos desenvolvido por:<br><a href="mailto:contato@raphaelfaria.com.br">Raphael Faria</a></div>
   </div>
 </div>
 
@@ -1045,6 +1046,9 @@ function renderSheet(d, sfx){
 let dadosAtuais = null;
 $('btnPreview').addEventListener('click', ()=>{
   dadosAtuais = coletarDados();
+  pdfPronto = null;                                  // invalida PDF anterior
+  $('btnShare').textContent = '↗ Gerar e compartilhar';
+  $('shareMsg').textContent = '';
   renderSheet(dadosAtuais, '');
   $('previewEmpty').style.display = 'none';
   $('sheetHost').style.display = 'block';
@@ -1114,7 +1118,7 @@ async function gerarPdfBlob(sheetEl, nome){
   const ehMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 900;
   const escala = ehMobile ? 1.6 : 2;
   const opt = {
-    margin: 8, filename: nome,
+    margin: [6, 6, 6, 6], filename: nome,
     image: { type:'jpeg', quality:0.95 },
     html2canvas: {
       scale: escala,
@@ -1128,17 +1132,57 @@ async function gerarPdfBlob(sheetEl, nome){
     jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
     pagebreak: { mode:['css','avoid-all'] }
   };
-  return await html2pdf().set(opt).from(sheetEl).outputPdf('blob');
+  // durante a captura: sem borda/sombra, só o conteúdo com respiro interno
+  sheetEl.classList.add('capturando');
+  try {
+    return await html2pdf().set(opt).from(sheetEl).outputPdf('blob');
+  } finally {
+    sheetEl.classList.remove('capturando');
+  }
 }
 
 /* ==================== COMPARTILHAR / BAIXAR ==================== */
-async function compartilharOuBaixar(sheetEl, d, msgEl){
-  const setMsg = (t,e)=>{ if(msgEl){ msgEl.textContent=t; msgEl.className = (msgEl.classList.contains('save-status')?'save-status':'share-msg') + (e?' err':''); } };
-  setMsg('Gerando PDF…', false);
+// guarda o último PDF gerado, para o clique de compartilhar ser "fresco" (iOS exige)
+let pdfPronto = null; // { blob, nome, numero }
 
+function baixarBlob(blob, nome){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=nome;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
+// tenta compartilhar imediatamente (deve ser chamado dentro do clique)
+async function tentarShare(blob, nome, numero, setMsg){
+  const file = new File([blob], nome, { type:'application/pdf' });
+  if (navigator.canShare && navigator.canShare({ files:[file] })) {
+    try {
+      await navigator.share({ files:[file], title:'Orçamento — Raphael Faria Criativo', text:`Segue o orçamento ${numero}.` });
+      setMsg('Compartilhado ✓', false);
+      return true;
+    } catch(e){
+      if(e && e.name==='AbortError'){ setMsg('', false); return true; }  // usuário cancelou
+      console.warn('Share recusado:', e);
+      return false;
+    }
+  }
+  return false;
+}
+
+async function compartilharOuBaixar(sheetEl, d, msgEl, btnEl){
+  const setMsg = (t,e)=>{ if(msgEl){ msgEl.textContent=t; msgEl.className = (msgEl.classList.contains('save-status')?'save-status':'share-msg') + (e?' err':''); } };
+
+  // Se já temos um PDF pronto para este orçamento, compartilha AGORA (gesto fresco)
   const nome = nomeArquivo(d) + '.pdf';
+  if (pdfPronto && pdfPronto.nome === nome) {
+    const ok = await tentarShare(pdfPronto.blob, nome, d.numero, setMsg);
+    if(!ok){ baixarBlob(pdfPronto.blob, nome); setMsg('PDF baixado', false); }
+    return;
+  }
+
+  // Caso contrário: gera o PDF
+  setMsg('Gerando PDF…', false);
   let blob;
-  // Etapa 1: gerar o PDF
   try {
     blob = await gerarPdfBlob(sheetEl, nome);
   } catch(e){
@@ -1146,26 +1190,18 @@ async function compartilharOuBaixar(sheetEl, d, msgEl){
     setMsg('Não consegui gerar o PDF. Tente "Salvar PDF".', true);
     return;
   }
+  pdfPronto = { blob, nome, numero: d.numero };
 
-  const baixar = ()=>{
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href=url; a.download=nome;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url), 1000);
-  };
+  // tenta compartilhar direto (funciona no Android/Chrome)
+  const ok = await tentarShare(blob, nome, d.numero, setMsg);
+  if(ok) return;
 
-  // Etapa 2: compartilhar (celular) ou baixar (desktop / sem suporte)
-  const file = new File([blob], nome, { type:'application/pdf' });
-  if (navigator.canShare && navigator.canShare({ files:[file] })) {
-    try {
-      await navigator.share({ files:[file], title:'Orçamento — Raphael Faria Criativo', text:`Segue o orçamento ${d.numero}.` });
-      setMsg('Compartilhado ✓', false);
-    } catch(e){
-      if(e && e.name==='AbortError'){ setMsg('', false); }        // usuário cancelou
-      else { console.warn('Share falhou, baixando:', e); baixar(); setMsg('PDF baixado', false); }
-    }
+  // iOS costuma recusar após a espera: pede um segundo toque, que é gesto novo
+  if (navigator.canShare && navigator.canShare({ files:[new File([blob], nome, {type:'application/pdf'})] })) {
+    setMsg('PDF pronto — toque novamente para compartilhar', false);
+    if(btnEl){ btnEl.textContent = '↗ Compartilhar agora'; }
   } else {
-    baixar();
+    baixarBlob(blob, nome);
     setMsg('PDF baixado', false);
   }
 }
@@ -1181,9 +1217,10 @@ function imprimirSheet(d){
 /* botões do form (após preview) */
 $('btnShare').addEventListener('click', async ()=>{
   if(!dadosAtuais) return;
-  $('btnShare').disabled = true;
-  await compartilharOuBaixar($('sheet'), dadosAtuais, $('shareMsg'));
-  $('btnShare').disabled = false;
+  const btn = $('btnShare');
+  btn.disabled = true;
+  await compartilharOuBaixar($('sheet'), dadosAtuais, $('shareMsg'), btn);
+  btn.disabled = false;
 });
 $('btnPrint').addEventListener('click', ()=>{ if(dadosAtuais){ imprimirNoForm(); } });
 function imprimirNoForm(){
@@ -1384,13 +1421,15 @@ $('listContainer').addEventListener('click', async e => {
 function abrirModal(d){
   $('modalTitle').textContent = `${d.numero||'#—'} · ${d.cliente||''}`;
   $('modalMsg').textContent = '';
+  pdfPronto = null;                                  // invalida PDF anterior
+  $('modalShare').textContent = '↗ Compartilhar';
   $('viewModal').classList.add('open');
 }
 $('modalClose').addEventListener('click', ()=> $('viewModal').classList.remove('open'));
 $('viewModal').addEventListener('click', e => { if(e.target.id==='viewModal') $('viewModal').classList.remove('open'); });
 $('modalShare').addEventListener('click', async ()=>{
   if(!dadosModal) return;
-  await compartilharOuBaixar($('sheet_m'), dadosModal, $('modalMsg'));
+  await compartilharOuBaixar($('sheet_m'), dadosModal, $('modalMsg'), $('modalShare'));
 });
 $('modalPrint').addEventListener('click', ()=>{
   if(!dadosModal) return;
