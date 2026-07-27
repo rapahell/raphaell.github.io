@@ -9,12 +9,13 @@
 <meta name="format-detection" content="email=no">
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784663372/favicon_pqm7dj.png">
 <title>Orca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
-
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
   :root {
     --ink: #000;
@@ -704,7 +705,7 @@
       <div class="sheet" id="sheet">
       <div class="header">
         <div class="header-top">
-          <img class="logo-img" id="imgLogo" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784561922/logo_nm9b6q.jpg" alt="Raphael Faria Criativo">
+          <img class="logo-img" id="imgLogo" src="https://res.cloudinary.com/dnnnn7njk/image/upload/dpr_3.0,q_auto:best,f_png,w_600/v1784561922/logo_nm9b6q.jpg" alt="Raphael Faria Criativo">
           <div class="contact">
             contato@raphaelfaria.com.br<br>
             62 98149.7379
@@ -765,7 +766,7 @@
 
       <div class="footer">
         <div class="sign sign-rf">
-          <img class="ass-img" id="imgAss" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784561996/ass_lyfzhs.png" alt="assinatura">
+          <img class="ass-img" id="imgAss" src="https://res.cloudinary.com/dnnnn7njk/image/upload/dpr_3.0,q_auto:best,w_600/v1784561996/ass_lyfzhs.png" alt="assinatura">
           <div class="sign-role">Publicitário // Diretor de Arte</div>
           <div class="sign-date" id="o_signdate">—</div>
         </div>
@@ -871,7 +872,7 @@
         <div class="sheet" id="sheet_m">
       <div class="header">
         <div class="header-top">
-          <img class="logo-img" id="imgLogo_m" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784561922/logo_nm9b6q.jpg" alt="Raphael Faria Criativo">
+          <img class="logo-img" id="imgLogo_m" src="https://res.cloudinary.com/dnnnn7njk/image/upload/dpr_3.0,q_auto:best,f_png,w_600/v1784561922/logo_nm9b6q.jpg" alt="Raphael Faria Criativo">
           <div class="contact">
             contato@raphaelfaria.com.br<br>
             62 98149.7379
@@ -932,7 +933,7 @@
 
       <div class="footer">
         <div class="sign sign-rf">
-          <img class="ass-img" id="imgAss_m" src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784561996/ass_lyfzhs.png" alt="assinatura">
+          <img class="ass-img" id="imgAss_m" src="https://res.cloudinary.com/dnnnn7njk/image/upload/dpr_3.0,q_auto:best,w_600/v1784561996/ass_lyfzhs.png" alt="assinatura">
           <div class="sign-role">Publicitário // Diretor de Arte</div>
           <div class="sign-date" id="o_signdate_m">—</div>
         </div>
@@ -1245,14 +1246,27 @@ const imagensProntas = Promise.allSettled(
 /* ==================== GERAR PDF (blob) ==================== */
 async function gerarPdfBlob(sheetEl, nome){
   await imagensProntas;
+  // ESSENCIAL: espera as fontes (JetBrains Mono / Inter) carregarem;
+  // sem isso, os textos finos saem "estourados" no PDF
+  if (document.fonts && document.fonts.ready) {
+    try { await document.fonts.ready; } catch(e){}
+    // força o carregamento explícito dos pesos usados no documento
+    try {
+      await Promise.all([
+        document.fonts.load("400 12px 'JetBrains Mono'"),
+        document.fonts.load("700 12px 'JetBrains Mono'"),
+        document.fonts.load("800 14px 'JetBrains Mono'")
+      ]);
+    } catch(e){}
+  }
   // garante que a folha seja renderizada na largura cheia (760px), mesmo no celular
   const LARGURA = 760;
-  // escala menor no celular para evitar estouro de memória no iOS/Safari
+  // escala de captura: alta o suficiente para as imagens (logo/assinatura) saírem nítidas
   const ehMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 900;
-  const escala = ehMobile ? 1.6 : 2;
+  const escala = ehMobile ? 2.5 : 3;
   const opt = {
     margin: [6, 6, 6, 6], filename: nome,
-    image: { type:'jpeg', quality:0.95 },
+    image: { type:'jpeg', quality:0.98 },
     html2canvas: {
       scale: escala,
       useCORS: true,
@@ -1260,7 +1274,13 @@ async function gerarPdfBlob(sheetEl, nome){
       width: LARGURA,
       windowWidth: LARGURA,
       scrollX: 0,
-      scrollY: 0
+      scrollY: 0,
+      letterRendering: true,
+      onclone: (doc) => {
+        // garante a fonte aplicada no clone que o html2canvas renderiza
+        const s = doc.getElementById(sheetEl.id);
+        if(s){ s.style.fontFamily = "'JetBrains Mono', monospace"; }
+      }
     },
     jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
     pagebreak: { mode:['css','avoid-all'] }
