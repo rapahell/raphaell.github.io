@@ -299,6 +299,32 @@
 
   /* durante a geração do PDF: sem borda/sombra, respiro vem do padding interno */
   .sheet.capturando { border: none !important; box-shadow: none !important; padding: 22px 26px !important; min-width: 0 !important; }
+  /* ---- pop-up salvar ---- */
+  .ask-overlay {
+    display: none; position: fixed; inset: 0; z-index: 90;
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .ask-overlay.open { display: flex; }
+  .ask-box {
+    background: var(--ui-surface); border-radius: 20px; box-shadow: 0 12px 48px rgba(0,0,0,0.16);
+    padding: 28px 28px 22px; max-width: 380px; width: 100%; text-align: center;
+    animation: askPop .18s ease-out;
+  }
+  @keyframes askPop { from { transform: scale(.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .ask-title { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; color: var(--ui-text); margin-bottom: 8px; }
+  .ask-text { font-size: 14px; color: var(--ui-muted); line-height: 1.45; margin-bottom: 24px; }
+  .ask-actions { display: flex; gap: 10px; }
+  .ask-btn {
+    flex: 1; font-family: var(--ui-font); font-weight: 500; font-size: 15px;
+    padding: 12px; border-radius: 980px; cursor: pointer; transition: all .18s;
+  }
+  .ask-no { background: var(--ui-surface); color: var(--ui-text); border: 1px solid var(--ui-border-strong); }
+  .ask-no:hover { background: var(--ui-surface-2); }
+  .ask-yes { background: var(--ui-accent); color: #fff; border: 1px solid var(--ui-accent); }
+  .ask-yes:hover { background: var(--ui-accent-hover); }
+  .ask-yes:disabled { opacity: 0.6; cursor: default; }
+
   .nav-short { display: none; }
   .nav-full { display: inline; }
   .topbar-logo { height: 36px; width: auto; max-width: 168px; object-fit: contain; }
@@ -855,6 +881,18 @@
   </div>
 </div>
 
+<!-- ============ POP-UP: SALVAR? ============ -->
+<div id="askSave" class="ask-overlay">
+  <div class="ask-box">
+    <div class="ask-title">Salvar este orçamento?</div>
+    <div class="ask-text" id="askText">Ele ficará guardado em "Salvos" e o número avança para o próximo.</div>
+    <div class="ask-actions">
+      <button class="ask-btn ask-no" id="askNo" type="button">Agora não</button>
+      <button class="ask-btn ask-yes" id="askYes" type="button">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ MODAL VISUALIZAR SALVO ============ -->
 <div id="viewModal">
   <div class="modal-inner">
@@ -1178,9 +1216,13 @@ function renderSheet(d, sfx){
 
 /* ==================== PREVIEW ON-DEMAND ==================== */
 let dadosAtuais = null;
+let orcamentoSalvo = false;
 $('btnPreview').addEventListener('click', ()=>{
   dadosAtuais = coletarDados();
   pdfPronto = null;                                  // invalida PDF anterior
+  orcamentoSalvo = false;                            // novo orçamento, ainda não salvo
+  $('btnSave').textContent = '💾 Salvar orçamento';
+  $('btnSave').disabled = false;
   $('btnShare').textContent = '↗ Gerar e compartilhar';
   $('shareMsg').textContent = '';
   renderSheet(dadosAtuais, '');
@@ -1191,8 +1233,29 @@ $('btnPreview').addEventListener('click', ()=>{
   $('pctWarn').textContent = (somaPct!==100) ? `⚠ As parcelas somam ${somaPct}% (não 100%)` : '';
   // vai para a aba Preview
   showView('preview');
+  // pergunta se quer salvar (só faz sentido com Firebase configurado)
+  if(firebaseOK){ setTimeout(abrirAskSave, 350); }
 });
 $('btnBackForm').addEventListener('click', ()=> showView('form'));
+
+/* ==================== POP-UP: SALVAR? ==================== */
+function abrirAskSave(){
+  $('askText').textContent = `Salvar o orçamento ${dadosAtuais?dadosAtuais.numero:''} de ${dadosAtuais&&dadosAtuais.cliente?dadosAtuais.cliente:'(sem cliente)'}? O número avança para o próximo depois de salvar.`;
+  $('askYes').disabled = false;
+  $('askYes').textContent = 'Salvar';
+  $('askSave').classList.add('open');
+}
+function fecharAskSave(){ $('askSave').classList.remove('open'); }
+$('askNo').addEventListener('click', fecharAskSave);
+$('askSave').addEventListener('click', e => { if(e.target.id==='askSave') fecharAskSave(); });
+$('askYes').addEventListener('click', async ()=>{
+  const btn = $('askYes');
+  btn.disabled = true;
+  btn.textContent = 'Salvando…';
+  const ok = await salvarOrcamento($('shareMsg'));
+  if(ok){ fecharAskSave(); }
+  else { btn.disabled = false; btn.textContent = 'Salvar'; }
+});
 
 /* copiar chave PIX */
 $('btnCopyPix').addEventListener('click', async ()=>{
@@ -1418,20 +1481,16 @@ function initFirebase(){
 }
 
 /* ==================== SALVAR ORÇAMENTO ==================== */
-$('btnSave').addEventListener('click', async ()=>{
-  if(!dadosAtuais){ return; }
-  const btn = $('btnSave');
-  const msg = $('shareMsg');
-  msg.className = 'share-msg';
+async function salvarOrcamento(msgEl){
+  if(!dadosAtuais){ return false; }
+  const setMsg = (t,e)=>{ if(msgEl){ msgEl.textContent=t; msgEl.className='share-msg'+(e?' err':''); } };
+  if(orcamentoSalvo){ setMsg('Este orçamento já foi salvo ✓', false); return true; }
   if(!firebaseOK){
-    msg.textContent = 'Firebase não configurado — veja instruções';
-    msg.className = 'share-msg err';
-    return;
+    setMsg('Firebase não configurado — veja instruções', true);
+    return false;
   }
-  btn.disabled = true;
-  msg.textContent = 'Salvando…';
+  setMsg('Salvando…', false);
   try {
-    // campos de busca em minúsculas
     const doc = Object.assign({}, dadosAtuais, {
       buscaCliente: (dadosAtuais.cliente||'').toLowerCase(),
       buscaNumero: dadosAtuais.numeroLimpo,
@@ -1440,15 +1499,27 @@ $('btnSave').addEventListener('click', async ()=>{
       criadoEmMs: Date.now()
     });
     await db.collection('orcamentos').add(doc);
-    msg.textContent = 'Orçamento salvo ✓';
-    msg.className = 'share-msg';
+    setMsg('Orçamento salvo ✓', false);
+    orcamentoSalvo = true;                              // evita salvar o mesmo de novo
+    $('btnSave').textContent = '✓ Salvo';
+    $('btnSave').disabled = true;
+    // avança o número para o próximo (evita orçamentos com número repetido)
+    const prox = currentNum() + 1;
+    numInput.value = fmtNum(prox);
+    localStorage.setItem(NUM_KEY, prox);
+    return true;
   } catch(e){
     console.error(e);
-    msg.textContent = 'Erro ao salvar. Verifique conexão/regras.';
-    msg.className = 'share-msg err';
-  } finally {
-    btn.disabled = false;
+    setMsg('Erro ao salvar. Verifique conexão/regras.', true);
+    return false;
   }
+}
+
+$('btnSave').addEventListener('click', async ()=>{
+  const btn = $('btnSave');
+  btn.disabled = true;
+  await salvarOrcamento($('shareMsg'));
+  btn.disabled = false;
 });
 
 /* ==================== ROTEAMENTO DE VIEWS ==================== */
