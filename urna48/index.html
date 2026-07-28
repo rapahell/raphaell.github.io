@@ -1,1 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Urna48 | Sites para campanhas de deputado estadual e federal</title>
+<meta name="description" content="Site oficial para campanhas de deputado estadual e federal. Domínio, hospedagem e SSL inclusos. R$ 1.480,00, pagamento único, pronto em até 48 horas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* escala de espacamento base 4 */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px;
+  --s6:32px; --s7:40px; --s8:56px; --s9:72px; --s10:96px;
+  --azul:#0B2E6B;
+  --azul-2:#1450B8;
+  --azul-claro:#E8EFFC;
+  --verde:#0FA85C;
+  --verde-2:#0C8C4C;
+  --branco:#FFFFFF;
+  --cinza-bg:#F5F7FA;
+  --cinza-linha:#E4E8EF;
+  --texto:#131A26;
+  --texto-2:#5A6579;
+  --sombra:0 1px 2px rgba(11,46,107,.06), 0 8px 24px rgba(11,46,107,.06);
+  --sombra-lg:0 2px 4px rgba(11,46,107,.05), 0 24px 60px rgba(11,46,107,.12);
+  --r:14px;
+  --max:1180px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--texto);background:var(--branco);-webkit-font-smoothing:antialiased;line-height:1.55}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--azul-2)}
+h1,h2,h3{letter-spacing:-.025em;line-height:1.12;font-weight:800}
+h2{font-size:clamp(28px,4vw,44px)}
+.sub{color:var(--texto-2);font-size:clamp(16px,1.7vw,18px);max-width:620px}
+section{padding:var(--s10) 0}
+.center{text-align:center}
+.center .sub{margin-left:auto;margin-right:auto}
+/* cabecalho de secao padronizado */
+.sec-head{max-width:680px;margin:0 auto var(--s7)}
+.sec-head h2{margin-top:var(--s3);text-wrap:balance}
+.sec-head .sub{margin-top:var(--s4);text-wrap:pretty}
+h2{text-wrap:balance}
 
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;padding:13px 22px;border-radius:10px;border:1px solid transparent;cursor:pointer;transition:.18s ease;white-space:nowrap}
+.btn-verde{background:var(--verde);color:#fff;box-shadow:0 1px 2px rgba(15,168,92,.4),0 6px 18px rgba(15,168,92,.28)}
+.btn-verde:hover{background:var(--verde-2);transform:translateY(-1px);box-shadow:0 2px 4px rgba(15,168,92,.4),0 12px 26px rgba(15,168,92,.32)}
+.btn-ghost{background:#fff;border-color:var(--cinza-linha);color:var(--texto)}
+.btn-ghost:hover{border-color:#c3ccdb;transform:translateY(-1px);box-shadow:var(--sombra)}
+.btn:focus-visible{outline:2px solid var(--azul-2);outline-offset:3px}
+
+/* header */
+header{position:fixed;top:0;left:0;right:0;z-index:80;transition:.25s ease;border-bottom:1px solid transparent}
+header.stuck{background:rgba(255,255,255,.85);backdrop-filter:blur(14px);border-bottom-color:var(--cinza-linha)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;letter-spacing:-.03em;min-width:0}
+.logo-img{height:38px;width:auto;display:block;object-fit:contain}
+.logo-img-f{height:40px;filter:brightness(0) invert(1)}
+@media (max-width:620px){.logo-img{height:31px}.logo-img-f{height:34px}}
+.menu{display:flex;gap:30px;align-items:center}
+.menu a{font-size:14.5px;font-weight:500;color:var(--texto-2);position:relative;transition:.15s;padding:6px 0}
+.menu a:focus-visible,.flinks a:focus-visible,.q summary:focus-visible{outline:2px solid var(--azul-2);outline-offset:3px;border-radius:4px}
+.menu a:hover{color:var(--texto)}
+.menu a::after{content:"";position:absolute;left:0;bottom:-6px;height:2px;width:0;background:var(--azul-2);transition:.2s}
+.menu a:hover::after{width:100%}
+.nav-right{display:flex;gap:10px;align-items:center;flex:none}
+.burger{display:none;background:none;border:0;padding:8px;cursor:pointer;border-radius:8px}
+.burger span{display:block;width:20px;height:2px;background:var(--texto);border-radius:2px}
+.burger span+span{margin-top:5px}
+.cta-short{display:none}
+
+.menu-panel{display:none;position:fixed;top:72px;left:0;right:0;background:#fff;border-bottom:1px solid var(--cinza-linha);box-shadow:var(--sombra-lg);z-index:79;padding:14px 0 20px}
+.menu-panel.open{display:block;animation:slideDown .22s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.menu-panel nav{display:flex;flex-direction:column}
+.menu-panel nav a{padding:14px 4px;font-size:16px;font-weight:600;color:var(--texto);border-bottom:1px solid var(--cinza-linha)}
+.menu-panel nav a:last-of-type{border-bottom:0}
+.menu-panel .btn{margin-top:16px;width:100%;justify-content:center}
+.menu-panel .close-row{display:flex;justify-content:flex-end;margin-bottom:2px}
+.menu-close{background:none;border:0;padding:8px;cursor:pointer;color:var(--texto-2);border-radius:8px;line-height:0}
+.menu-close:hover{background:var(--cinza-bg);color:var(--texto)}
+.menu-close:focus-visible,.burger:focus-visible{outline:2px solid var(--azul-2);outline-offset:2px}
+body.menu-open{overflow:hidden}
+
+/* hero */
+.hero{padding:152px 0 var(--s10);background:
+  radial-gradient(900px 420px at 78% 8%, #EAF1FF 0%, rgba(234,241,255,0) 65%),
+  radial-gradient(700px 380px at 8% 20%, #F0FBF5 0%, rgba(240,251,245,0) 60%);
+  overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:var(--s9);align-items:center}
+.hero h1{font-size:clamp(32px,4.4vw,52px);text-wrap:balance;max-width:15ch}
+.hero h1 span{color:var(--azul-2)}
+.hero p{margin-top:var(--s5);color:var(--texto-2);font-size:17px;max-width:52ch;text-wrap:pretty}
+.pill-top{display:inline-flex;align-items:center;gap:var(--s2);background:#fff;border:1px solid var(--cinza-linha);padding:6px 14px 6px 7px;border-radius:100px;font-size:13px;font-weight:600;color:var(--texto-2);box-shadow:var(--sombra);margin-bottom:var(--s5)}
+.pill-top b{background:var(--verde);color:#fff;font-size:11px;padding:3px 9px;border-radius:100px;letter-spacing:.03em;animation:pulse48 2s ease-in-out infinite}
+@keyframes pulse48{0%,100%{background:var(--verde);box-shadow:0 0 0 0 rgba(15,168,92,.45)}50%{background:#0DBF68;box-shadow:0 0 0 6px rgba(15,168,92,0)}}
+@media (prefers-reduced-motion:reduce){.pill-top b{animation:none}}
+.price-hero{display:flex;align-items:baseline;gap:var(--s3);margin-top:var(--s6);flex-wrap:wrap}
+.price-hero b{font-size:clamp(32px,4.2vw,40px);font-weight:800;letter-spacing:-.04em}
+.price-hero small{font-size:14px;color:var(--texto-2);font-weight:500}
+.hero-cta{display:flex;gap:var(--s3);margin-top:var(--s5);flex-wrap:wrap}
+.badges{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s6)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--azul);background:#fff;border:1px solid var(--cinza-linha);padding:7px 12px;border-radius:100px;box-shadow:0 1px 2px rgba(11,46,107,.04)}
+.badge svg{color:var(--verde);flex:none}
+.lgpd{display:inline-flex;align-items:flex-start;gap:7px;font-size:12.5px;color:var(--texto-2);margin-top:16px;line-height:1.4}
+.lgpd svg{color:var(--verde);flex:none;margin-top:2px}
+
+/* mockup site publico */
+.stage{position:relative;text-align:center;margin-top:var(--s2)}
+.stage-img{width:100%;max-width:1180px;height:auto;display:block;margin:0 auto}
+
+/* prova / problema */
+.probs{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4)}
+.prob{background:#fff;border:1px solid var(--cinza-linha);border-radius:var(--r);padding:var(--s5);transition:.2s}
+.prob:hover{transform:translateY(-3px);box-shadow:var(--sombra);border-color:#d5dce8}
+.ic{width:38px;height:38px;border-radius:10px;background:var(--cinza-bg);display:grid;place-items:center;margin-bottom:14px;color:var(--azul-2)}
+.prob h3{font-size:15.5px;margin-bottom:6px}
+.prob p{font-size:14px;color:var(--texto-2);line-height:1.55}
+
+/* incluso */
+.inc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4)}
+.card{background:#fff;border:1px solid var(--cinza-linha);border-radius:var(--r);padding:var(--s5);transition:.22s;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,var(--azul-2),var(--verde));transform:scaleX(0);transform-origin:left;transition:.25s}
+.card:hover::before{transform:scaleX(1)}
+.card:hover{transform:translateY(-4px);box-shadow:var(--sombra-lg)}
+.ic-card{width:42px;height:42px;border-radius:11px;background:var(--azul-claro);color:var(--azul-2);display:grid;place-items:center;margin-bottom:14px;transition:.22s}
+.card:hover .ic-card{background:var(--verde);color:#fff;transform:scale(1.05)}
+.card h3{font-size:16px;margin-bottom:6px}
+.card p{font-size:14px;color:var(--texto-2);line-height:1.55}
+
+/* infra strip */
+.strip{background:var(--cinza-bg);border-top:1px solid var(--cinza-linha);border-bottom:1px solid var(--cinza-linha)}
+.strip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s5)}
+.si{display:flex;gap:12px;align-items:flex-start}
+.si svg{color:var(--verde);flex:none;margin-top:2px}
+.si b{display:block;font-size:15px;margin-bottom:2px}
+.si span{font-size:13.5px;color:var(--texto-2);line-height:1.5}
+
+/* passos */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5);position:relative}
+.steps::before{content:"";position:absolute;top:24px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,var(--azul-claro),var(--verde));z-index:0}
+.step{position:relative;z-index:1;text-align:center}
+.num{width:48px;height:48px;border-radius:50%;background:#fff;border:2px solid var(--azul-2);color:var(--azul-2);display:grid;place-items:center;font-weight:800;font-size:17px;margin:0 auto 16px}
+.step:last-child .num{border-color:var(--verde);color:#fff;background:var(--verde)}
+.step h3{font-size:16px;margin-bottom:6px}
+.step p{font-size:14px;color:var(--texto-2);max-width:30ch;margin:0 auto;line-height:1.55;text-wrap:pretty}
+
+/* oferta */
+.offer{max-width:640px;margin:0 auto;background:#fff;border:1.5px solid var(--azul-2);border-radius:20px;padding:var(--s7) var(--s6);box-shadow:0 30px 70px rgba(11,46,107,.14);position:relative}
+.offer-badge{position:absolute;top:-13px;left:38px;background:var(--verde);color:#fff;font-size:11.5px;font-weight:700;padding:6px 14px;border-radius:100px;box-shadow:0 6px 16px rgba(15,168,92,.35)}
+.offer h3{font-size:24px}
+.offer .od{color:var(--texto-2);font-size:14.5px;margin-top:8px}
+.offer .price{display:flex;align-items:baseline;gap:var(--s3);margin-top:var(--s5);flex-wrap:wrap}
+.offer .price b{font-size:42px;font-weight:800;letter-spacing:-.045em}
+.offer .price small{font-size:14px;color:var(--texto-2);font-weight:500}
+.offer .pn{font-size:13px;color:var(--texto-2);margin-top:6px}
+.offer .btn{width:100%;justify-content:center;margin-top:var(--s5);padding:17px;font-size:16px}
+.offer hr{border:0;border-top:1px solid var(--cinza-linha);margin:var(--s6) 0}
+.incl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--texto-2);margin-bottom:14px}
+.olist{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:var(--s3) var(--s5)}
+.olist li{display:flex;gap:9px;font-size:14px;align-items:flex-start}
+.olist li svg{flex:none;margin-top:3px;color:var(--verde)}
+.note{font-size:13px;color:var(--texto-2);margin-top:var(--s5);padding-top:var(--s5);border-top:1px solid var(--cinza-linha);line-height:1.55}
+.note b{color:var(--texto)}
+
+/* seguranca */
+.sec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4)}
+.sec-card{background:#fff;border:1px solid var(--cinza-linha);border-radius:var(--r);padding:var(--s5);transition:.2s}
+.sec-card:hover{transform:translateY(-3px);box-shadow:var(--sombra);border-color:#d5dce8}
+.sec-ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;margin-bottom:14px}
+.sec-ic.b{background:var(--azul-claro);color:var(--azul-2)}
+.sec-ic.g{background:#E7F7EF;color:var(--verde-2)}
+.sec-card h3{font-size:15.5px;margin-bottom:6px}
+.sec-card p{font-size:14px;color:var(--texto-2);line-height:1.55}
+
+/* faq */
+.faq{max-width:760px;margin:0 auto}
+.q{border:1px solid var(--cinza-linha);border-radius:12px;margin-bottom:10px;background:#fff;overflow:hidden;transition:.2s}
+.q[open]{border-color:#c7d3e8;box-shadow:var(--sombra)}
+.q summary{list-style:none;cursor:pointer;padding:20px 22px;min-height:56px;font-weight:600;font-size:15.5px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.q summary::-webkit-details-marker{display:none}
+.q summary::after{content:"+";font-size:22px;font-weight:400;color:var(--azul-2);transition:.2s;flex:none}
+.q[open] summary::after{transform:rotate(45deg)}
+.q p{padding:0 22px 22px;color:var(--texto-2);font-size:14.5px;line-height:1.6;max-width:70ch}
+
+/* sob medida */
+.custom-txt{max-width:480px}
+.custom{max-width:620px;margin:var(--s8) auto 0;background:var(--cinza-bg);border:1px solid var(--cinza-linha);border-radius:var(--r);padding:var(--s7) var(--s6);display:flex;flex-direction:column;gap:var(--s5);align-items:center;text-align:center}
+.custom h3{font-size:17px;margin-bottom:5px}
+.custom p{font-size:14px;color:var(--texto-2);max-width:48ch;line-height:1.55}
+
+/* final */
+.final{background:linear-gradient(150deg,var(--azul) 0%,#12409B 60%,var(--azul-2) 100%);color:#fff;text-align:center}
+.final h2{font-size:clamp(28px,4.2vw,44px);max-width:20ch;margin:0 auto;text-wrap:balance}
+.final p{color:#B7C9E6;margin:var(--s5) auto 0;max-width:52ch;font-size:17px;text-wrap:pretty}
+.final .btn{margin-top:var(--s7);padding:17px 32px;font-size:16px}
+.final .mini-note{margin-top:var(--s4);font-size:13px;color:#8FB3EC}
+.final .lgpd{color:#8FB3EC;justify-content:center}
+.final .lgpd svg{color:#5FD79B}
+
+
+/* whatsapp flutuante */
+.wa-float{position:fixed;right:20px;bottom:20px;z-index:70;display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;padding:13px 18px 13px 15px;border-radius:100px;font-weight:600;font-size:14.5px;box-shadow:0 6px 22px rgba(37,211,102,.42);transition:.2s}
+.wa-float:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(37,211,102,.5)}
+.wa-float svg{flex:none}
+.wa-float span{white-space:nowrap}
+@media (max-width:620px){
+  .wa-float{right:14px;bottom:14px;padding:14px;border-radius:50%}
+  .wa-float span{display:none}
+}
+
+/* dominio padrao */
+.domain{max-width:760px;margin:56px auto 0;background:#fff;border:1px solid var(--cinza-linha);border-radius:18px;padding:40px 32px;text-align:center;box-shadow:var(--sombra)}
+.domain h3{font-size:20px;margin-bottom:10px}
+.domain>p{font-size:15px;color:var(--texto-2);max-width:520px;margin:0 auto;text-wrap:balance}
+.domain-stack{display:flex;flex-direction:column;align-items:center;gap:14px;margin:28px auto 0;max-width:520px}
+.domain-row{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px}
+.domain-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--texto-2)}
+.domain-chip{width:100%;border-radius:12px;padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:clamp(12px,2.5vw,16px);font-weight:500;letter-spacing:-.01em;overflow-x:auto;white-space:nowrap;display:flex;align-items:center;justify-content:center}
+.domain-chip.dark{background:var(--azul);color:#fff}
+.domain-chip.light{background:var(--cinza-bg);border:1px solid var(--cinza-linha);color:var(--texto-2)}
+.domain-chip.light b{color:var(--verde-2);font-weight:600}
+.domain small{display:block;margin-top:24px;font-size:13px;color:var(--texto-2);max-width:480px;margin-left:auto;margin-right:auto;line-height:1.5}
+@media (max-width:620px){
+  .domain{padding:30px 20px}
+  .domain-chip{padding:14px;font-size:11.5px}
+}
+
+/* prazo destaque */
+.video-wrap{max-width:760px;margin:var(--s8) auto 0}
+.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;
+  border:1px solid var(--cinza-linha);box-shadow:var(--sombra);background:#0B1B2E}
+.video-frame iframe,.video-frame video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;color:#fff;background:linear-gradient(150deg,#0B2E6B,#12409B)}
+.video-placeholder svg{opacity:.9;margin-bottom:4px}
+.video-placeholder b{font-size:17px;font-weight:600}
+.video-placeholder span{font-size:13px;color:rgba(255,255,255,.7)}
+.prazo{max-width:760px;margin:var(--s5) auto 0;background:var(--azul-claro);border:1px solid #C9DBF7;border-radius:var(--r);padding:var(--s5) var(--s6);display:flex;gap:var(--s4);align-items:flex-start}
+.prazo svg{color:var(--azul-2);flex:none;margin-top:2px}
+.prazo b{display:block;font-size:15.5px;margin-bottom:5px}
+.prazo p{font-size:14px;color:var(--texto-2);line-height:1.6;max-width:78ch}
+
+/* formulario */
+.formbox{max-width:760px;margin:var(--s8) auto 0;background:#fff;border:1px solid var(--cinza-linha);border-radius:18px;padding:var(--s7) var(--s6);box-shadow:var(--sombra)}
+.formbox h3{font-size:19px;margin-bottom:6px}
+.formbox>p{font-size:14px;color:var(--texto-2);margin-bottom:var(--s6);line-height:1.55}
+.field{margin-bottom:var(--s4)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0 var(--s4)}
+@media (max-width:620px){.form-row{grid-template-columns:1fr;gap:0}}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;padding:12px 14px;border:1px solid var(--cinza-linha);border-radius:10px;font-family:inherit;font-size:14.5px;color:var(--texto);background:#fff;transition:.15s}
+.field textarea{resize:vertical;min-height:100px}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--azul-2);box-shadow:0 0 0 3px rgba(20,80,184,.12)}
+.canal-seg{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.canal-op{display:flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--cinza-linha);
+  background:#fff;border-radius:12px;padding:12px;font-family:inherit;font-size:14.5px;font-weight:600;
+  color:var(--texto-2);cursor:pointer;transition:.15s}
+.canal-op:hover{border-color:#B9C6DC}
+.canal-op.on{border-color:var(--azul-2);color:var(--azul-2);box-shadow:0 0 0 3px rgba(20,80,184,.12)}
+.canal-op svg{flex:none}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--texto-2);line-height:1.45;margin-top:4px}
+.consent input{width:16px;height:16px;flex:none;margin-top:2px;accent-color:var(--verde)}
+.formbox .btn{width:100%;justify-content:center;margin-top:18px;padding:15px;font-size:15.5px}
+.form-msg{display:none;margin-top:14px;font-size:14px;padding:12px 14px;border-radius:10px;background:#E7F7EF;color:var(--verde-2);font-weight:500}
+.form-msg.on{display:block}
+
+/* footer */
+footer{background:#08214B;color:#8FA6CC;padding:56px 0 34px;font-size:14px}
+@media (max-width:620px){footer{padding-bottom:90px}}
+.fgrid{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;padding-bottom:30px;border-bottom:1px solid rgba(255,255,255,.1)}
+footer .logo{color:#fff}
+footer p{max-width:330px;margin-top:12px;font-size:13.5px;line-height:1.6}
+.flinks{display:flex;gap:56px;flex-wrap:wrap}
+.flinks h5{color:#fff;font-size:13px;margin-bottom:12px}
+.flinks a{display:block;padding:5px 0;transition:.15s}
+.flinks a:hover{color:#fff}
+.fbot{padding-top:24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12.5px}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.2,.7,.3,1),transform .6s cubic-bezier(.2,.7,.3,1)}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:980px){
+  section{padding:var(--s9) 0}
+  .hero-grid{grid-template-columns:1fr;gap:var(--s8)}
+  .probs,.inc-grid,.steps,.sec-grid{grid-template-columns:repeat(2,1fr)}
+  .strip-grid{grid-template-columns:repeat(2,1fr)}
+  .steps::before{display:none}
+  .menu{display:none}
+  .burger{display:block}
+  .hero{padding-top:120px}
+}
+@media (max-width:620px){
+  section{padding:var(--s9) 0}
+  .wrap{padding:0 20px}
+  h2{font-size:clamp(25px,6.4vw,32px)}
+  .sec-head{margin-bottom:var(--s6)}
+  .probs,.inc-grid,.steps,.sec-grid,.strip-grid,.olist{grid-template-columns:1fr}
+  .probs,.inc-grid,.sec-grid{gap:var(--s3)}
+  .fgrid{flex-direction:column;gap:var(--s6)}
+  .flinks{gap:var(--s6);flex-direction:column}
+  .cta-full{display:none}
+  .cta-short{display:inline}
+  .nav-right .btn{padding:10px 14px;font-size:13.5px}
+  .offer{padding:var(--s6) var(--s5)}
+  .offer-badge{left:var(--s5)}
+  .offer .price b{font-size:34px}
+  .offer .btn{padding:16px}
+  .hero{padding:112px 0 var(--s9)}
+  .hero h1{max-width:100%}
+  .hero-cta{gap:var(--s2)}
+  .hero-cta .btn{flex:1 1 100%;justify-content:center}
+  .prazo{padding:var(--s5);gap:var(--s3)}
+  .formbox{padding:var(--s6) var(--s5)}
+  .custom{padding:var(--s5);gap:var(--s4)}
+  .custom .btn{width:100%;justify-content:center}
+  .final .btn{width:100%;justify-content:center}
+  .steps{gap:var(--s6)}
+  .step p{max-width:100%}
+  .prob p,.card p,.sec-card p{font-size:14px}
+}
+@media (max-width:360px){
+  .nav-right .btn{padding:9px 11px;font-size:13px}
+  .logo{font-size:14.5px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header id="hd">
+  <div class="wrap nav">
+    <a href="#" class="logo" aria-label="Urna48"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784814578/logo_urna48site_uxe61p.png" alt="Urna48" class="logo-img"></a>
+    <nav class="menu">
+      <a href="#porque">Por que ter um site</a>
+      <a href="#incluso">O que inclui</a>
+      <a href="#como">Como funciona</a>
+      <a href="#preco">Preço</a>
+      <a href="#faq">Dúvidas</a>
+    </nav>
+    <div class="nav-right">
+      <a href="#preco" class="btn btn-verde"><span class="cta-full">Contratar site</span><span class="cta-short">Contratar</span></a>
+      <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-panel"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="menu-panel" id="menu-panel" hidden>
+    <div class="wrap">
+      <div class="close-row">
+        <button class="menu-close" id="menu-close" aria-label="Fechar menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <nav>
+        <a href="#porque">Por que ter um site</a>
+        <a href="#incluso">O que inclui</a>
+        <a href="#como">Como funciona</a>
+        <a href="#preco">Preço</a>
+        <a href="#faq">Dúvidas</a>
+      </nav>
+      <a href="#preco" class="btn btn-verde">Contratar site</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="pill-top"><b>48H</b> Sites para deputado estadual e federal</div>
+      <h1>Seu site oficial de campanha, com a cara de quem <span>leva a candidatura a sério.</span></h1>
+      <p>Feito para campanhas proporcionais: você disputa com centenas de nomes e o eleitor precisa achar o seu. Domínio, hospedagem e tudo que a candidatura precisa para estar no ar, sem agência e sem mensalidade.</p>
+      <div class="price-hero">
+        <b>R$ 1.480,00</b><small>pagamento único · no ar em até 48 horas após o envio do material</small>
+      </div>
+      <div class="hero-cta">
+        <a href="https://pay.kiwify.com.br/6Y4nAYg" class="btn btn-verde">Contratar site institucional</a>
+        <a href="#incluso" class="btn btn-ghost">Ver o que inclui</a>
+      </div>
+      <div class="badges">
+        <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg> Domínio próprio incluso</span>
+        <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg> Hospedagem inclusa</span>
+        <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg> Certificado SSL</span>
+        <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg> Sem mensalidade</span>
+      </div>
+    </div>
+
+    <div class="stage rv">
+      <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1785113441/mockup48123_v5bmv2.jpg"
+           alt="Site de campanha de Carlos Almeida no notebook e no celular" class="stage-img" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- POR QUE -->
+<section class="wrap" id="porque">
+  <div class="sec-head center rv">
+    <div class="eyebrow">Por que ter um site</div>
+    <h2>O eleitor procura seu nome. O que ele encontra?</h2>
+    <p class="sub">Na disputa proporcional você concorre com centenas de nomes. Rede social some no feed e não é sua; o site é o único endereço que você controla.</p>
+  </div>
+  <div class="probs">
+    <div class="prob rv">
+      <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+      <h3>Buscou no Google e não achou nada</h3>
+      <p>Numa eleição com centenas de candidatos, quem pesquisa seu nome encontra notícia de terceiro, perfil antigo ou um homônimo.</p>
+    </div>
+    <div class="prob rv">
+      <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 6.5v5c0 4.6 3.2 8.8 8 9.5 4.8-.7 8-4.9 8-9.5v-5z"/></svg></div>
+      <h3>Só link de rede social parece improviso</h3>
+      <p>Adversário com site oficial e domínio próprio transmite estrutura. Perfil solto transmite candidatura de última hora.</p>
+    </div>
+    <div class="prob rv">
+      <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22V4a2 2 0 0 1 2-2h9l5 5v15a2 2 0 0 1-2 2z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
+      <h3>As propostas ficam em imagem de post</h3>
+      <p>O que você defende vira card que ninguém acha depois. No site, cada proposta tem endereço fixo para compartilhar.</p>
+    </div>
+    <div class="prob rv">
+      <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/></svg></div>
+      <h3>Sua base está espalhada por dezenas de cidades</h3>
+      <p>Com os coordenadores publicados por município, o eleitor de cada região sabe exatamente com quem falar.</p>
+    </div>
+    <div class="prob rv">
+      <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.1A8.4 8.4 0 0 1 4 11.5a8.5 8.5 0 0 1 8.5-8.5A8.4 8.4 0 0 1 21 11.5z"/></svg></div>
+      <h3>Quem quer ajudar não sabe como</h3>
+      <p>Formulário de contato e botão de WhatsApp no site transformam interesse em conversa.</p>
+    </div>
+    <div class="prob rv">
+      <div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20"/></svg></div>
+      <h3>Material de campanha sem endereço</h3>
+      <p>Santinho, adesivo e carro de som ganham um destino: seu domínio, curto e fácil de digitar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- O QUE INCLUI -->
+<section id="incluso" style="background:var(--cinza-bg);border-top:1px solid var(--cinza-linha);border-bottom:1px solid var(--cinza-linha)">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <div class="eyebrow">O que inclui</div>
+      <h2>Tudo que o site precisa ter. Nada que você não vá usar.</h2>
+      <p class="sub">Escopo fechado, sem módulo extra escondido e sem cobrança surpresa no meio da campanha.</p>
+    </div>
+    <div class="inc-grid">
+      <div class="card rv"><div class="ic-card"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><h3>Página inicial</h3><p>Nome, número, cargo e a mensagem central da campanha logo na abertura.</p></div>
+      <div class="card rv"><div class="ic-card"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><h3>Biografia</h3><p>Sua trajetória, formação e histórico apresentados de forma clara.</p></div>
+      <div class="card rv"><div class="ic-card"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></div><h3>Propostas</h3><p>Organizadas por categoria, com endereço próprio para compartilhar.</p></div>
+      <div class="card rv"><div class="ic-card"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 22H4a2 2 0 0 1-2-2V6"/><path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18"/><circle cx="12" cy="8" r="2"/><rect width="16" height="16" x="6" y="2" rx="2"/></svg></div><h3>Galeria</h3><p>Fotos de eventos e da caminhada, organizadas por álbum.</p></div>
+      <div class="card rv"><div class="ic-card"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Coordenadores</h3><p>Foto, cidade e WhatsApp de cada coordenador regional.</p></div>
+      <div class="card rv"><div class="ic-card"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div><h3>Formulário de contato</h3><p>Mensagens do site chegam direto no e-mail que você indicar.</p></div>
+      <div class="card rv"><div class="ic-card"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg></div><h3>Receba novidades</h3><p>Quem quiser acompanhar a campanha deixa o contato pelo site.</p></div>
+      <div class="card rv"><div class="ic-card"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></div><h3>WhatsApp e redes</h3><p>Botão flutuante de WhatsApp e links para todos os seus perfis.</p></div>
+      <div class="card rv"><div class="ic-card"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></div><h3>SEO e Google</h3><p>Estrutura preparada para seu nome aparecer nas buscas.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- INFRA -->
+<section class="strip">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <div class="eyebrow">Sem custo extra</div>
+      <h2>A parte técnica já vem resolvida.</h2>
+    </div>
+    <div class="strip-grid">
+      <div class="si rv"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><div><b>Domínio próprio</b><span>Registro do seunome.com.br incluso no primeiro ano.</span></div></div>
+      <div class="si rv"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><div><b>Hospedagem</b><span>Servidor configurado e no ar durante todo o período eleitoral.</span></div></div>
+      <div class="si rv"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><div><b>Certificado SSL</b><span>Cadeado no navegador, sem aviso de site não seguro.</span></div></div>
+      <div class="si rv"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><div><b>Responsivo</b><span>Feito para o celular primeiro, que é onde o eleitor abre.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="wrap" id="como">
+  <div class="sec-head center rv">
+    <div class="eyebrow">Como funciona</div>
+    <h2>Três passos até o site no ar.</h2>
+    <p class="sub">Nada de reunião de duas horas nem de mandar arquivo solto no WhatsApp. Você preenche um formulário guiado e o site nasce dali.</p>
+  </div>
+  <div class="steps">
+    <div class="step rv"><div class="num">1</div><h3>Faça o pagamento</h3><p>Checkout seguro pela Kiwify. Pagamento único, escopo fechado, sem mensalidade.</p></div>
+    <div class="step rv"><div class="num">2</div><h3>Preencha o formulário guiado</h3><p>Chega no seu e-mail logo após a confirmação. É um formulário simples, passo a passo, que você preenche no seu tempo — dá para parar e voltar, que fica salvo. Tem santinho? Mande junto que seguimos a mesma identidade.</p></div>
+    <div class="step rv"><div class="num">3</div><h3>Receba o site no ar em até 48 horas</h3><p>Conferimos o material recebido e confirmamos o início do prazo por e-mail. Domínio configurado e hospedagem ativa.</p></div>
+  </div>
+
+  <div class="video-wrap rv">
+    <div class="video-frame" id="video-frame">
+      <!-- Substitua o src abaixo pelo seu vídeo do YouTube ou coloque um arquivo .mp4 -->
+      <div class="video-placeholder">
+        <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4V8z" fill="currentColor"/></svg>
+        <b>Veja como funciona em 1 minuto</b>
+        <span>Seu vídeo explicativo entra aqui</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prazo rv">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <div>
+      <b>As 48 horas começam depois da conferência do material.</b>
+      <p>Não é a partir do pagamento nem do envio do formulário. Quando você envia, nossa equipe confere se está tudo completo e utilizável: foto em boa qualidade, logo legível, textos preenchidos. Confirmada a conferência, avisamos por e-mail e o prazo passa a correr. Se faltar algo, entramos em contato antes de iniciar a contagem. Depois da entrega, você tem <b style="display:inline;font-weight:700">3 rodadas de alteração</b> inclusas, para usar em até 15 dias.</p>
+    </div>
+  </div>
+
+  <div class="domain rv">
+    <h3>Seu endereço já vem definido</h3>
+    <p>Para agilizar a entrega, usamos um padrão fixo de domínio: seu nome de urna seguido do número, sem hífen e sem acento.</p>
+    <div class="domain-stack">
+      <div class="domain-row">
+        <span class="domain-label">Padrão</span>
+        <div class="domain-chip dark">www.nomedocandidato+numero.com.br</div>
+      </div>
+      <div class="domain-row">
+        <span class="domain-label">Exemplo</span>
+        <div class="domain-chip light">www.<b>carlosalmeida48123</b>.com.br</div>
+      </div>
+    </div>
+    <small>Já tem um domínio? Apontamos para o seu sem custo adicional. Sujeito a disponibilidade do registro no Registro.br.</small>
+  </div>
+</section>
+
+<!-- PRECO -->
+<section id="preco" style="background:var(--cinza-bg);border-top:1px solid var(--cinza-linha);border-bottom:1px solid var(--cinza-linha)">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <div class="eyebrow">Preço</div>
+      <h2>Um preço, um escopo, um prazo.</h2>
+      <p class="sub">Sem pacote confuso e sem "a partir de".</p>
+    </div>
+    <div class="offer rv">
+      <span class="offer-badge">Entrega em até 48 horas</span>
+      <h3>Site Institucional de Campanha</h3>
+      <p class="od">Para candidaturas a deputado estadual e federal que precisam de presença digital profissional já no começo da campanha.</p>
+      <div class="price"><b>R$ 1.480,00</b><small>pagamento único</small></div>
+      <div class="pn">Sem mensalidade. Domínio, hospedagem e SSL inclusos no período eleitoral.</div>
+      <a href="https://pay.kiwify.com.br/6Y4nAYg" class="btn btn-verde">Contratar site institucional</a>
+      <div class="lgpd"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Dados protegidos e tratados conforme a LGPD.</div>
+      <hr>
+      <div class="incl">Está incluso</div>
+      <ul class="olist">
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Página inicial</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Biografia</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Propostas</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Galeria</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Coordenadores</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Formulário de contato</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Receba novidades</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>WhatsApp</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Redes sociais</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>SEO</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Domínio</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Hospedagem e SSL</li>
+      </ul>
+      <p class="note"><b>Prazo:</b> após o pagamento você recebe um formulário por e-mail. Depois de enviá-lo, conferimos o material e confirmamos o início do prazo por e-mail. As 48 horas correm a partir dessa confirmação, não da data do pagamento.</p>
+      <p class="note" style="margin-top:14px;padding-top:14px"><b>Alterações:</b> o site não possui painel administrativo. Estão inclusas 3 rodadas de alteração de textos e fotos, para solicitar em até 15 dias após a entrega, feitas pela nossa equipe em até 2 dias úteis. Depois desse período, alterações são orçadas à parte.</p>
+      <p class="note" style="margin-top:14px;padding-top:14px"><b>Domínio:</b> seguimos o padrão nomedocandidatonumero.com.br. Se você já tem domínio próprio, apontamos para ele sem custo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SEGURANCA -->
+<section class="wrap" id="seguranca">
+  <div class="sec-head center rv">
+    <div class="eyebrow">Confiança</div>
+    <h2>Segurança e privacidade para sua campanha</h2>
+    <p class="sub">Os contatos que chegam pelo site são um ativo da campanha. Ficam organizados e sob seu controle.</p>
+  </div>
+  <div class="sec-grid">
+    <div class="sec-card rv">
+      <div class="sec-ic b"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 6.5v5c0 4.6 3.2 8.8 8 9.5 4.8-.7 8-4.9 8-9.5v-5z"/></svg></div>
+      <h3>Dados armazenados com segurança</h3>
+      <p>O site funciona com conexão protegida por SSL e backup do conteúdo publicado.</p>
+    </div>
+    <div class="sec-card rv">
+      <div class="sec-ic g"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H5.2L4 17.5z"/></svg></div>
+      <h3>Os contatos são seus</h3>
+      <p>Mensagens e inscrições chegam ao e-mail que você indicar. A lista pertence à campanha.</p>
+    </div>
+    <div class="sec-card rv">
+      <div class="sec-ic b"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+      <h3>Formulários conforme a LGPD</h3>
+      <p>Quem entra em contato vê para que os dados são usados, com consentimento registrado.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="wrap" id="faq" style="padding-top:0">
+  <div class="sec-head center rv">
+    <div class="eyebrow">Dúvidas</div>
+    <h2>O que os candidatos perguntam antes de fechar.</h2>
+  </div>
+  <div class="faq">
+    <details class="q rv"><summary>Como funciona depois que eu pago?</summary><p>Você recebe por e-mail um formulário guiado, passo a passo. Ele foi feito para ser rápido: ao digitar seu número, o partido aparece sozinho; ao escolher o estado, a lista de cidades já vem pronta. Você preenche no seu ritmo, anexa foto, logo e o santinho da campanha, e o preenchimento fica salvo caso precise parar e voltar. Depois de enviar, conferimos o material e avisamos por e-mail que o prazo começou.</p></details>
+    <details class="q rv"><summary>Quanto tempo demora?</summary><p>Até 48 horas, contadas a partir da nossa conferência do material. Quando você envia o formulário, verificamos se está tudo completo e utilizável, e confirmamos por e-mail que a contagem começou. Essa conferência costuma sair no mesmo dia útil. Se algum item estiver faltando ou ilegível, avisamos antes de iniciar o prazo, para que você não perca horas de entrega com material que precisaria ser refeito.</p></details>
+    <details class="q rv"><summary>Por que o prazo não começa assim que eu envio?</summary><p>Porque material incompleto ou ilegível consumiria seu prazo à toa. Uma foto tremida ou uma logo em baixa resolução não dá para publicar, e se o relógio já estivesse correndo você perderia horas de entrega enquanto refaz o envio. Com a conferência antes, o prazo só começa quando temos certeza de que dá para montar o site do início ao fim.</p></details>
+    <details class="q rv"><summary>E se eu não tiver todo o material pronto agora?</summary><p>Sem problema. Você pode pagar e enviar o formulário quando estiver com tudo em mãos. Não há prazo de validade. As 48 horas só começam quando o material chega completo, então não perde nada esperando.</p></details>
+    <details class="q rv"><summary>Posso usar meu domínio?</summary><p>Sim. Se você já tem um domínio, apontamos para o site sem custo adicional. Se não tem, registramos no padrão www.nomedocandidato+numero.com.br, como em www.carlosalmeida48123.com.br, com o primeiro ano incluso. O padrão fixo é o que permite entregar em 48 horas sem rodada de aprovação de nome.</p></details>
+    <details class="q rv"><summary>Posso atualizar sozinho?</summary><p>Não. Este site não possui painel administrativo. É essa escolha que permite a entrega em 48 horas e o preço fechado. As alterações são feitas pela nossa equipe: você tem 3 rodadas inclusas para solicitar em até 15 dias após a entrega, cada uma respondida em até 2 dias úteis. Depois desse prazo, alterações são orçadas à parte.</p></details>
+    <details class="q rv"><summary>E se eu precisar mudar algo depois dos 15 dias?</summary><p>É possível, como serviço avulso. Os 15 dias cobrem o ajuste fino depois que você e a equipe conferem o site: correção de texto, troca de foto, acerto de contato. Passado esse período, alterações são orçadas conforme o tamanho da mudança, e continuamos disponíveis durante toda a campanha.</p></details>
+    <details class="q rv"><summary>Funciona no celular?</summary><p>Sim, e é onde a maior parte do eleitorado vai abrir. O site é montado pensando primeiro na tela do celular.</p></details>
+    <details class="q rv"><summary>Existe mensalidade?</summary><p>Não. O pagamento é único e cobre domínio, hospedagem e SSL durante o período eleitoral. Renovação após esse período é opcional e informada com antecedência.</p></details>
+    <details class="q rv"><summary>Preciso de nota fiscal para a prestação de contas?</summary><p>Sim, e emitimos. Gasto com site é despesa de campanha e precisa constar na prestação de contas. Recomendamos conferir com quem cuida da contabilidade da sua campanha antes de contratar.</p></details>
+    <details class="q rv"><summary>O site atende às regras eleitorais?</summary><p>Montamos o site com os elementos de identificação normalmente exigidos. As regras do TSE mudam a cada eleição e a responsabilidade pelo conteúdo publicado é da campanha, então oriente-se com seu advogado eleitoral.</p></details>
+  </div>
+
+  <div class="formbox rv" id="duvidas">
+    <h3>Ficou alguma dúvida antes de contratar?</h3>
+    <p>Este espaço é só para perguntas. O formulário com os dados e arquivos do site chega no seu e-mail depois do pagamento. Aqui você não precisa enviar nada disso.</p>
+    <form id="qform">
+      <div class="field">
+        <label for="f-nome">Nome</label>
+        <input type="text" id="f-nome" name="nome" required autocomplete="name" placeholder="Seu nome completo">
+      </div>
+      <div class="field">
+        <label for="f-cargo">Cargo pretendido</label>
+        <select id="f-cargo" name="cargo">
+          <option value="">Selecione</option>
+          <option>Deputado Estadual</option>
+          <option>Deputado Federal</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Como prefere que a gente responda?</label>
+        <div class="canal-seg" id="canal-seg">
+          <button type="button" class="canal-op on" data-canal="whatsapp">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.6-1.5-.9-2-.2-.5-.4-.4-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2 0 1.3.9 2.5 1.1 2.7.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.2-.6-.4zM12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+            WhatsApp
+          </button>
+          <button type="button" class="canal-op" data-canal="email">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            E-mail
+          </button>
+        </div>
+      </div>
+
+      <div class="field" id="wrap-contato">
+        <label for="f-contato" id="lbl-contato">Seu WhatsApp</label>
+        <input type="tel" id="f-contato" name="contato" required autocomplete="tel" placeholder="(62) 90000-0000">
+      </div>
+
+      <div class="field">
+        <label for="f-msg">Sua pergunta</label>
+        <textarea id="f-msg" name="mensagem" required placeholder="O que você gostaria de saber antes de contratar?"></textarea>
+      </div>
+      <label class="consent">
+        <input type="checkbox" id="f-ok" required>
+        <span>Autorizo o contato sobre esta solicitação. Os dados são usados apenas para responder à minha dúvida e tratados conforme a LGPD.</span>
+      </label>
+      <button type="submit" class="btn btn-verde" id="qbtn">Enviar pela WhatsApp</button>
+      <div class="form-msg" id="fmsg">Pergunta registrada. Vamos abrir o WhatsApp para você enviar.</div>
+    </form>
+  </div>
+
+  <div class="custom rv">
+    <div class="custom-txt">
+      <h3>Precisa de mais que isso?</h3>
+      <p>Campanhas que precisam publicar notícias e agenda pela própria equipe, com painel e acessos separados, entram como projeto sob medida. Escopo e prazo definidos em reunião.</p>
+    </div>
+    <a href="https://wa.me/5562000000000?text=Ol%C3%A1%21%20Quero%20conversar%20sobre%20um%20projeto%20sob%20medida." class="btn btn-ghost">Falar sobre projeto sob medida</a>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final" id="contato">
+  <div class="wrap rv">
+    <h2>Sua campanha merece uma presença digital profissional.</h2>
+    <p>Contrate hoje e tenha o site no ar em até 48 horas, com domínio e hospedagem inclusos.</p>
+    <a href="https://pay.kiwify.com.br/6Y4nAYg" class="btn btn-verde">Contratar site institucional</a>
+    <div class="mini-note">R$ 1.480,00 · pagamento único · sem mensalidade</div>
+    <div class="lgpd"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Dados protegidos e tratados conforme a LGPD.</div>
+  </div>
+</section>
+
+<a class="wa-float" id="wafloat" href="https://wa.me/5562000000000?text=Ol%C3%A1%21%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20site%20de%20campanha%20da%20Urna48." target="_blank" rel="noopener" aria-label="Tirar dúvidas no WhatsApp">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3z"/><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.1.8.8-3-.2-.3a8.2 8.2 0 1 1 7.2 3.9z"/></svg>
+  <span>Tirar dúvidas</span>
+</a>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a href="#" class="logo" aria-label="Urna48"><img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1784814578/logo_urna48site_uxe61p.png" alt="Urna48" class="logo-img logo-img-f"></a>
+        <p>Sites oficiais para campanhas de deputado estadual e federal, com domínio e hospedagem inclusos e entrega em até 48 horas.</p>
+      </div>
+      <div class="flinks">
+        <div>
+          <h5>O site</h5>
+          <a href="#porque">Por que ter um site</a>
+          <a href="#incluso">O que inclui</a>
+          <a href="#como">Como funciona</a>
+          <a href="#preco">Preço</a>
+          <a href="#faq">Dúvidas</a>
+        </div>
+        <div>
+          <h5>Contato</h5>
+          <a href="https://wa.me/5562000000000">WhatsApp</a>
+          <a href="#">Instagram</a>
+          <a href="mailto:contato@urna48.com.br">contato@urna48.com.br</a>
+        </div>
+        <div>
+          <h5>Legal</h5>
+          <a href="/termos-de-uso">Termos de uso</a>
+          <a href="/politica-de-privacidade">Política de privacidade</a>
+        </div>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>© 2026 Urna48. Todos os direitos reservados.</span>
+      <a href="/politica-de-privacidade">Política de privacidade</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const hd=document.getElementById('hd');
+addEventListener('scroll',()=>hd.classList.toggle('stuck',scrollY>12),{passive:true});
+
+const burger=document.getElementById('burger');
+const panel=document.getElementById('menu-panel');
+const closeBtn=document.getElementById('menu-close');
+function openMenu(){panel.hidden=false;panel.classList.add('open');burger.setAttribute('aria-expanded','true');document.body.classList.add('menu-open');closeBtn.focus()}
+function closeMenu(f){panel.classList.remove('open');panel.hidden=true;burger.setAttribute('aria-expanded','false');document.body.classList.remove('menu-open');if(f)burger.focus()}
+burger.addEventListener('click',()=>panel.classList.contains('open')?closeMenu(true):openMenu());
+closeBtn.addEventListener('click',()=>closeMenu(true));
+panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>closeMenu(false)));
+addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))closeMenu(true)});
+addEventListener('resize',()=>{if(innerWidth>980&&panel.classList.contains('open'))closeMenu(false)});
+panel.addEventListener('keydown',e=>{
+  if(e.key!=='Tab')return;
+  const f=panel.querySelectorAll('button,a[href]');const first=f[0],last=f[f.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+});
+
+// alterna WhatsApp / e-mail
+let canal='whatsapp';
+const segBox=document.getElementById('canal-seg');
+segBox.addEventListener('click',e=>{
+  const b=e.target.closest('.canal-op'); if(!b) return;
+  canal=b.dataset.canal;
+  [...segBox.children].forEach(x=>x.classList.toggle('on',x===b));
+  const inp=document.getElementById('f-contato'), lbl=document.getElementById('lbl-contato'), btn=document.getElementById('qbtn');
+  if(canal==='email'){
+    lbl.textContent='Seu e-mail';
+    inp.type='email'; inp.placeholder='voce@exemplo.com'; inp.autocomplete='email';
+    btn.textContent='Enviar por e-mail';
+    document.getElementById('fmsg').textContent='Pergunta registrada. Vamos abrir seu app de e-mail com a mensagem pronta.';
+  } else {
+    lbl.textContent='Seu WhatsApp';
+    inp.type='tel'; inp.placeholder='(62) 90000-0000'; inp.autocomplete='tel';
+    btn.textContent='Enviar pela WhatsApp';
+    document.getElementById('fmsg').textContent='Pergunta registrada. Vamos abrir o WhatsApp para você enviar.';
+  }
+  inp.value='';
+});
+
+const qf=document.getElementById('qform');
+qf.addEventListener('submit',e=>{
+  e.preventDefault();
+  const n=document.getElementById('f-nome').value.trim();
+  const ct=document.getElementById('f-contato').value.trim();
+  const c=document.getElementById('f-cargo').value;
+  const m=document.getElementById('f-msg').value.trim();
+  document.getElementById('fmsg').classList.add('on');
+  if(canal==='email'){
+    const assunto=`Dúvida sobre o site de campanha${c?' — '+c:''}`;
+    const corpo=`Nome: ${n}\nMeu e-mail: ${ct}${c?'\nCargo: '+c:''}\n\nMinha dúvida:\n${m}`;
+    window.location.href='mailto:contato@urna48.com.br?subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpo);
+  } else {
+    const txt=`Olá! Sou ${n}${c?', candidato a '+c:''}.\nWhatsApp: ${ct}\n\nMinha dúvida: ${m}`;
+    window.open('https://wa.me/5562000000000?text='+encodeURIComponent(txt),'_blank','noopener');
+  }
+});
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -40px'});
+document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%3)*70+'ms';io.observe(el)});
+</script>
+</body>
+</html>
