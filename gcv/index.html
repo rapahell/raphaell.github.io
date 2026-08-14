@@ -1,1 +1,1518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCV — Gestão de Convênios Valoriza</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dnnnn7njk/image/upload/v1786722917/gcvicone_drhq1m.png">
+<link rel="apple-touch-icon" href="https://res.cloudinary.com/dnnnn7njk/image/upload/v1786722917/gcvicone_drhq1m.png">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{
+  --azul:#1f6fd4;--azul-esc:#144a91;--azul-prof:#0e3468;
+  --laranja:#e8542a;--laranja-esc:#c53f18;
+  --creme:#fff7f0;--branco:#ffffff;
+  --texto:#132a4a;--texto-sub:#5b7096;--linha:#dbe6f5;
+  --verde:#1fae6a;--roxo:#7b5cd6;--ambar:#d9930b;
+  --sombra:0 8px 30px rgba(20,74,145,.10);--radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  background:radial-gradient(circle at 12% 8%, rgba(255,255,255,.08) 0 40%, transparent 41%),
+    linear-gradient(160deg,#2a7fe0 0%, #1f6fd4 45%, #144a91 100%);
+  background-attachment:fixed;color:var(--texto);min-height:100vh;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1140px;margin:0 auto;padding:0 20px 80px}
+svg.lc{width:1em;height:1em;stroke-width:2.2;vertical-align:-.14em}
 
+.topbar{width:100%;background:#fff;box-shadow:0 2px 14px rgba(14,52,104,.14)}
+.topbar-inner{max-width:1140px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.topbar-logo{height:56px;width:auto;max-width:100%;object-fit:contain}
+
+.rolebar{padding-top:22px}
+
+.role-switch{display:flex;background:#eef4fc;border-radius:12px;padding:5px;border:1px solid var(--linha);flex-wrap:wrap}
+.role-switch button{position:relative;border:0;background:transparent;color:var(--texto-sub);padding:10px 16px;border-radius:9px;font-size:13.5px;font-weight:700;cursor:pointer;transition:.18s;display:flex;align-items:center;gap:7px;line-height:1;overflow:visible}
+.nav-badge{position:absolute;top:-6px;right:-4px;min-width:19px;height:19px;padding:0 5px;background:#e63946;color:#fff;font-size:11px;font-weight:800;border-radius:10px;display:none;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(230,57,70,.5);border:2px solid #fff;line-height:1}
+.nav-badge.show{display:flex}
+.role-switch button:hover{color:var(--azul-esc)}
+.role-switch button.active{background:linear-gradient(150deg,var(--azul),var(--azul-esc));color:#fff;box-shadow:0 3px 10px rgba(20,74,145,.28)}
+
+.wrap-top-space{height:24px}
+
+.panel{background:var(--branco);border-radius:var(--radius);box-shadow:var(--sombra);padding:26px;margin-bottom:22px}
+.panel h2{font-size:17px;color:var(--azul-esc);margin-bottom:4px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.panel h2 .dot{width:9px;height:9px;border-radius:50%;background:var(--laranja)}
+.panel .sub{color:var(--texto-sub);font-size:13px;margin-bottom:20px}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+label{font-size:12.5px;font-weight:700;color:var(--texto)}
+label .opt{color:var(--texto-sub);font-weight:500}
+input,select,textarea{border:1.5px solid var(--linha);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;color:var(--texto);background:#fbfdff;transition:.15s;width:100%}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--azul);background:#fff;box-shadow:0 0 0 3px rgba(31,111,212,.12)}
+textarea{resize:vertical;min-height:92px;line-height:1.5}
+.hint{font-size:11.5px;color:var(--texto-sub)}
+.two-tels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.dropzone{border:2px dashed var(--linha);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:.18s;background:#fbfdff;display:flex;flex-direction:column;align-items:center;gap:6px}
+.dropzone:hover{border-color:var(--laranja);background:var(--creme)}
+.dropzone.has{border-style:solid;border-color:var(--verde);background:#f2fbf6}
+.dropzone.drag-on{border-color:var(--laranja);background:var(--creme);transform:scale(1.01)}
+.dropzone.paste-on{border-color:var(--azul);background:#eef4fc;box-shadow:0 0 0 3px rgba(31,111,212,.14)}
+.mini-open{margin-top:6px;width:100%;border:1px solid var(--linha);background:#fff;color:var(--azul);font-size:11px;font-weight:700;padding:6px;border-radius:8px;cursor:pointer;transition:.15s}
+.mini-open:hover{background:#eef4fc}
+.dropzone p{font-size:12.5px;color:var(--texto-sub)}
+.dropzone .ic{font-size:24px;color:var(--azul);display:flex}
+.preview-img{max-height:64px;border-radius:8px}
+
+.btn{border:0;border-radius:11px;padding:13px 22px;font-size:14.5px;font-weight:800;cursor:pointer;transition:.16s;font-family:inherit;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn-primary{background:linear-gradient(150deg,var(--laranja),var(--laranja-esc));color:#fff;box-shadow:0 6px 16px rgba(197,63,24,.32)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 9px 20px rgba(197,63,24,.4)}
+.btn-ghost{background:#eef4fc;color:var(--azul-esc)}
+.btn-ghost:hover{background:#e2edfa}
+.btn-green{background:linear-gradient(150deg,#26bd77,#149a5c);color:#fff;box-shadow:0 6px 16px rgba(20,154,92,.3)}
+.btn-danger{background:#fdeef0;color:#c0303c;border:1px solid #f2c2c8}
+.btn-danger:hover{background:#f9dde1}
+.btn-green:hover{transform:translateY(-1px)}
+.btn-sm{padding:8px 13px;font-size:12.5px;border-radius:9px}
+.btn-row{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap}
+
+.pipe{display:flex;align-items:stretch;gap:0;margin:22px 0;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:6px;overflow-x:auto}
+.pstage{flex:0 0 auto;min-width:118px;background:transparent;border:0;border-radius:10px;padding:10px 14px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:11px;position:relative}
+.pstage:not(:last-child)::after{content:"";position:absolute;right:-1px;top:22%;bottom:22%;width:1px;background:rgba(255,255,255,.18)}
+.pstage:hover{background:rgba(255,255,255,.12)}
+.pstage.on{background:#fff}
+.pstage .n{color:#fff;font-size:22px;font-weight:800;line-height:1;min-width:24px}
+.pstage .l{color:rgba(255,255,255,.85);font-size:11.5px;font-weight:700;line-height:1.25;display:flex;align-items:center;gap:6px;text-align:left}
+.pstage.on .n{color:var(--azul-esc)}.pstage.on .l{color:var(--texto-sub)}
+.pstage .sd{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.pstage.total{flex:0 0 auto;min-width:96px}
+.pstage.excep{flex:0 0 auto;min-width:0}
+.pstage.excep .n{font-size:18px}
+.pstage-arrow{display:flex;align-items:center;color:rgba(255,255,255,.4);flex-shrink:0}
+.pstage-arrow svg{width:16px;height:16px}
+
+.filterbar{background:var(--branco);border-radius:var(--radius);box-shadow:var(--sombra);padding:16px 20px;margin-bottom:18px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.filterbar .fgroup{display:flex;flex-direction:column;gap:4px}
+.filterbar label{font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--texto-sub)}
+.filterbar select,.filterbar input{padding:9px 11px;font-size:13px;border-radius:9px;min-width:120px}
+.filterbar .search{flex:1;min-width:180px}
+.filterbar .search input{width:100%}
+.filterbar .clearf{align-self:flex-end;background:transparent;border:0;color:var(--azul);font-weight:700;font-size:12.5px;cursor:pointer;padding:9px 4px;display:flex;align-items:center;gap:5px}
+
+.cv-list{display:flex;flex-direction:column;gap:14px}
+.cv{background:#fff;border-radius:14px;border:1px solid var(--linha);padding:18px;display:grid;grid-template-columns:64px 1fr 230px;gap:16px;align-items:start;transition:.15s;position:relative;overflow:hidden}
+.cv::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px}
+.cv.s-ajuste::before{background:var(--roxo)}
+.cv.s-design::before{background:var(--azul)}
+.cv.s-apmarcio::before{background:#e08a1e}
+.cv.s-apiara::before{background:#0aa2c0}
+.cv.s-conv::before{background:#8a63d2}
+.cv.s-apostar::before{background:#1f8f5a}
+.cv.s-agendado::before{background:#2f80ed}
+.cv.s-postado::before{background:var(--verde)}
+.cv.s-entregue::before{background:var(--verde)}
+.cv:hover{box-shadow:0 6px 20px rgba(20,74,145,.08)}
+.cv-logo{width:64px;height:64px;border-radius:12px;object-fit:cover;background:#f0f4fa;display:grid;place-items:center;color:var(--texto-sub);font-weight:800;font-size:20px;overflow:hidden}
+.cv-logo .ic{color:var(--azul);font-size:26px;display:flex}
+.cv-body h3{font-size:16px;color:var(--texto);margin-bottom:3px}
+.cv-cat{display:inline-flex;align-items:center;gap:5px;background:var(--creme);color:var(--laranja-esc);font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px}
+.cv-block{margin-bottom:9px}
+.cv-block .bl-tit{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--texto-sub);margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.copybtn{margin-left:auto;border:1px solid var(--linha);background:#fff;color:var(--azul);font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;text-transform:none;letter-spacing:0;transition:.15s}
+.copybtn:hover{background:#eef4fc;border-color:var(--azul)}
+.cv-actions{display:flex;flex-direction:column;gap:8px}
+.cv-vant{font-size:13px;color:var(--texto);line-height:1.55;white-space:pre-line}
+.cv-vant.bruto{color:var(--texto-sub);font-style:italic}
+.cv-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--texto-sub);margin-top:4px}
+.cv-meta span{display:inline-flex;align-items:center;gap:5px}
+.cv-meta a{color:var(--azul);text-decoration:none;font-weight:600}
+.cv-meta a:hover{text-decoration:underline}
+.cv-side{display:flex;flex-direction:column;gap:9px;align-items:stretch}
+.status{font-size:11px;font-weight:800;padding:6px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px;text-align:center}
+.st-cadastro{background:#fff2ec;color:var(--laranja-esc)}
+.st-rascunho{background:#eef1f5;color:#5a6b80}
+.cv.s-rascunho::before{background:#6b7a90}
+.rasc-bar{background:#fff;border:1px solid var(--linha);border-left:4px solid #6b7a90;border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;box-shadow:var(--sombra)}
+.rasc-info{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--texto-sub)}
+.rasc-info .lc{color:#6b7a90;width:18px;height:18px}
+.rasc-info b{color:var(--texto)}
+.st-ajuste{background:#f2ecfd;color:var(--roxo)}
+.st-design{background:#e9f1fd;color:var(--azul)}
+.st-entregue{background:#e9f9f1;color:var(--verde)}
+.st-apmarcio{background:#fdf0dd;color:#b06d0a}
+.st-apiara{background:#e0f4f8;color:#087f96}
+.st-conv{background:#efe9fa;color:#6a45c0}
+.st-apostar{background:#e4f6ec;color:#157a4a}
+.st-agendado{background:#e4eefc;color:#1d5fc0}
+.st-postado{background:#e9f9f1;color:var(--verde)}
+.cv.devolvido::before{background:repeating-linear-gradient(45deg,var(--laranja),var(--laranja) 8px,var(--laranja-esc) 8px,var(--laranja-esc) 16px)}
+.devnote{background:#fff2ec;border:1px solid #f6c9b6;border-radius:10px;padding:9px 12px;font-size:12px;color:var(--laranja-esc);line-height:1.45;display:flex;gap:7px;align-items:flex-start}
+.devnote.rev{background:#fdeef0;border-color:#f2c2c8;color:#c0303c}
+.devnote.rev .ic{color:#c0303c;display:flex;margin-top:1px}
+.tl.rev .ic{color:#c0303c}
+.tl.rev .who{color:#c0303c}
+.cv-rev-badge{display:inline-flex;align-items:center;gap:5px;background:#fdeef0;color:#c0303c;border:1px solid #f2c2c8;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:6px;margin-bottom:8px;margin-left:6px;text-transform:uppercase;letter-spacing:.3px}
+.cv-rev-badge svg{width:13px;height:13px}
+.cv-date-badge{display:inline-flex;align-items:center;gap:5px;background:#e4eefc;color:#1d5fc0;border:1px solid #c3d7f5;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:6px;margin-bottom:8px;margin-left:6px;text-transform:uppercase;letter-spacing:.3px}
+.cv-date-badge svg{width:13px;height:13px}
+.devnote .ic{margin-top:1px;flex-shrink:0;display:flex}
+.devnote b{font-weight:800}
+.tl.dev .ic{color:var(--laranja-esc)}
+.tl.dev .who{color:var(--laranja-esc)}
+.timeline{border-top:1px solid var(--linha);padding-top:9px;display:flex;flex-direction:column;gap:5px}
+.tl{font-size:10.5px;color:var(--texto-sub);display:flex;gap:6px;align-items:baseline}
+.tl .ic{color:var(--texto-sub);display:flex;align-self:center}
+.tl .who{color:var(--texto);font-weight:700}
+
+.art-slot{border-top:1px solid var(--linha);padding-top:10px;display:flex;flex-direction:column;gap:8px}
+.art-thumbs{display:flex;gap:6px}
+.art-thumb{width:50px;height:50px;border-radius:8px;object-fit:cover;border:1px solid var(--linha)}
+.art-links{display:flex;gap:6px;flex-wrap:wrap}
+
+.empty{text-align:center;padding:50px 20px;color:var(--texto-sub)}
+.empty .ic{font-size:44px;opacity:.4;margin-bottom:10px;display:flex;justify-content:center;color:var(--texto-sub)}
+
+.modal-bg{position:fixed;inset:0;background:rgba(14,52,104,.55);backdrop-filter:blur(3px);display:none;place-items:center;z-index:50;padding:20px;overflow-y:auto}
+.modal-bg.show{display:grid}
+.modal{background:#fff;border-radius:18px;max-width:520px;width:100%;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.3);margin:auto}
+.modal h3{color:var(--azul-esc);margin-bottom:6px;font-size:17px;display:flex;align-items:center;gap:8px}
+.modal .msub{color:var(--texto-sub);font-size:13px;margin-bottom:18px}
+.ref-box{background:#f7f9fd;border:1px solid var(--linha);border-radius:10px;padding:12px 14px;margin-bottom:16px}
+.ref-box .rl{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--texto-sub);margin-bottom:5px}
+.ref-box .rt{font-size:13px;color:var(--texto);line-height:1.5;white-space:pre-line}
+.drop-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--texto);color:#fff;padding:13px 22px;border-radius:12px;font-size:13.5px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:.3s;z-index:100;display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.loading{color:#fff;text-align:center;padding:40px;font-size:14px}
+
+footer.ft{text-align:center;color:rgba(255,255,255,.72);font-size:12.5px;font-weight:500;padding:34px 0 6px;line-height:1.7}
+footer.ft span{color:rgba(255,255,255,.6);font-size:11.5px}
+
+@media(max-width:820px){
+  .cv{grid-template-columns:52px 1fr}
+  .cv-side{grid-column:1/-1;border-top:1px solid var(--linha);padding-top:12px;margin-top:6px}
+  .cv-logo{width:52px;height:52px}
+}
+@media(max-width:720px){
+  .topbar-inner{flex-direction:column;gap:12px;padding:14px 16px}
+  .topbar-right{width:100%;justify-content:center}
+  .topbar-logo{height:46px}
+  .role-switch{width:100%;justify-content:center}
+  .role-switch button{flex:1;justify-content:center;padding:11px 8px}
+  .grid{grid-template-columns:1fr}
+  .pipe{flex-wrap:wrap}
+  .pstage{min-width:calc(50% - 20px);flex:1 1 calc(50% - 20px)}
+  .pstage:not(:last-child)::after{display:none}
+  .pstage-arrow{display:none}
+  .drop-two{grid-template-columns:1fr}
+  .filterbar select,.filterbar input{min-width:0}
+  .cv-actions .btn-sm{padding:11px 14px;font-size:13px}
+  .copybtn{padding:5px 10px;font-size:11px}
+  .art-links .btn-sm{padding:10px 12px}
+}
+
+
+/* ---- Tela de senha ---- */
+.lock-screen{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(circle at 12% 8%, rgba(255,255,255,.08) 0 40%, transparent 41%),
+    linear-gradient(160deg,#2a7fe0 0%, #1f6fd4 45%, #144a91 100%);}
+.lock-screen.show{display:flex}
+.lock-card{background:#fff;border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.3);padding:34px 30px;width:100%;max-width:400px;text-align:center}
+.lock-logo{max-width:88%;width:auto;height:auto;max-height:50px;object-fit:contain;margin:0 auto 10px;display:block}
+.lock-sub{color:var(--texto-sub);font-size:12.5px;margin-bottom:22px;line-height:1.5}
+.lock-field{text-align:left;margin-bottom:6px}
+.lock-field label{display:block;font-size:12.5px;font-weight:700;color:var(--texto);margin-bottom:6px}
+.lock-erro{color:var(--laranja-esc);font-size:12.5px;font-weight:600;min-height:18px;text-align:left}
+.lock-remember{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--texto-sub);margin-top:8px;cursor:pointer;text-align:left}
+.lock-remember input{width:auto}
+
+.topbar-right{display:flex;align-items:center;gap:14px}
+.logout-btn{border:1px solid var(--linha);background:#fff;color:var(--azul-esc);width:36px;height:36px;border-radius:9px;cursor:pointer;display:grid;place-items:center;transition:.15s}
+.logout-btn:hover{background:#eef4fc;border-color:var(--azul)}
+.logout-btn svg{width:17px;height:17px}
+
+/* ---- Cadastro direto (Márcio) ---- */
+.mc-direct{margin-top:20px;border-top:1px dashed var(--linha);padding-top:6px}
+.mc-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f7f4fd;border:1px solid #e4dbf7;color:var(--roxo);font-weight:800;font-size:13.5px;padding:13px 16px;border-radius:11px;cursor:pointer;transition:.15s;margin-top:12px;font-family:inherit}
+.mc-toggle:hover{background:#f0eafb}
+.mc-toggle span{display:flex;align-items:center;gap:9px}
+.mc-toggle b{color:var(--roxo)}
+.mc-toggle .lc{width:18px;height:18px}
+.mc-body{animation:mcfade .2s ease}
+@keyframes mcfade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- TELA DE SENHA -->
+<div class="lock-screen show" id="lockScreen">
+  <div class="lock-card">
+    <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1786658137/gcv_la9gee.png" alt="Gestão de Convênios Valoriza" class="lock-logo">
+    <p class="lock-sub">Acesso exclusivo para colaboradores internos da CASAG</p>
+    <div class="lock-field">
+      <label>Senha de acesso</label>
+      <input type="password" id="lockInput" placeholder="Digite a senha" onkeydown="lockKey(event)" autocomplete="off">
+    </div>
+    <div class="lock-erro" id="lockErro"></div>
+    <label class="lock-remember"><input type="checkbox" id="lockRemember" checked> Manter conectado neste aparelho</label>
+    <button class="btn btn-primary" id="btnEntrar" onclick="entrar()" style="width:100%;justify-content:center;margin-top:10px">Entrar</button>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+<div class="topbar">
+  <div class="topbar-inner">
+    <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1786658137/gcv_la9gee.png" alt="Gestão de Convênios Valoriza" class="topbar-logo">
+    <div class="topbar-right">
+      <div class="role-switch">
+        <button id="r-iara" class="active" onclick="setRole('iara')"><i data-lucide="handshake"></i>Convênios<span class="nav-badge" id="badge-iara"></span></button>
+        <button id="r-marcio" onclick="setRole('marcio')"><i data-lucide="pen-line"></i>Comunicação<span class="nav-badge" id="badge-marcio"></span></button>
+        <button id="r-raphael" onclick="setRole('raphael')"><i data-lucide="palette"></i>Design<span class="nav-badge" id="badge-raphael"></span></button>
+      </div>
+      <button class="logout-btn" onclick="sair()" title="Bloquear (pedir senha de novo)"><i data-lucide="lock"></i></button>
+    </div>
+  </div>
+</div>
+<div class="wrap">
+
+  <div class="pipe" id="pipe"></div>
+
+  <!-- CONVÊNIOS (cadastro) -->
+  <div id="viewIara" class="panel">
+    <h2><span class="dot"></span>Captar convênio</h2>
+    <p class="sub">Lance a informação bruta do conveniado. A comunicação ajusta o texto depois, então não precisa se preocupar com a redação. Os convênios ficam no <b>seu rascunho</b> até você liberar para a comunicação — um por um ou vários de uma vez.</p>
+    <div class="grid">
+      <div class="field">
+        <label>Nome do convênio</label>
+        <input type="text" id="fNome" placeholder="Ex.: Sorriso Feliz">
+      </div>
+      <div class="field">
+        <label>Categoria / tipo</label>
+        <select id="fCat" onchange="toggleOutra()">
+          <option value="">Selecione…</option>
+        </select>
+        <input type="text" id="fCatOutra" placeholder="Qual? (especifique a categoria)" style="display:none;margin-top:8px">
+      </div>
+      <div class="field full">
+        <label>Vantagens / benefícios <span class="opt">(informação bruta, como chegou)</span></label>
+        <textarea id="fVant" placeholder="Cole aqui o que o conveniado passou, mesmo sem formatação. A comunicação ajusta depois.&#10;Ex.: 20% à vista pix, 15% cartão 4x, não cumulativo com outras promoções."></textarea>
+      </div>
+      <div class="field">
+        <label>Endereço <span class="opt">(opcional)</span></label>
+        <input type="text" id="fEnd" placeholder="Rua, nº, bairro — cidade">
+      </div>
+      <div class="field">
+        <label>Instagram <span class="opt">(opcional)</span></label>
+        <input type="text" id="fInsta" placeholder="@sorrisofeliz">
+      </div>
+      <div class="field">
+        <label>WhatsApp / telefone <span class="opt">(até 2)</span></label>
+        <div class="two-tels">
+          <input type="text" id="fTel1" placeholder="(62) 90000-0000">
+          <input type="text" id="fTel2" placeholder="(62) 90000-0000">
+        </div>
+      </div>
+      <div class="field">
+        <label>Outra informação do conveniado <span class="opt">(site, e-mail, horário… — opcional)</span></label>
+        <input type="text" id="fExtra" placeholder="Ex.: www.sorrisofeliz.com.br">
+      </div>
+      <div class="field full">
+        <label>Marca / logo do conveniado <span class="opt">(opcional — pode anexar depois)</span></label>
+        <div class="dropzone" id="dzLogo" onclick="document.getElementById('fLogo').click()">
+          <div class="ic"><i data-lucide="paperclip"></i></div>
+          <p><b>Clique para anexar</b> a marca (PNG, JPG, SVG ou PDF)</p>
+        </div>
+        <input type="file" id="fLogo" accept="image/*,application/pdf" hidden onchange="handleLogo(event)">
+        <span class="hint">De preferência, marca <b>sem fundo</b> (PNG ou SVG transparente).</span>
+      </div>
+    </div>
+    <div class="field" style="margin-top:16px">
+      <label>Nome de quem está cadastrando</label>
+      <input type="text" id="fAuthor" placeholder="Ex.: Iara" style="max-width:280px">
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-primary" id="btnEnviar" onclick="salvarConvenio()"><i data-lucide="save"></i>Salvar no rascunho</button>
+      <button class="btn btn-ghost" onclick="limparForm()">Limpar</button>
+    </div>
+  </div>
+
+  <!-- COMUNICAÇÃO intro -->
+  <div id="viewMarcio" class="panel" style="display:none">
+    <h2><span class="dot"></span>Ajuste de texto</h2>
+    <p class="sub">Convênios <b style="color:var(--roxo)">com comunicação</b> aguardam seu ajuste. Abra, redija o texto final para os cards e libere para o design. O texto bruto fica guardado como referência.</p>
+
+    <div class="mc-direct">
+      <button class="mc-toggle" id="mcToggle" onclick="toggleDireto()">
+        <span><i data-lucide="zap"></i> Cadastrar convênio já pronto <b>direto pro design</b></span>
+        <i data-lucide="chevron-down" id="mcChevron"></i>
+      </button>
+      <div class="mc-body" id="mcBody" style="display:none">
+        <p class="sub" style="margin-top:14px">Use isto para convênios que <b>já estão com o texto pronto</b> — vão direto pra fila do design, pulando a etapa de ajuste. Ideal para lançar os que já estavam com você.</p>
+        <div class="grid">
+          <div class="field">
+            <label>Nome do convênio</label>
+            <input type="text" id="dNome" placeholder="Ex.: Sorriso Feliz">
+          </div>
+          <div class="field">
+            <label>Categoria / tipo</label>
+            <select id="dCat" onchange="toggleOutraD()">
+              <option value="">Selecione…</option>
+            </select>
+            <input type="text" id="dCatOutra" placeholder="Qual? (especifique a categoria)" style="display:none;margin-top:8px">
+          </div>
+          <div class="field full">
+            <label>Texto do card <span class="opt">(já pronto, como vai sair)</span></label>
+            <textarea id="dTexto" placeholder="Cole ou escreva aqui o texto final, já ajustado, pronto pro card."></textarea>
+          </div>
+          <div class="field">
+            <label>Endereço <span class="opt">(opcional)</span></label>
+            <input type="text" id="dEnd" placeholder="Rua, nº, bairro — cidade">
+          </div>
+          <div class="field">
+            <label>Instagram <span class="opt">(opcional)</span></label>
+            <input type="text" id="dInsta" placeholder="@sorrisofeliz">
+          </div>
+          <div class="field">
+            <label>WhatsApp / telefone <span class="opt">(até 2)</span></label>
+            <div class="two-tels">
+              <input type="text" id="dTel1" placeholder="(62) 90000-0000">
+              <input type="text" id="dTel2" placeholder="(62) 90000-0000">
+            </div>
+          </div>
+          <div class="field">
+            <label>Outra informação <span class="opt">(site, e-mail… — opcional)</span></label>
+            <input type="text" id="dExtra" placeholder="Ex.: www.sorrisofeliz.com.br">
+          </div>
+          <div class="field full">
+            <label>Marca / logo do conveniado <span class="opt">(opcional)</span></label>
+            <div class="dropzone" id="dzLogoD" onclick="document.getElementById('dLogo').click()">
+              <div class="ic"><i data-lucide="paperclip"></i></div>
+              <p><b>Clique para anexar</b> a marca (PNG, JPG, SVG ou PDF)</p>
+            </div>
+            <input type="file" id="dLogo" accept="image/*,application/pdf" hidden onchange="handleLogoD(event)">
+            <span class="hint">De preferência, marca <b>sem fundo</b> (PNG ou SVG transparente).</span>
+          </div>
+        </div>
+        <div class="field" style="margin-top:16px">
+          <label>Nome de quem está cadastrando</label>
+          <input type="text" id="dAuthor" placeholder="Ex.: Márcio" style="max-width:280px">
+        </div>
+        <div class="btn-row" style="margin-top:16px">
+          <button class="btn btn-primary" id="btnDireto" onclick="salvarDireto()"><i data-lucide="palette"></i>Enviar direto pro design</button>
+          <button class="btn btn-ghost" onclick="limparDireto()">Limpar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESIGN intro -->
+  <div id="viewRaphael" class="panel" style="display:none">
+    <h2><span class="dot"></span>Produção de artes</h2>
+    <p class="sub">Convênios <b style="color:var(--azul)">no design</b> estão prontos. Anexe Story e Feed e marque como entregue. Precisa <b>trocar sua arte</b> depois? Use "Trocar / editar artes" — não precisa devolver. Só devolva pra comunicação se o <b>texto/informação estiver errado</b>.</p>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filterbar">
+    <div class="fgroup search">
+      <label>Buscar</label>
+      <input type="text" id="fBusca" placeholder="Nome do convênio…" oninput="render()">
+    </div>
+    <div class="fgroup">
+      <label>Mês</label>
+      <select id="fMes" onchange="render()"><option value="">Todos</option></select>
+    </div>
+    <div class="fgroup">
+      <label>Ano</label>
+      <select id="fAno" onchange="render()"><option value="">Todos</option></select>
+    </div>
+    <div class="fgroup">
+      <label>Tipo</label>
+      <select id="fTipo" onchange="render()"><option value="">Todos</option></select>
+    </div>
+    <button class="clearf" onclick="limparFiltros()"><i data-lucide="x"></i>Limpar filtros</button>
+  </div>
+
+  <div id="rascunhoBar"></div>
+  <div id="listWrap"><div class="loading">Carregando convênios…</div></div>
+
+  <footer class="ft">
+    Desenvolvido pelo departamento de Comunicação e Marketing da CASAG<br>
+    <span>Exclusivo para colaboradores internos da CASAG — não repassar ao conveniado</span>
+  </footer>
+</div>
+
+<!-- MODAL comunicação -->
+<div class="modal-bg" id="modalTexto">
+  <div class="modal">
+    <h3><i data-lucide="pen-line"></i>Ajustar texto para os cards</h3>
+    <p class="msub" id="mtNome"></p>
+    <div class="ref-box">
+      <div class="rl">Bruto do cadastro (referência)</div>
+      <div class="rt" id="mtBruto"></div>
+    </div>
+    <div class="field">
+      <label>Texto ajustado <span class="opt">(vai para os cards)</span></label>
+      <textarea id="mtAjustado" style="min-height:120px" placeholder="Redija aqui a versão final, limpa e pronta para o card."></textarea>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>Nome de quem ajustou</label>
+      <input type="text" id="mtAuthor" placeholder="Ex.: Márcio" style="max-width:260px">
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-green" onclick="salvarAjuste()"><i data-lucide="check"></i>Liberar para o design</button>
+      <button class="btn btn-ghost" onclick="fecharModal('modalTexto')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL design -->
+<div class="modal-bg" id="modalArte">
+  <div class="modal">
+    <h3><i data-lucide="palette"></i>Responder com as artes</h3>
+    <p class="msub" id="maNome"></p>
+    <div class="ref-box">
+      <div class="rl">Texto para o card (ajustado)</div>
+      <div class="rt" id="maTexto"></div>
+    </div>
+    <p style="font-size:11.5px;color:var(--texto-sub);margin:-8px 0 12px">Você pode <b>clicar</b>, <b>arrastar do computador</b> ou <b>colar (Ctrl+V)</b>. Para colar, clique primeiro no quadro (Story ou Feed) para escolher onde vai.</p>
+    <div class="drop-two">
+      <div>
+        <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:700">Story</label>
+        <div class="dropzone dzart" id="dzStory" data-slot="story"
+             onclick="setPasteTarget('story')"
+             ondragover="dzDragOver(event,'dzStory')" ondragleave="dzDragLeave('dzStory')" ondrop="dzDrop(event,'story','dzStory')">
+          <div class="ic"><i data-lucide="smartphone"></i></div><p style="font-size:11px">Clique, arraste ou cole</p>
+        </div>
+        <input type="file" id="fStory" accept="image/*" hidden onchange="handleArt('story',event)">
+        <button type="button" class="mini-open" onclick="document.getElementById('fStory').click()">Escolher arquivo…</button>
+      </div>
+      <div>
+        <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:700">Feed</label>
+        <div class="dropzone dzart" id="dzFeed" data-slot="feed"
+             onclick="setPasteTarget('feed')"
+             ondragover="dzDragOver(event,'dzFeed')" ondragleave="dzDragLeave('dzFeed')" ondrop="dzDrop(event,'feed','dzFeed')">
+          <div class="ic"><i data-lucide="image"></i></div><p style="font-size:11px">Clique, arraste ou cole</p>
+        </div>
+        <input type="file" id="fFeed" accept="image/*" hidden onchange="handleArt('feed',event)">
+        <button type="button" class="mini-open" onclick="document.getElementById('fFeed').click()">Escolher arquivo…</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Nome de quem produziu</label>
+      <input type="text" id="maAuthor" placeholder="Ex.: Raphael" style="max-width:260px">
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-green" onclick="salvarArte(event)"><i data-lucide="send"></i>Salvar e enviar p/ aprovação</button>
+      <button class="btn btn-ghost" onclick="salvarArteParcial(event)">Só salvar artes</button>
+      <button class="btn btn-ghost" onclick="fecharModal('modalArte')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL devolução -->
+<div class="modal-bg" id="modalDevol">
+  <div class="modal">
+    <h3><i data-lucide="corner-up-left"></i>Devolver convênio</h3>
+    <p class="msub" id="dvNome"></p>
+    <div class="ref-box" id="dvDestBox">
+      <div class="rl">Voltará para</div>
+      <div class="rt" id="dvDest"></div>
+    </div>
+    <div class="field">
+      <label>Motivo da devolução <span class="opt">(o que precisa ser corrigido)</span></label>
+      <textarea id="dvMotivo" style="min-height:90px" placeholder="Ex.: O desconto no cartão está diferente do que o conveniado passou. / Falta o telefone de WhatsApp."></textarea>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>Seu nome</label>
+      <input type="text" id="dvAuthor" placeholder="Quem está devolvendo" style="max-width:260px">
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-primary" onclick="confirmarDevolucao()"><i data-lucide="corner-up-left"></i>Devolver</button>
+      <button class="btn btn-ghost" onclick="fecharModal('modalDevol')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: pedir revisão (conveniado) -->
+<div class="modal-bg" id="modalRevisao">
+  <div class="modal">
+    <h3><i data-lucide="message-square-warning"></i>Pedir revisão do conveniado</h3>
+    <p class="msub" id="rvNome"></p>
+    <div class="ref-box">
+      <div class="rl">O que acontece</div>
+      <div class="rt">O card volta para a <b>comunicação</b>. O Márcio decide se ajusta o texto ou libera direto pro design refazer a arte. Fica marcado como <b>revisão do conveniado</b>.</div>
+    </div>
+    <div class="field">
+      <label>O que o conveniado pediu <span class="opt">(texto, arte, o que mudar)</span></label>
+      <textarea id="rvMotivo" style="min-height:90px" placeholder="Ex.: O conveniado quer o desconto atualizado para 25% e trocar a cor de fundo da arte."></textarea>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>Seu nome</label>
+      <input type="text" id="rvAuthor" placeholder="Quem está pedindo" style="max-width:260px">
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-primary" onclick="confirmarRevisao()"><i data-lucide="message-square-warning"></i>Enviar para revisão</button>
+      <button class="btn btn-ghost" onclick="fecharModal('modalRevisao')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: excluir -->
+<div class="modal-bg" id="modalExcluir">
+  <div class="modal">
+    <h3><i data-lucide="trash-2"></i>Apagar convênio</h3>
+    <p class="msub" id="exNome"></p>
+    <div class="ref-box" style="background:#fdeef0;border-color:#f2c2c8">
+      <div class="rt" style="color:#c0303c">Esta ação é <b>permanente</b> e apaga o convênio para todos, incluindo texto e artes. Não dá para desfazer.</div>
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-danger" id="btnExcluir" onclick="confirmarExcluir()"><i data-lucide="trash-2"></i>Sim, apagar</button>
+      <button class="btn btn-ghost" onclick="fecharModal('modalExcluir')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: agendar postagem -->
+<div class="modal-bg" id="modalAgendar">
+  <div class="modal">
+    <h3><i data-lucide="calendar"></i>Agendar postagem</h3>
+    <p class="msub" id="agNome"></p>
+    <div class="field">
+      <label>Data da postagem</label>
+      <input type="date" id="agData">
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>Seu nome</label>
+      <input type="text" id="agAuthor" placeholder="Ex.: Márcio" style="max-width:260px">
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-green" onclick="confirmarAgendar()"><i data-lucide="calendar-check"></i>Agendar</button>
+      <button class="btn btn-ghost" onclick="fecharModal('modalAgendar')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /#app -->
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDKs (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ============================================================
+   CONFIGURAÇÃO DO FIREBASE
+   Cole aqui o objeto que o Firebase te dá (Configurações do
+   projeto > Seus apps > SDK). Só isto precisa ser trocado.
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyBmOZO7F4MESIZ9NRiQO3uv_JgRHETvLc4",
+  authDomain: "pcv-casag.firebaseapp.com",
+  projectId: "pcv-casag",
+  storageBucket: "pcv-casag.firebasestorage.app",
+  messagingSenderId: "328971697269",
+  appId: "1:328971697269:web:10e4fdc9d51eaf7e228c3c"
+};
+/* ============================================================ */
+
+/* ============================================================
+   SENHA DE ACESSO
+   Troque o texto abaixo pela senha que só vocês vão saber.
+   Quem não digitar essa senha não entra na plataforma.
+   ============================================================ */
+const SENHA_ACESSO = "casag2026";
+/* ============================================================ */
+
+let fbApp, auth, db, storage, unsub=null;
+try{
+  fbApp = firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+}catch(e){ console.error('Firebase init', e); }
+
+const CATEGORIAS=[
+  "Posto de combustível","Clínica odontológica","Pet shop","Clínica de beleza / estética",
+  "Academia","Escola de idiomas","Salão de beleza","Barbearia","Contabilidade",
+  "Supermercado","Padaria","Farmácia","Clínica médica","Laboratório",
+  "Óptica","Restaurante","Lanchonete","Advocacia / jurídico","Escola / ensino",
+  "Faculdade / curso","Auto center / mecânica","Seguros","Imobiliária","Turismo / viagens",
+  "Vestuário / moda","Livraria / papelaria","Tecnologia / informática","Fisioterapia",
+  "Psicologia","Nutrição","Lazer / entretenimento","Hotel / pousada","Outros"
+];
+const CAT_ICON={
+  "Posto de combustível":"fuel","Clínica odontológica":"stethoscope","Pet shop":"paw-print",
+  "Clínica de beleza / estética":"sparkles","Academia":"dumbbell","Escola de idiomas":"languages",
+  "Salão de beleza":"scissors","Barbearia":"scissors","Contabilidade":"calculator",
+  "Supermercado":"shopping-cart","Padaria":"croissant","Farmácia":"pill","Clínica médica":"stethoscope",
+  "Laboratório":"flask-conical","Óptica":"glasses","Restaurante":"utensils","Lanchonete":"sandwich",
+  "Advocacia / jurídico":"scale","Escola / ensino":"graduation-cap","Faculdade / curso":"graduation-cap",
+  "Auto center / mecânica":"wrench","Seguros":"shield-check","Imobiliária":"home","Turismo / viagens":"plane",
+  "Vestuário / moda":"shirt","Livraria / papelaria":"book-open","Tecnologia / informática":"laptop",
+  "Fisioterapia":"activity","Psicologia":"brain","Nutrição":"apple","Lazer / entretenimento":"ticket",
+  "Hotel / pousada":"bed-double","Outros":"tag"
+};
+const MESES=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const MAX_MB=10;
+
+let role='iara';
+let filterStage='todos';
+let convenios=[];
+let tempLogo=null,tempLogoType=null,tempLogoName=null;   // podem ser dataURL (novo) ou URL https (já salvo)
+let tempStory=null,tempFeed=null,currentId=null;
+let editando=false;
+let editandoStatus=null;
+
+const STAGES=[
+  {k:'rascunho',label:'Rascunho (Iara)',color:'#6b7a90'},
+  {k:'cadastro',label:'Devolvidos',color:'var(--laranja)'},
+  {k:'revisao',label:'Revisão conveniado',color:'#d64550'},
+  {k:'ajuste',label:'Comunicação',color:'var(--roxo)'},
+  {k:'design',label:'Design',color:'var(--azul)'},
+  {k:'aprov_marcio',label:'Aprov. Márcio',color:'#e08a1e'},
+  {k:'aprov_iara',label:'Aprov. Iara',color:'#0aa2c0'},
+  {k:'conveniado',label:'Com conveniado',color:'#8a63d2'},
+  {k:'apostar',label:'A postar',color:'#1f8f5a'},
+  {k:'postado',label:'Postado',color:'var(--verde)'},
+  {k:'todos',label:'Total',color:'#ffffff'},
+];
+const STLABEL={rascunho:'Rascunho',cadastro:'Devolvido',ajuste:'Com comunicação',design:'No design',aprov_marcio:'Aprovação Márcio',aprov_iara:'Aprovação Iara',conveniado:'Com o conveniado',apostar:'A postar',agendado:'Agendado',postado:'Postado'};
+const STCLS={rascunho:'st-rascunho',cadastro:'st-cadastro',ajuste:'st-ajuste',design:'st-design',aprov_marcio:'st-apmarcio',aprov_iara:'st-apiara',conveniado:'st-conv',apostar:'st-apostar',agendado:'st-agendado',postado:'st-postado'};
+const STROW={rascunho:'s-rascunho',cadastro:'s-ajuste',ajuste:'s-ajuste',design:'s-design',aprov_marcio:'s-apmarcio',aprov_iara:'s-apiara',conveniado:'s-conv',apostar:'s-apostar',agendado:'s-agendado',postado:'s-postado'};
+
+function ic(name){return `<i data-lucide="${name}"></i>`;}
+function refreshIcons(){if(window.lucide)lucide.createIcons({attrs:{class:'lc'}});}
+function toast(m){const t=document.getElementById('toast');t.innerHTML=m;t.classList.add('show');refreshIcons();clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);}
+function fmt(ts){const d=new Date(ts);return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+function fmtData(iso){ if(!iso)return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+function escapeHtml(s){return (s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+
+/* ---------- INICIALIZAÇÃO (sem login) ---------- */
+
+/* ---------- PORTEIRA (senha única) ---------- */
+const LOCK_KEY='pcv_unlocked_v1';
+function checarAcesso(){
+  try{ if(localStorage.getItem(LOCK_KEY)==='1'){ desbloquear(); return; } }catch(e){}
+  document.getElementById('lockScreen').classList.add('show');
+  setTimeout(()=>{const i=document.getElementById('lockInput'); if(i) i.focus();},150);
+}
+function entrar(){
+  const val=document.getElementById('lockInput').value;
+  const erro=document.getElementById('lockErro');
+  if(val===SENHA_ACESSO){
+    try{ if(document.getElementById('lockRemember').checked) localStorage.setItem(LOCK_KEY,'1'); }catch(e){}
+    desbloquear();
+  }else{
+    erro.textContent='Senha incorreta.';
+    const inp=document.getElementById('lockInput'); inp.value=''; inp.focus();
+  }
+}
+function lockKey(e){ if(e.key==='Enter') entrar(); }
+function desbloquear(){
+  document.getElementById('lockScreen').classList.remove('show');
+  document.getElementById('app').style.display='block';
+  initApp();
+}
+function sair(){ try{ localStorage.removeItem(LOCK_KEY); }catch(e){} location.reload(); }
+
+function initApp(){
+  if(!db){ toast('Firebase não configurado. Preencha o firebaseConfig no arquivo.'); return; }
+  startListening();
+}
+
+/* ---------- FIRESTORE (tempo real) ---------- */
+function startListening(){
+  if(unsub){unsub();unsub=null;}
+  unsub = db.collection('convenios').orderBy('criadoEm','desc').onSnapshot(snap=>{
+    convenios = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    refreshAnos();render();
+  }, err=>{ console.error(err); toast('Erro ao carregar dados.'); });
+}
+async function persist(cv){
+  const {id, ...data}=cv;
+  await db.collection('convenios').doc(id).set(data,{merge:true});
+}
+
+/* ---------- STORAGE (imagens) ---------- */
+// Sobe para o Storage se for dataURL; se já for URL https, retorna como está.
+/* imagens agora ficam no Firestore (comprimidas), sem Storage */
+
+/* ---------- popular selects ---------- */
+function initSelects(){
+  const CAT_ORD=[...CATEGORIAS.filter(c=>c!=='Outros').sort((a,b)=>a.localeCompare(b,'pt-BR')),'Outros'];
+  const cat=document.getElementById('fCat');
+  CAT_ORD.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cat.appendChild(o);});
+  const tipo=document.getElementById('fTipo');
+  CAT_ORD.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;tipo.appendChild(o);});
+  const mes=document.getElementById('fMes');
+  MESES.forEach((m,i)=>{const o=document.createElement('option');o.value=i;o.textContent=m;mes.appendChild(o);});
+  const dcat=document.getElementById('dCat');
+  if(dcat)CAT_ORD.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;dcat.appendChild(o);});
+}
+function toggleOutraD(){
+  const v=document.getElementById('dCat').value;
+  const outra=document.getElementById('dCatOutra');
+  outra.style.display = v==='Outros'?'block':'none';
+  if(v!=='Outros')outra.value='';
+}
+function toggleDireto(){
+  const body=document.getElementById('mcBody');
+  const chev=document.getElementById('mcChevron');
+  const open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  if(chev)chev.style.transform=open?'rotate(180deg)':'none';
+}
+let tempLogoD=null,tempLogoTypeD=null,tempLogoNameD=null;
+async function handleLogoD(e){
+  const f=e.target.files[0];if(!f)return;
+  const isPdf=f.type==='application/pdf';
+  if(isPdf){
+    if(f.size>500*1024){toast('PDF muito grande. Envie a marca em PNG/JPG, ou um PDF menor que 500KB.');return;}
+    tempLogoD=await fileToDataURL(f);tempLogoTypeD=f.type;tempLogoNameD=f.name;
+  }else{
+    if(f.size>MAX_MB*1024*1024){toast('Arquivo muito grande (máx '+MAX_MB+'MB).');return;}
+    try{ tempLogoD=await comprimirImagem(f, 700, 200, true); }catch(e2){ tempLogoD=await fileToDataURL(f); }
+    tempLogoTypeD='image/png';tempLogoNameD=(f.name||'marca').replace(/\.[^.]+$/,'')+'.png';
+  }
+  const dz=document.getElementById('dzLogoD');dz.classList.add('has');
+  dz.innerHTML=`${isPdf?'<div class="ic"><i data-lucide=\"file-text\"></i></div>':`<img src="${tempLogoD}" class="preview-img">`}<p><b>${f.name}</b> — clique para trocar</p>`;
+  refreshIcons();
+}
+function limparDireto(){
+  ['dNome','dTexto','dEnd','dInsta','dTel1','dTel2','dExtra','dAuthor','dCatOutra'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const dc=document.getElementById('dCat');if(dc)dc.value='';
+  const dco=document.getElementById('dCatOutra');if(dco)dco.style.display='none';
+  tempLogoD=null;tempLogoTypeD=null;tempLogoNameD=null;
+  const dz=document.getElementById('dzLogoD');if(dz){dz.classList.remove('has');dz.innerHTML=`<div class="ic"><i data-lucide="paperclip"></i></div><p><b>Clique para anexar</b> a marca (PNG, JPG, SVG ou PDF)</p>`;}
+  refreshIcons();
+}
+async function salvarDireto(){
+  const nome=document.getElementById('dNome').value.trim();
+  const texto=document.getElementById('dTexto').value.trim();
+  const author=document.getElementById('dAuthor').value.trim();
+  let cat=document.getElementById('dCat').value;
+  if(cat==='Outros'){const o=document.getElementById('dCatOutra').value.trim();cat=o?('Outros: '+o):'Outros';}
+  if(!nome){toast('Informe o nome do convênio.');return;}
+  if(!texto){toast('Informe o texto do card.');return;}
+  if(!author){toast('Informe o nome de quem está cadastrando.');return;}
+  const tels=[document.getElementById('dTel1').value.trim(),document.getElementById('dTel2').value.trim()].filter(Boolean);
+  const now=Date.now();
+  const btn=document.getElementById('btnDireto');setBusy(btn,ic('loader')+' Enviando…');refreshIcons();
+  try{
+    const id='cv_'+now+'_'+Math.random().toString(36).slice(2,7);
+    const logoUrl=tempLogoD||null;
+    const cv={
+      nome,cat,
+      endereco:document.getElementById('dEnd').value.trim(),
+      bruto:texto, ajustado:texto,
+      instagram:document.getElementById('dInsta').value.trim(),
+      tels, extra:document.getElementById('dExtra').value.trim(),
+      logo:logoUrl,logoType:tempLogoTypeD,logoName:tempLogoNameD,
+      status:'design',
+      story:null,feed:null, devolucao:null,
+      hist:[{tipo:'direto',by:author,at:now}],
+      criadoEm: now,
+      ev:{ captado:{by:author,at:now}, ajustado:{by:author,at:now}, artes:null }
+    };
+    await db.collection('convenios').doc(id).set(cv);
+    limparDireto();toast('Enviado direto pro design '+ic('check'));
+  }catch(e){ console.error(e); toast('Erro ao salvar: '+(e.message||'')); }
+  finally{ unBusy(btn); }
+}
+function toggleOutra(){
+  const v=document.getElementById('fCat').value;
+  const outra=document.getElementById('fCatOutra');
+  outra.style.display = v==='Outros'?'block':'none';
+  if(v!=='Outros')outra.value='';
+}
+function refreshAnos(){
+  const sel=document.getElementById('fAno');const cur=sel.value;
+  const anos=[...new Set(convenios.map(c=>new Date(c.ev.captado.at).getFullYear()))].sort((a,b)=>b-a);
+  sel.innerHTML='<option value="">Todos</option>'+anos.map(a=>`<option value="${a}">${a}</option>`).join('');
+  if(anos.includes(+cur))sel.value=cur;
+}
+function limparFiltros(){
+  document.getElementById('fBusca').value='';
+  ['fMes','fAno','fTipo'].forEach(id=>document.getElementById(id).value='');
+  filterStage='todos';render();
+}
+
+function setRole(r){
+  role=r;
+  ['iara','marcio','raphael'].forEach(x=>document.getElementById('r-'+x).classList.toggle('active',x===r));
+  document.getElementById('viewIara').style.display = r==='iara'?'block':'none';
+  document.getElementById('viewMarcio').style.display = r==='marcio'?'block':'none';
+  document.getElementById('viewRaphael').style.display = r==='raphael'?'block':'none';
+  render();
+}
+function setStageFilter(k){filterStage=(filterStage===k?'todos':k);render();}
+
+function fileToDataURL(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
+
+/* Comprime imagem para caber no Firestore (limite ~1MB por documento).
+   maxDim = maior lado em pixels; alvoKB = tamanho alvo aproximado. */
+function comprimirImagem(file, maxDim, alvoKB, preservarPNG){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=reject;
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=reject;
+      img.onload=()=>{
+        let {width:w,height:h}=img;
+        if(w>maxDim||h>maxDim){
+          if(w>=h){ h=Math.round(h*maxDim/w); w=maxDim; }
+          else { w=Math.round(w*maxDim/h); h=maxDim; }
+        }
+        const canvas=document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        const ctx=canvas.getContext('2d');
+        if(preservarPNG){
+          // mantém transparência: NÃO preenche fundo, exporta PNG
+          ctx.drawImage(img,0,0,w,h);
+          const out=canvas.toDataURL('image/png');
+          // PNG grande? reduz dimensão até caber
+          if(out.length*0.75 > alvoKB*1024 && maxDim>240){
+            return comprimirImagem(file, Math.round(maxDim*0.8), alvoKB, true).then(resolve).catch(reject);
+          }
+          return resolve(out);
+        }
+        // JPEG com fundo branco (story/feed)
+        ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,w,h);
+        ctx.drawImage(img,0,0,w,h);
+        const alvoBytes=alvoKB*1024;
+        let q=0.92, out=canvas.toDataURL('image/jpeg',q);
+        while(out.length*0.75 > alvoBytes && q>0.4){
+          q-=0.08; out=canvas.toDataURL('image/jpeg',q);
+        }
+        if(out.length*0.75 > alvoBytes && maxDim>800){
+          return comprimirImagem(file, Math.round(maxDim*0.8), alvoKB).then(resolve).catch(reject);
+        }
+        resolve(out);
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleLogo(e){
+  const f=e.target.files[0];if(!f)return;
+  const isPdf=f.type==='application/pdf';
+  if(isPdf){
+    if(f.size>500*1024){toast('PDF muito grande. Envie a marca em PNG/JPG, ou um PDF menor que 500KB.');return;}
+    tempLogo=await fileToDataURL(f);tempLogoType=f.type;tempLogoName=f.name;
+  }else{
+    if(f.size>MAX_MB*1024*1024){toast('Arquivo muito grande (máx '+MAX_MB+'MB).');return;}
+    try{ tempLogo=await comprimirImagem(f, 700, 200, true); }catch(e2){ tempLogo=await fileToDataURL(f); }
+    tempLogoType='image/png';tempLogoName=(f.name||'marca').replace(/\.[^.]+$/,'')+'.png';
+  }
+  const dz=document.getElementById('dzLogo');dz.classList.add('has');
+  dz.innerHTML=`${isPdf?'<div class="ic"><i data-lucide=\"file-text\"></i></div>':`<img src="${tempLogo}" class="preview-img">`}<p><b>${f.name}</b> — clique para trocar</p>`;
+  refreshIcons();
+}
+async function handleArt(type,e){
+  const f=e.target.files[0];if(!f)return;
+  await processArt(type,f);
+  e.target.value='';
+}
+async function processArt(type,f){
+  if(!f){return;}
+  if(!f.type||!f.type.startsWith('image/')){toast('Anexe uma imagem (PNG ou JPG).');return;}
+  if(f.size>MAX_MB*1024*1024){toast('Imagem muito grande (máx '+MAX_MB+'MB).');return;}
+  let data;
+  try{ data=await comprimirImagem(f, 1080, 300); }   // story/feed: 1080px, ~300KB
+  catch(e){ data=await fileToDataURL(f); }
+  if(type==='story'){tempStory=data;markDz('dzStory','Story anexado');}else{tempFeed=data;markDz('dzFeed','Feed anexado');}
+}
+
+let pasteTarget='story';
+function setPasteTarget(slot){
+  pasteTarget=slot;
+  document.querySelectorAll('.dzart').forEach(dz=>dz.classList.toggle('paste-on',dz.dataset.slot===slot));
+}
+function dzDragOver(e,id){e.preventDefault();document.getElementById(id).classList.add('drag-on');}
+function dzDragLeave(id){document.getElementById(id).classList.remove('drag-on');}
+async function dzDrop(e,type,id){
+  e.preventDefault();document.getElementById(id).classList.remove('drag-on');
+  const f=e.dataTransfer.files&&e.dataTransfer.files[0];
+  if(f)await processArt(type,f);
+}
+document.addEventListener('paste',async(e)=>{
+  const modal=document.getElementById('modalArte');
+  if(!modal||!modal.classList.contains('show'))return;
+  const items=e.clipboardData&&e.clipboardData.items;if(!items)return;
+  for(const it of items){
+    if(it.type&&it.type.startsWith('image/')){
+      const f=it.getAsFile();
+      if(f){e.preventDefault();await processArt(pasteTarget,f);toast((pasteTarget==='story'?'Story':'Feed')+' colado '+ic('check'));}
+      break;
+    }
+  }
+});
+function markDz(id,txt){const dz=document.getElementById(id);dz.classList.add('has');dz.innerHTML=`<div class="ic" style="color:var(--verde)"><i data-lucide="check-circle-2"></i></div><p style="font-size:11px">${txt}</p>`;refreshIcons();}
+
+function limparForm(){
+  ['fNome','fVant','fEnd','fInsta','fTel1','fTel2','fExtra','fAuthor','fCatOutra'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fCat').value='';
+  document.getElementById('fCatOutra').style.display='none';
+  tempLogo=null;tempLogoType=null;tempLogoName=null;
+  const dz=document.getElementById('dzLogo');dz.classList.remove('has');
+  dz.innerHTML=`<div class="ic"><i data-lucide="paperclip"></i></div><p><b>Clique para anexar</b> a marca (PNG, JPG, SVG ou PDF)</p>`;
+  editando=false;currentId=null;
+  const be=document.getElementById('btnEnviar');if(be)be.innerHTML=ic('save')+'Salvar no rascunho';
+  refreshIcons();
+}
+
+function setBusy(btn,txt){ if(!btn)return; btn._old=btn.innerHTML; btn.disabled=true; btn.innerHTML=txt; }
+function unBusy(btn){ if(!btn)return; btn.disabled=false; if(btn._old)btn.innerHTML=btn._old; }
+
+async function salvarConvenio(){
+  const nome=document.getElementById('fNome').value.trim();
+  const vant=document.getElementById('fVant').value.trim();
+  const author=document.getElementById('fAuthor').value.trim();
+  let cat=document.getElementById('fCat').value;
+  if(cat==='Outros'){const o=document.getElementById('fCatOutra').value.trim();cat=o?('Outros: '+o):'Outros';}
+  if(!nome){toast('Informe o nome do convênio.');return;}
+  if(!vant){toast('Informe as vantagens (bruto).');return;}
+  if(!author){toast('Informe o nome de quem está cadastrando.');return;}
+  const tels=[document.getElementById('fTel1').value.trim(),document.getElementById('fTel2').value.trim()].filter(Boolean);
+  const now=Date.now();
+  const btn=document.getElementById('btnEnviar');setBusy(btn,ic('loader')+' Enviando…');refreshIcons();
+
+  try{
+    if(editando){
+      const cv=convenios.find(c=>c.id===currentId);
+      if(cv){
+        const logoUrl=tempLogo||null;
+        const eraRascunho = editandoStatus==='rascunho';
+        const upd={
+          nome,cat,endereco:document.getElementById('fEnd').value.trim(),
+          bruto:vant,instagram:document.getElementById('fInsta').value.trim(),
+          tels,extra:document.getElementById('fExtra').value.trim(),
+          logo:logoUrl,logoType:tempLogoType,logoName:tempLogoName
+        };
+        if(eraRascunho){
+          upd.status='rascunho';
+        }else{
+          upd.status='ajuste'; upd.devolucao=null;
+          upd.hist=[...(cv.hist||[]),{tipo:'correcao',by:author,at:now}];
+          upd.ev={...cv.ev, corrigido:{by:author,at:now}};
+        }
+        await db.collection('convenios').doc(cv.id).set(upd,{merge:true});
+        editando=false;editandoStatus=null;limparForm();
+        toast(eraRascunho?'Rascunho atualizado '+ic('check'):'Correção reenviada para a comunicação '+ic('check'));
+      }
+      return;
+    }
+    const id='cv_'+now+'_'+Math.random().toString(36).slice(2,7);
+    const logoUrl=tempLogo||null;
+    const cv={
+      nome,cat,
+      endereco:document.getElementById('fEnd').value.trim(),
+      bruto:vant, ajustado:'',
+      instagram:document.getElementById('fInsta').value.trim(),
+      tels, extra:document.getElementById('fExtra').value.trim(),
+      logo:logoUrl,logoType:tempLogoType,logoName:tempLogoName,
+      status:'rascunho',
+      story:null,feed:null, devolucao:null, hist:[],
+      criadoEm: now,
+      ev:{ captado:{by:author,at:now}, ajustado:null, artes:null }
+    };
+    await db.collection('convenios').doc(id).set(cv);
+    limparForm();toast('Convênio salvo no seu rascunho '+ic('check'));
+  }catch(e){ console.error(e); toast('Erro ao salvar: '+(e.message||'')); }
+  finally{ unBusy(btn); }
+}
+
+function abrirTexto(id){
+  currentId=id;const cv=convenios.find(c=>c.id===id);
+  document.getElementById('mtNome').textContent=cv.nome+(cv.cat?' — '+cv.cat:'');
+  document.getElementById('mtBruto').textContent=cv.bruto;
+  document.getElementById('mtAjustado').value=cv.ajustado||cv.bruto;
+  document.getElementById('mtAuthor').value=(cv.ev.ajustado&&cv.ev.ajustado.by)||'';
+  document.getElementById('modalTexto').classList.add('show');refreshIcons();
+}
+async function salvarAjuste(){
+  const cv=convenios.find(c=>c.id===currentId);if(!cv)return;
+  const txt=document.getElementById('mtAjustado').value.trim();
+  const by=document.getElementById('mtAuthor').value.trim();
+  if(!txt){toast('Escreva o texto ajustado.');return;}
+  if(!by){toast('Informe o nome de quem ajustou.');return;}
+  try{
+    await db.collection('convenios').doc(cv.id).set({
+      ajustado:txt,status:'design',devolucao:null,
+      ev:{...cv.ev, ajustado:{by,at:Date.now()}}
+    },{merge:true});
+    fecharModal('modalTexto');toast('Texto liberado para o design '+ic('check'));
+  }catch(e){toast('Erro ao salvar.');}
+}
+
+function abrirArte(id){
+  currentId=id;tempStory=null;tempFeed=null;const cv=convenios.find(c=>c.id===id);
+  document.getElementById('maNome').textContent=cv.nome+(cv.cat?' — '+cv.cat:'');
+  document.getElementById('maTexto').textContent=cv.ajustado||cv.bruto;
+  document.getElementById('maAuthor').value=(cv.ev.artes&&cv.ev.artes.by)||'';
+  ['dzStory','dzFeed'].forEach(dzid=>{const dz=document.getElementById(dzid);dz.classList.remove('has','paste-on','drag-on');const isS=dzid==='dzStory';dz.innerHTML=`<div class="ic"><i data-lucide="${isS?'smartphone':'image'}"></i></div><p style="font-size:11px">Clique, arraste ou cole</p>`;});
+  if(cv.story){tempStory=cv.story;markDz('dzStory','Story anexado');}
+  if(cv.feed){tempFeed=cv.feed;markDz('dzFeed','Feed anexado');}
+  setPasteTarget('story');
+  document.getElementById('modalArte').classList.add('show');refreshIcons();
+}
+async function _saveArte(entregar,btn){
+  const cv=convenios.find(c=>c.id===currentId);if(!cv)return;
+  if(!tempStory&&!tempFeed){toast('Anexe pelo menos uma arte.');return;}
+  const by=document.getElementById('maAuthor').value.trim();
+  if(!by){toast('Informe o nome de quem produziu.');return;}
+  setBusy(btn,ic('loader')+' Enviando…');refreshIcons();
+  try{
+    const storyUrl=tempStory||null;
+    const feedUrl=tempFeed||null;
+    const upd={ story:storyUrl, feed:feedUrl, ev:{...cv.ev, artes:{by,at:Date.now()}} };
+    if(entregar)upd.status='aprov_marcio';
+    await db.collection('convenios').doc(cv.id).set(upd,{merge:true});
+    fecharModal('modalArte');toast((entregar?'Enviado p/ aprovação ':'Artes salvas ')+ic('check'));
+  }catch(e){ console.error(e); toast('Erro ao salvar arte: '+(e.message||'')); }
+  finally{ unBusy(btn); }
+}
+function salvarArte(ev){_saveArte(true, ev&&ev.currentTarget);}
+function salvarArteParcial(ev){_saveArte(false, ev&&ev.currentTarget);}
+
+async function moverStatus(id,st){
+  const cv=convenios.find(c=>c.id===id);if(!cv)return;
+  try{ await db.collection('convenios').doc(id).set({status:st},{merge:true}); toast('Status atualizado '+ic('check')); }
+  catch(e){toast('Erro.');}
+}
+
+async function liberarRascunho(id){
+  const cv=convenios.find(c=>c.id===id);if(!cv)return;
+  try{ await db.collection('convenios').doc(id).set({status:'ajuste'},{merge:true}); toast('Liberado para a comunicação '+ic('check')); }
+  catch(e){toast('Erro ao liberar.');}
+}
+async function liberarTodosRascunhos(){
+  const pend=convenios.filter(c=>c.status==='rascunho');
+  if(!pend.length){toast('Nenhum convênio no rascunho.');return;}
+  const btn=document.getElementById('btnLiberarTodos');setBusy(btn,ic('loader')+' Liberando…');refreshIcons();
+  try{
+    for(const cv of pend){ await db.collection('convenios').doc(cv.id).set({status:'ajuste'},{merge:true}); }
+    toast(pend.length+' convênio(s) liberado(s) '+ic('check'));
+  }catch(e){ toast('Erro ao liberar todos.'); }
+  finally{ unBusy(btn); }
+}
+
+/* Move o card para o próximo estágio, registrando na linha do tempo */
+const FLUXO_EV={
+  marcio_ok:{tipo:'aprov_marcio',ic:'check',txt:'aprovou a arte'},
+  iara_ok:{tipo:'aprov_iara',ic:'send',txt:'enviou ao conveniado'},
+  conv_ok:{tipo:'conv_ok',ic:'check-check',txt:'conveniado aprovou'},
+  postou:{tipo:'postado',ic:'check-check',txt:'marcou como postado'}
+};
+async function moverFluxo(id,novoStatus,evKey){
+  const cv=convenios.find(c=>c.id===id);if(!cv)return;
+  const at=Date.now();
+  const meta=FLUXO_EV[evKey];
+  // pede o nome de quem está agindo (rápido, via prompt inline)
+  const by=(await pedirNome())||'';
+  if(by===null)return;
+  const upd={status:novoStatus, devolucao:null};
+  if(meta){ upd.hist=[...(cv.hist||[]),{tipo:meta.tipo,by:by||'—',at}]; }
+  try{ await db.collection('convenios').doc(id).set(upd,{merge:true}); toast('Feito '+ic('check')); }
+  catch(e){ toast('Erro ao atualizar.'); }
+}
+// pequeno prompt de nome reutilizável
+function pedirNome(){
+  return new Promise(res=>{
+    const nome=window.prompt('Seu nome (para registrar quem fez):','');
+    if(nome===null){res(null);return;}
+    res(nome.trim());
+  });
+}
+
+/* Agendar postagem (Márcio) */
+let agendarTarget=null;
+function abrirAgendar(id){
+  agendarTarget=id;
+  const cv=convenios.find(c=>c.id===id);
+  document.getElementById('agNome').textContent=cv?cv.nome+(cv.cat?' — '+cv.cat:''):'';
+  const inp=document.getElementById('agData');
+  inp.value = cv&&cv.dataPostagem ? cv.dataPostagem : '';
+  document.getElementById('agAuthor').value='';
+  document.getElementById('modalAgendar').classList.add('show');refreshIcons();
+}
+async function confirmarAgendar(){
+  if(!agendarTarget)return;
+  const cv=convenios.find(c=>c.id===agendarTarget);if(!cv)return;
+  const data=document.getElementById('agData').value;
+  const by=document.getElementById('agAuthor').value.trim();
+  if(!data){toast('Escolha a data da postagem.');return;}
+  if(!by){toast('Informe seu nome.');return;}
+  const at=Date.now();
+  try{
+    await db.collection('convenios').doc(cv.id).set({
+      status:'agendado', dataPostagem:data,
+      hist:[...(cv.hist||[]),{tipo:'agendado',by,at,data}]
+    },{merge:true});
+    fecharModal('modalAgendar');toast('Postagem agendada '+ic('check'));
+  }catch(e){toast('Erro ao agendar.');}
+}
+
+const DEST_LABEL={cadastro:'Convênios (corrigir cadastro)', ajuste:'Comunicação (ajustar texto)'};
+function abrirDevolucao(id,para){
+  devolTarget={id,para};
+  const cv=convenios.find(c=>c.id===id);
+  document.getElementById('dvNome').textContent=cv.nome+(cv.cat?' — '+cv.cat:'');
+  document.getElementById('dvDest').textContent=DEST_LABEL[para];
+  document.getElementById('dvMotivo').value='';
+  document.getElementById('dvAuthor').value='';
+  document.getElementById('modalDevol').classList.add('show');refreshIcons();
+}
+async function confirmarDevolucao(){
+  if(!devolTarget)return;
+  const cv=convenios.find(c=>c.id===devolTarget.id);if(!cv)return;
+  const motivo=document.getElementById('dvMotivo').value.trim();
+  const by=document.getElementById('dvAuthor').value.trim();
+  if(!motivo){toast('Descreva o motivo da devolução.');return;}
+  if(!by){toast('Informe seu nome.');return;}
+  const de=cv.status;const at=Date.now();
+  try{
+    await db.collection('convenios').doc(cv.id).set({
+      status:devolTarget.para,
+      devolucao:{de,para:devolTarget.para,motivo,by,at},
+      hist:[...(cv.hist||[]),{tipo:'devolucao',de,para:devolTarget.para,motivo,by,at}]
+    },{merge:true});
+    fecharModal('modalDevol');toast('Convênio devolvido '+ic('corner-up-left'));
+  }catch(e){toast('Erro ao devolver.');}
+}
+
+/* Revisão do conveniado */
+let revisaoTarget=null;
+function abrirRevisao(id){
+  revisaoTarget=id;
+  const cv=convenios.find(c=>c.id===id);
+  document.getElementById('rvNome').textContent=cv.nome+(cv.cat?' — '+cv.cat:'');
+  document.getElementById('rvMotivo').value='';
+  document.getElementById('rvAuthor').value='';
+  document.getElementById('modalRevisao').classList.add('show');refreshIcons();
+}
+async function confirmarRevisao(){
+  if(!revisaoTarget)return;
+  const cv=convenios.find(c=>c.id===revisaoTarget);if(!cv)return;
+  const motivo=document.getElementById('rvMotivo').value.trim();
+  const by=document.getElementById('rvAuthor').value.trim();
+  if(!motivo){toast('Descreva o que o conveniado pediu.');return;}
+  if(!by){toast('Informe seu nome.');return;}
+  const at=Date.now();
+  try{
+    await db.collection('convenios').doc(cv.id).set({
+      status:'ajuste',
+      revisaoConveniado:true,
+      devolucao:{de:'entregue',para:'ajuste',motivo,by,at,conveniado:true},
+      hist:[...(cv.hist||[]),{tipo:'revisao',motivo,by,at}]
+    },{merge:true});
+    fecharModal('modalRevisao');toast('Enviado para revisão '+ic('check'));
+  }catch(e){toast('Erro ao enviar para revisão.');}
+}
+
+/* Excluir convênio (permanente) */
+let excluirTarget=null;
+function abrirExcluir(id){
+  excluirTarget=id;
+  const cv=convenios.find(c=>c.id===id);
+  document.getElementById('exNome').textContent=cv?cv.nome+(cv.cat?' — '+cv.cat:''):'';
+  document.getElementById('modalExcluir').classList.add('show');refreshIcons();
+}
+async function confirmarExcluir(){
+  if(!excluirTarget)return;
+  const btn=document.getElementById('btnExcluir');setBusy(btn,ic('loader')+' Apagando…');refreshIcons();
+  try{
+    await db.collection('convenios').doc(excluirTarget).delete();
+    excluirTarget=null;
+    fecharModal('modalExcluir');toast('Convênio apagado '+ic('check'));
+  }catch(e){ console.error(e); toast('Erro ao apagar: '+(e.message||'')); }
+  finally{ unBusy(btn); }
+}
+
+function abrirEdicao(id){
+  currentId=id;const cv=convenios.find(c=>c.id===id);
+  setRole('iara');
+  document.getElementById('fNome').value=cv.nome;
+  const catSel=document.getElementById('fCat');
+  if(cv.cat&&cv.cat.startsWith('Outros')){catSel.value='Outros';toggleOutra();document.getElementById('fCatOutra').value=cv.cat.replace(/^Outros:?\s*/,'');}
+  else{catSel.value=cv.cat||'';toggleOutra();}
+  document.getElementById('fVant').value=cv.bruto;
+  document.getElementById('fEnd').value=cv.endereco||'';
+  document.getElementById('fInsta').value=cv.instagram||'';
+  document.getElementById('fTel1').value=(cv.tels&&cv.tels[0])||'';
+  document.getElementById('fTel2').value=(cv.tels&&cv.tels[1])||'';
+  document.getElementById('fExtra').value=cv.extra||'';
+  document.getElementById('fAuthor').value=cv.ev.captado.by||'';
+  tempLogo=cv.logo;tempLogoType=cv.logoType;tempLogoName=cv.logoName;
+  const dz=document.getElementById('dzLogo');
+  if(cv.logo){dz.classList.add('has');const isPdf=cv.logoType==='application/pdf';dz.innerHTML=`${isPdf?'<div class="ic"><i data-lucide=\"file-text\"></i></div>':`<img src="${cv.logo}" class="preview-img">`}<p><b>${cv.logoName||'marca'}</b> — clique para trocar</p>`;}
+  editando=true;
+  editandoStatus=cv.status;
+  document.querySelector('#viewIara h2').scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('btnEnviar').innerHTML= cv.status==='rascunho' ? ic('save')+'Salvar rascunho' : ic('send')+'Reenviar corrigido para comunicação';
+  refreshIcons();
+  toast('Editando cadastro devolvido — corrija e reenvie');
+}
+
+function fecharModal(id){document.getElementById(id).classList.remove('show');}
+
+function download(key){
+  const [id,which]=key.split('|');const cv=convenios.find(c=>c.id===id);if(!cv)return;
+  const data=which==='story'?cv.story:cv.feed;if(!data)return;
+  const ext=(data.indexOf('image/png')>0)?'png':'jpg';
+  const a=document.createElement('a');
+  a.href=data;a.download=`${cv.nome.replace(/[^a-z0-9]/gi,'_')}_${which}.${ext}`;a.click();
+}
+function downloadLogo(id){
+  const cv=convenios.find(c=>c.id===id);if(!cv||!cv.logo)return;
+  let ext='jpg';
+  if(cv.logoType==='application/pdf')ext='pdf'; else if(cv.logo.indexOf('image/png')>0)ext='png';
+  const base=(cv.logoName||(cv.nome.replace(/[^a-z0-9]/gi,'_')+'_marca')).replace(/\.[^.]+$/,'');
+  const a=document.createElement('a');
+  a.href=cv.logo;a.download=base+'.'+ext;a.click();
+}
+
+function copiar(txt,label){
+  const done=()=>toast((label||'Texto')+' copiado '+ic('check'));
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(()=>fallbackCopy(txt,done));
+  }else fallbackCopy(txt,done);
+}
+function fallbackCopy(txt,cb){
+  const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');cb&&cb();}catch(e){toast('Não foi possível copiar.');}
+  document.body.removeChild(ta);
+}
+function copiarTexto(id){const cv=convenios.find(c=>c.id===id);if(!cv)return;copiar(cv.ajustado||cv.bruto,'Texto');}
+function copiarTudo(id){
+  const cv=convenios.find(c=>c.id===id);if(!cv)return;
+  const L=[];L.push(cv.nome);if(cv.cat)L.push('Categoria: '+cv.cat);L.push('');L.push(cv.ajustado||cv.bruto);L.push('');
+  if(cv.endereco)L.push('Endereço: '+cv.endereco);if(cv.instagram)L.push('Instagram: '+cv.instagram);
+  (cv.tels||[]).forEach(t=>L.push('WhatsApp/Tel: '+t));if(cv.extra)L.push(cv.extra);
+  copiar(L.join('\n').trim(),'Informações');
+}
+
+function catIcon(cat){ if(!cat)return 'tag'; if(cat.startsWith('Outros'))return 'tag'; return CAT_ICON[cat]||'tag'; }
+
+function render(){
+  const counts={rascunho:0,cadastro:0,ajuste:0,design:0,aprov_marcio:0,aprov_iara:0,conveniado:0,apostar:0,agendado:0,postado:0,revisao:0};
+  convenios.forEach(c=>{if(counts[c.status]!=null)counts[c.status]++; if(c.revisaoConveniado)counts.revisao++;});
+
+  // badges de pendências por perfil (o que exige AÇÃO de cada um)
+  const setBadge=(id,n)=>{const el=document.getElementById(id);if(!el)return;el.textContent=n>99?'99+':n;el.classList.toggle('show',n>0);};
+  setBadge('badge-iara', counts.rascunho + counts.cadastro + counts.aprov_iara + counts.conveniado); // liberar rascunho, corrigir, aprovar arte, conveniado
+  setBadge('badge-marcio', counts.ajuste + counts.aprov_marcio + counts.apostar);                    // ajustar texto, aprovar arte, postar
+  setBadge('badge-raphael', counts.design);                                                          // produzir arte
+  const total=convenios.length;
+
+  const arrow=`<div class="pstage-arrow">${ic('chevron-right')}</div>`;
+  const cell=(s,cls)=>`<div class="pstage ${cls||''} ${filterStage===s.k?'on':''}" onclick="setStageFilter('${s.k}')">
+      <div class="n">${s.k==='todos'?total:counts[s.k]}</div>
+      <div class="l"><span class="sd" style="background:${s.color}"></span>${s.label}</div>
+    </div>`;
+  const S=k=>STAGES.find(x=>x.k===k);
+
+  // fluxo completo: (rascunho) → comunicação → design → aprov.Márcio → aprov.Iara → conveniado → a postar → (agendado) → postado
+  let html='';
+  if(counts.rascunho>0||filterStage==='rascunho') html+=cell(S('rascunho'))+arrow;
+  html += cell(S('ajuste')) + arrow + cell(S('design')) + arrow + cell(S('aprov_marcio')) + arrow + cell(S('aprov_iara')) + arrow + cell(S('conveniado')) + arrow + cell(S('apostar'));
+  if(counts.agendado>0||filterStage==='agendado') html+=arrow+cell(S('agendado'));
+  html += arrow + cell(S('postado'));
+  // exceções (só quando houver): devolvido e revisão
+  let excep='';
+  if(counts.cadastro>0||filterStage==='cadastro') excep+=cell(S('cadastro'),'excep');
+  if(counts.revisao>0||filterStage==='revisao') excep+=cell(S('revisao'),'excep');
+  if(excep) html+=`<div class="pstage-arrow" style="opacity:.5">${ic('git-branch')}</div>`+excep;
+  // total
+  html+=cell(S('todos'),'total');
+  document.getElementById('pipe').innerHTML=html;
+
+  // banner de liberar rascunhos (só Iara)
+  const rb=document.getElementById('rascunhoBar');
+  if(role==='iara' && counts.rascunho>0){
+    rb.innerHTML=`<div class="rasc-bar">
+      <div class="rasc-info">${ic('folder-clock')}<span><b>${counts.rascunho}</b> convênio(s) no seu rascunho, aguardando liberação para a comunicação.</span></div>
+      <button class="btn btn-green btn-sm" id="btnLiberarTodos" onclick="liberarTodosRascunhos()">${ic('send')}Liberar todos</button>
+    </div>`;
+  }else rb.innerHTML='';
+
+  const q=document.getElementById('fBusca').value.toLowerCase();
+  const mes=document.getElementById('fMes').value;
+  const ano=document.getElementById('fAno').value;
+  const tipo=document.getElementById('fTipo').value;
+
+  let list=convenios.filter(c=>{
+    // rascunhos só aparecem para a Iara (Convênios)
+    if(c.status==='rascunho' && role!=='iara') return false;
+    if(filterStage==='revisao'){ if(!c.revisaoConveniado)return false; }
+    else if(filterStage!=='todos'&&c.status!==filterStage)return false;
+    if(q&&!(c.nome.toLowerCase().includes(q)||(c.cat||'').toLowerCase().includes(q)))return false;
+    const d=new Date(c.ev.captado.at);
+    if(mes!==''&&d.getMonth()!=mes)return false;
+    if(ano!==''&&d.getFullYear()!=ano)return false;
+    if(tipo!==''){
+      if(tipo==='Outros'){if(!(c.cat||'').startsWith('Outros'))return false;}
+      else if(c.cat!==tipo)return false;
+    }
+    return true;
+  });
+
+  const wrap=document.getElementById('listWrap');
+  if(!list.length){wrap.innerHTML=`<div class="panel"><div class="empty"><div class="ic"><i data-lucide="inbox"></i></div><p>Nenhum convênio encontrado com esses filtros.</p></div></div>`;refreshIcons();return;}
+
+  wrap.innerHTML='<div class="cv-list">'+list.map(c=>{
+    const initials=c.nome.trim().slice(0,2).toUpperCase();
+    let logo;
+    if(c.logo&&c.logoType==='application/pdf')logo=`<div class="cv-logo" title="Marca em PDF"><div class="ic"><i data-lucide="file-text"></i></div></div>`;
+    else if(c.logo)logo=`<img src="${c.logo}" class="cv-logo" alt="">`;
+    else logo=`<div class="cv-logo">${initials}</div>`;
+
+    const insta=c.instagram?`<span>${ic('instagram')}<a href="https://instagram.com/${c.instagram.replace('@','')}" target="_blank">${escapeHtml(c.instagram)}</a></span>`:'';
+    const tels=(c.tels||[]).map(t=>`<span>${ic('phone')}${escapeHtml(t)}</span>`).join('');
+    const end=c.endereco?`<span>${ic('map-pin')}${escapeHtml(c.endereco)}</span>`:'';
+    const extra=c.extra?`<span>${ic('link')}${escapeHtml(c.extra)}</span>`:'';
+    const logoDl=c.logo?`<span>${ic('download')}<a href="#" onclick="downloadLogo('${c.id}');return false">baixar marca${c.logoType==='application/pdf'?' (PDF)':''}</a></span>`:'';
+
+    let textoBlock;
+    if(c.ajustado){
+      textoBlock=`<div class="cv-block"><div class="bl-tit">${ic('pen-line')} Texto ajustado <button class="copybtn" onclick="copiarTexto('${c.id}')" title="Copiar texto">${ic('copy')}copiar</button></div><div class="cv-vant">${escapeHtml(c.ajustado)}</div></div>`;
+    }else{
+      textoBlock=`<div class="cv-block"><div class="bl-tit">${ic('inbox')} Bruto (aguardando ajuste) <button class="copybtn" onclick="copiarTexto('${c.id}')" title="Copiar texto">${ic('copy')}copiar</button></div><div class="cv-vant bruto">${escapeHtml(c.bruto)}</div></div>`;
+    }
+
+    let devNote='';
+    if(c.devolucao){
+      if(c.devolucao.conveniado){
+        devNote=`<div class="devnote rev"><span class="ic">${ic('message-square-warning')}</span><div><b>Revisão pedida pelo conveniado</b> — ${escapeHtml(c.devolucao.by)}<br>${escapeHtml(c.devolucao.motivo)}</div></div>`;
+      }else{
+        const origem = c.devolucao.de==='design'?'design':'comunicação';
+        devNote=`<div class="devnote">${ic('corner-up-left')}<div><b>Devolvido pel${c.devolucao.de==='design'?'o':'a'} ${origem}</b> — ${escapeHtml(c.devolucao.by)}<br>${escapeHtml(c.devolucao.motivo)}</div></div>`;
+      }
+    }
+
+    let tls='';
+    if(c.ev.captado)tls+=`<div class="tl"><span class="ic">${ic('user-plus')}</span><span><span class="who">${escapeHtml(c.ev.captado.by)}</span> cadastrou · ${fmt(c.ev.captado.at)}</span></div>`;
+    (c.hist||[]).forEach(h=>{
+      if(h.tipo==='devolucao'){
+        const orig=h.de==='design'?'design':'comunicação';
+        tls+=`<div class="tl dev"><span class="ic">${ic('corner-up-left')}</span><span><span class="who">${escapeHtml(h.by)}</span> devolveu (${orig}) · ${fmt(h.at)}</span></div>`;
+      }else if(h.tipo==='correcao'){
+        tls+=`<div class="tl"><span class="ic">${ic('rotate-cw')}</span><span><span class="who">${escapeHtml(h.by)}</span> corrigiu e reenviou · ${fmt(h.at)}</span></div>`;
+      }else if(h.tipo==='revisao'){
+        tls+=`<div class="tl rev"><span class="ic">${ic('message-square-warning')}</span><span><span class="who">${escapeHtml(h.by)}</span> pediu revisão (conveniado) · ${fmt(h.at)}</span></div>`;
+      }else if(h.tipo==='aprov_marcio'){
+        tls+=`<div class="tl"><span class="ic">${ic('check')}</span><span><span class="who">${escapeHtml(h.by)}</span> aprovou a arte · ${fmt(h.at)}</span></div>`;
+      }else if(h.tipo==='aprov_iara'){
+        tls+=`<div class="tl"><span class="ic">${ic('send')}</span><span><span class="who">${escapeHtml(h.by)}</span> enviou ao conveniado · ${fmt(h.at)}</span></div>`;
+      }else if(h.tipo==='conv_ok'){
+        tls+=`<div class="tl"><span class="ic">${ic('check-check')}</span><span>conveniado aprovou (via <span class="who">${escapeHtml(h.by)}</span>) · ${fmt(h.at)}</span></div>`;
+      }else if(h.tipo==='agendado'){
+        tls+=`<div class="tl"><span class="ic">${ic('calendar')}</span><span><span class="who">${escapeHtml(h.by)}</span> agendou p/ ${h.data?fmtData(h.data):'—'} · ${fmt(h.at)}</span></div>`;
+      }else if(h.tipo==='postado'){
+        tls+=`<div class="tl"><span class="ic">${ic('check-check')}</span><span><span class="who">${escapeHtml(h.by)}</span> postou · ${fmt(h.at)}</span></div>`;
+      }
+    });
+    if(c.ev.ajustado)tls+=`<div class="tl"><span class="ic">${ic('pen-line')}</span><span><span class="who">${escapeHtml(c.ev.ajustado.by)}</span> ajustou · ${fmt(c.ev.ajustado.at)}</span></div>`;
+    if(c.ev.artes)tls+=`<div class="tl"><span class="ic">${ic('palette')}</span><span><span class="who">${escapeHtml(c.ev.artes.by)}</span> enviou artes · ${fmt(c.ev.artes.at)}</span></div>`;
+
+    let artSlot='';
+    if(c.story||c.feed){
+      let th='';if(c.story)th+=`<img src="${c.story}" class="art-thumb" title="Story">`;if(c.feed)th+=`<img src="${c.feed}" class="art-thumb" title="Feed">`;
+      let dl='';if(c.story)dl+=`<button class="btn btn-ghost btn-sm" onclick="download('${c.id}|story')">${ic('download')} Story</button>`;if(c.feed)dl+=`<button class="btn btn-ghost btn-sm" onclick="download('${c.id}|feed')">${ic('download')} Feed</button>`;
+      artSlot=`<div class="art-slot"><div class="art-thumbs">${th}</div><div class="art-links">${dl}</div></div>`;
+    }
+
+    let actions='';
+    if(role==='iara'){
+      if(c.status==='rascunho'){
+        actions=`<button class="btn btn-green btn-sm" onclick="liberarRascunho('${c.id}')">${ic('send')}Liberar p/ comunicação</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirEdicao('${c.id}')">${ic('pencil')}Editar</button>`;
+      }else if(c.status==='cadastro'){
+        actions=`<button class="btn btn-primary btn-sm" onclick="abrirEdicao('${c.id}')">${ic('pencil')}Corrigir cadastro</button>`;
+      }else if(c.status==='aprov_iara'){
+        // Iara aprova a arte e envia ao conveniado
+        actions=`<button class="btn btn-green btn-sm" onclick="moverFluxo('${c.id}','conveniado','iara_ok')">${ic('send')}Enviar ao conveniado</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirDevolucao('${c.id}','design')">${ic('corner-up-left')}Pedir ajuste ao design</button>`;
+      }else if(c.status==='conveniado'){
+        // conveniado respondeu: aprovou (libera p/ postar) ou não (revisão)
+        actions=`<button class="btn btn-green btn-sm" onclick="moverFluxo('${c.id}','apostar','conv_ok')">${ic('check-check')}Conveniado aprovou</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirRevisao('${c.id}')">${ic('message-square-warning')}Conveniado pediu mudança</button>`;
+      }
+      actions+=`<button class="btn btn-danger btn-sm" onclick="abrirExcluir('${c.id}')">${ic('trash-2')}Apagar</button>`;
+    }
+    if(role==='marcio'){
+      if(c.status==='ajuste'||c.status==='design'){
+        actions=`<button class="btn ${c.status==='ajuste'?'btn-green':'btn-ghost'} btn-sm" onclick="abrirTexto('${c.id}')">${ic('pen-line')}${c.status==='ajuste'?'Ajustar texto':'Editar texto'}</button>`;
+        if(c.status==='ajuste')actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirDevolucao('${c.id}','cadastro')">${ic('corner-up-left')}Devolver p/ convênios</button>`;
+      }else if(c.status==='cadastro'){
+        actions=`<span style="font-size:11px;color:var(--texto-sub);text-align:center">Devolvido — aguardando correção dos convênios</span>`;
+      }else if(c.status==='aprov_marcio'){
+        // Márcio confere a arte: aprova (libera p/ Iara) ou pede ajuste no texto ao design
+        actions=`<button class="btn btn-green btn-sm" onclick="moverFluxo('${c.id}','aprov_iara','marcio_ok')">${ic('check')}Aprovar e liberar p/ Iara</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirDevolucao('${c.id}','design')">${ic('corner-up-left')}Pedir ajuste no texto</button>`;
+      }else if(c.status==='apostar'){
+        // aprovado pelo conveniado: Márcio agenda/posta
+        actions=`<button class="btn btn-green btn-sm" onclick="abrirAgendar('${c.id}')">${ic('calendar')}Agendar postagem</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="moverFluxo('${c.id}','postado','postou')">${ic('check-check')}Marcar postado</button>`;
+      }else if(c.status==='agendado'){
+        actions=`<button class="btn btn-green btn-sm" onclick="moverFluxo('${c.id}','postado','postou')">${ic('check-check')}Marcar postado</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirAgendar('${c.id}')">${ic('calendar')}Reagendar</button>`;
+      }else if(c.status==='postado'){
+        actions=`<span style="font-size:11px;color:var(--verde);text-align:center;font-weight:700">${ic('check-check')} Postado</span>`;
+      }
+      actions+=`<button class="btn btn-danger btn-sm" onclick="abrirExcluir('${c.id}')">${ic('trash-2')}Apagar</button>`;
+    }
+    if(role==='raphael'){
+      if(c.status==='design'){
+        actions=`<button class="btn btn-ghost btn-sm" onclick="copiarTudo('${c.id}')">${ic('clipboard-copy')}Copiar tudo</button>`;
+        actions+=`<button class="btn btn-green btn-sm" onclick="abrirArte('${c.id}')">${ic('paperclip')}${(c.story||c.feed)?'Trocar / editar artes':'Responder com artes'}</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirDevolucao('${c.id}','ajuste')">${ic('corner-up-left')}Texto errado? Devolver</button>`;
+      }else if(c.status==='aprov_marcio'||c.status==='aprov_iara'||c.status==='conveniado'){
+        // já enviado; design pode acompanhar e ainda trocar a arte se quiser
+        actions=`<button class="btn btn-ghost btn-sm" onclick="copiarTudo('${c.id}')">${ic('clipboard-copy')}Copiar tudo</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirArte('${c.id}')">${ic('paperclip')}Trocar / editar artes</button>`;
+        actions+=`<span style="font-size:11px;color:var(--texto-sub);text-align:center">Aguardando aprovação</span>`;
+      }else if(c.status==='apostar'||c.status==='agendado'||c.status==='postado'){
+        actions=`<button class="btn btn-ghost btn-sm" onclick="copiarTudo('${c.id}')">${ic('clipboard-copy')}Copiar tudo</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirArte('${c.id}')">${ic('paperclip')}Trocar / editar artes</button>`;
+      }else{
+        actions=`<span style="font-size:11px;color:var(--texto-sub);text-align:center">Aguardando comunicação</span>`;
+      }
+    }
+
+    return `<div class="cv ${STROW[c.status]} ${c.devolucao?'devolvido':''}">
+      ${logo}
+      <div class="cv-body">
+        <h3>${escapeHtml(c.nome)}</h3>
+        ${c.cat?`<span class="cv-cat">${ic(catIcon(c.cat))}${escapeHtml(c.cat)}</span>`:''}
+        ${c.revisaoConveniado?`<span class="cv-rev-badge">${ic('message-square-warning')}Revisão do conveniado</span>`:''}
+        ${(c.status==='agendado'&&c.dataPostagem)?`<span class="cv-date-badge">${ic('calendar')}Postar em ${fmtData(c.dataPostagem)}</span>`:''}
+        ${devNote}
+        ${textoBlock}
+        <div class="cv-meta">${end}${insta}${tels}${extra}${logoDl}</div>
+      </div>
+      <div class="cv-side">
+        <span class="status ${STCLS[c.status]}">${STLABEL[c.status]}</span>
+        ${actions?`<div class="cv-actions">${actions}</div>`:''}
+        ${artSlot}
+        <div class="timeline">${tls}</div>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+  refreshIcons();
+}
+
+initSelects();
+setRole('iara');
+refreshIcons();
+checarAcesso();
+</script>
+</body>
+</html>
