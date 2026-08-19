@@ -270,8 +270,7 @@ footer.ft span{color:rgba(255,255,255,.6);font-size:11.5px}
     <img src="https://res.cloudinary.com/dnnnn7njk/image/upload/v1786658137/gcv_la9gee.png" alt="Gestão de Convênios Valoriza" class="topbar-logo">
     <div class="topbar-right">
       <div class="role-switch">
-        <button id="r-iara" class="active" onclick="setRole('iara')"><i data-lucide="handshake"></i>Convênios<span class="nav-badge" id="badge-iara"></span></button>
-        <button id="r-marcio" onclick="setRole('marcio')"><i data-lucide="pen-line"></i>Comunicação<span class="nav-badge" id="badge-marcio"></span></button>
+        <button id="r-marcio" class="active" onclick="setRole('marcio')"><i data-lucide="pen-line"></i>Comunicação<span class="nav-badge" id="badge-marcio"></span></button>
         <button id="r-raphael" onclick="setRole('raphael')"><i data-lucide="palette"></i>Design<span class="nav-badge" id="badge-raphael"></span></button>
       </div>
       <button class="logout-btn" onclick="sair()" title="Bloquear (pedir senha de novo)"><i data-lucide="lock"></i></button>
@@ -282,138 +281,69 @@ footer.ft span{color:rgba(255,255,255,.6);font-size:11.5px}
 
   <div class="pipe" id="pipe"></div>
 
-  <!-- CONVÊNIOS (cadastro) -->
-  <div id="viewIara" class="panel">
-    <h2><span class="dot"></span>Captar convênio</h2>
-    <p class="sub">Lance a informação bruta do conveniado. A comunicação ajusta o texto depois, então não precisa se preocupar com a redação. Os convênios ficam no <b>seu rascunho</b> até você liberar para a comunicação — um por um ou vários de uma vez.</p>
+  <!-- COMUNICAÇÃO intro -->
+  <div id="viewMarcio" class="panel" style="display:none">
+    <h2><span class="dot"></span>Cadastrar convênio</h2>
+    <p class="sub">Lance o convênio com o <b>texto já ajustado</b>, pronto pro card. Ao enviar, ele vai direto para a fila do design.</p>
     <div class="grid">
       <div class="field">
         <label>Nome do convênio</label>
-        <input type="text" id="fNome" placeholder="Ex.: Sorriso Feliz">
+        <input type="text" id="dNome" placeholder="Ex.: Sorriso Feliz">
       </div>
       <div class="field">
         <label>Categoria / tipo</label>
-        <select id="fCat" onchange="toggleOutra()">
+        <select id="dCat" onchange="toggleOutraD()">
           <option value="">Selecione…</option>
         </select>
-        <input type="text" id="fCatOutra" placeholder="Qual? (especifique a categoria)" style="display:none;margin-top:8px">
+        <input type="text" id="dCatOutra" placeholder="Qual? (especifique a categoria)" style="display:none;margin-top:8px">
       </div>
       <div class="field full">
-        <label>Vantagens / benefícios <span class="opt">(informação bruta, como chegou)</span></label>
-        <textarea id="fVant" placeholder="Cole aqui o que o conveniado passou, mesmo sem formatação. A comunicação ajusta depois.&#10;Ex.: 20% à vista pix, 15% cartão 4x, não cumulativo com outras promoções."></textarea>
+        <label>Texto do card <span class="opt">(já pronto, como vai sair)</span></label>
+        <textarea id="dTexto" placeholder="Escreva aqui o texto final, já ajustado, pronto pro card."></textarea>
       </div>
       <div class="field">
         <label>Endereço <span class="opt">(opcional)</span></label>
-        <input type="text" id="fEnd" placeholder="Rua, nº, bairro — cidade">
+        <input type="text" id="dEnd" placeholder="Rua, nº, bairro — cidade">
       </div>
       <div class="field">
         <label>Instagram <span class="opt">(opcional)</span></label>
-        <input type="text" id="fInsta" placeholder="@sorrisofeliz">
+        <input type="text" id="dInsta" placeholder="@sorrisofeliz">
       </div>
       <div class="field">
         <label>WhatsApp / telefone <span class="opt">(até 2)</span></label>
         <div class="two-tels">
-          <input type="text" id="fTel1" placeholder="(62) 90000-0000">
-          <input type="text" id="fTel2" placeholder="(62) 90000-0000">
+          <input type="text" id="dTel1" placeholder="(62) 90000-0000">
+          <input type="text" id="dTel2" placeholder="(62) 90000-0000">
         </div>
       </div>
       <div class="field">
-        <label>Outra informação do conveniado <span class="opt">(site, e-mail, horário… — opcional)</span></label>
-        <input type="text" id="fExtra" placeholder="Ex.: www.sorrisofeliz.com.br">
+        <label>Outra informação <span class="opt">(site, e-mail… — opcional)</span></label>
+        <input type="text" id="dExtra" placeholder="Ex.: www.sorrisofeliz.com.br">
       </div>
       <div class="field full">
-        <label>Marca / logo do conveniado <span class="opt">(opcional — pode anexar depois)</span></label>
-        <div class="dropzone" id="dzLogo" onclick="document.getElementById('fLogo').click()">
+        <label>Marca / logo do conveniado <span class="opt">(opcional)</span></label>
+        <div class="dropzone" id="dzLogoD" onclick="document.getElementById('dLogo').click()">
           <div class="ic"><i data-lucide="paperclip"></i></div>
           <p><b>Clique para anexar</b> a marca (PNG, JPG, SVG ou PDF)</p>
         </div>
-        <input type="file" id="fLogo" accept="image/*,application/pdf" hidden onchange="handleLogo(event)">
+        <input type="file" id="dLogo" accept="image/*,application/pdf" hidden onchange="handleLogoD(event)">
         <span class="hint">De preferência, marca <b>sem fundo</b> (PNG ou SVG transparente).</span>
       </div>
     </div>
     <div class="field" style="margin-top:16px">
       <label>Nome de quem está cadastrando</label>
-      <input type="text" id="fAuthor" placeholder="Ex.: Iara" style="max-width:280px">
+      <input type="text" id="dAuthor" placeholder="Ex.: Márcio" style="max-width:280px">
     </div>
     <div class="btn-row" style="margin-top:16px">
-      <button class="btn btn-primary" id="btnEnviar" onclick="salvarConvenio()"><i data-lucide="save"></i>Salvar no rascunho</button>
-      <button class="btn btn-ghost" onclick="limparForm()">Limpar</button>
-    </div>
-  </div>
-
-  <!-- COMUNICAÇÃO intro -->
-  <div id="viewMarcio" class="panel" style="display:none">
-    <h2><span class="dot"></span>Ajuste de texto</h2>
-    <p class="sub">Convênios <b style="color:var(--roxo)">com comunicação</b> aguardam seu ajuste. Abra, redija o texto final para os cards e libere para o design. O texto bruto fica guardado como referência.</p>
-
-    <div class="mc-direct">
-      <button class="mc-toggle" id="mcToggle" onclick="toggleDireto()">
-        <span><i data-lucide="zap"></i> Cadastrar convênio já pronto <b>direto pro design</b></span>
-        <i data-lucide="chevron-down" id="mcChevron"></i>
-      </button>
-      <div class="mc-body" id="mcBody" style="display:none">
-        <p class="sub" style="margin-top:14px">Use isto para convênios que <b>já estão com o texto pronto</b> — vão direto pra fila do design, pulando a etapa de ajuste. Ideal para lançar os que já estavam com você.</p>
-        <div class="grid">
-          <div class="field">
-            <label>Nome do convênio</label>
-            <input type="text" id="dNome" placeholder="Ex.: Sorriso Feliz">
-          </div>
-          <div class="field">
-            <label>Categoria / tipo</label>
-            <select id="dCat" onchange="toggleOutraD()">
-              <option value="">Selecione…</option>
-            </select>
-            <input type="text" id="dCatOutra" placeholder="Qual? (especifique a categoria)" style="display:none;margin-top:8px">
-          </div>
-          <div class="field full">
-            <label>Texto do card <span class="opt">(já pronto, como vai sair)</span></label>
-            <textarea id="dTexto" placeholder="Cole ou escreva aqui o texto final, já ajustado, pronto pro card."></textarea>
-          </div>
-          <div class="field">
-            <label>Endereço <span class="opt">(opcional)</span></label>
-            <input type="text" id="dEnd" placeholder="Rua, nº, bairro — cidade">
-          </div>
-          <div class="field">
-            <label>Instagram <span class="opt">(opcional)</span></label>
-            <input type="text" id="dInsta" placeholder="@sorrisofeliz">
-          </div>
-          <div class="field">
-            <label>WhatsApp / telefone <span class="opt">(até 2)</span></label>
-            <div class="two-tels">
-              <input type="text" id="dTel1" placeholder="(62) 90000-0000">
-              <input type="text" id="dTel2" placeholder="(62) 90000-0000">
-            </div>
-          </div>
-          <div class="field">
-            <label>Outra informação <span class="opt">(site, e-mail… — opcional)</span></label>
-            <input type="text" id="dExtra" placeholder="Ex.: www.sorrisofeliz.com.br">
-          </div>
-          <div class="field full">
-            <label>Marca / logo do conveniado <span class="opt">(opcional)</span></label>
-            <div class="dropzone" id="dzLogoD" onclick="document.getElementById('dLogo').click()">
-              <div class="ic"><i data-lucide="paperclip"></i></div>
-              <p><b>Clique para anexar</b> a marca (PNG, JPG, SVG ou PDF)</p>
-            </div>
-            <input type="file" id="dLogo" accept="image/*,application/pdf" hidden onchange="handleLogoD(event)">
-            <span class="hint">De preferência, marca <b>sem fundo</b> (PNG ou SVG transparente).</span>
-          </div>
-        </div>
-        <div class="field" style="margin-top:16px">
-          <label>Nome de quem está cadastrando</label>
-          <input type="text" id="dAuthor" placeholder="Ex.: Márcio" style="max-width:280px">
-        </div>
-        <div class="btn-row" style="margin-top:16px">
-          <button class="btn btn-primary" id="btnDireto" onclick="salvarDireto()"><i data-lucide="palette"></i>Enviar direto pro design</button>
-          <button class="btn btn-ghost" onclick="limparDireto()">Limpar</button>
-        </div>
-      </div>
+      <button class="btn btn-primary" id="btnDireto" onclick="salvarDireto()"><i data-lucide="send"></i>Enviar para o design</button>
+      <button class="btn btn-ghost" onclick="limparDireto()">Limpar</button>
     </div>
   </div>
 
   <!-- DESIGN intro -->
   <div id="viewRaphael" class="panel" style="display:none">
     <h2><span class="dot"></span>Produção de artes</h2>
-    <p class="sub">Convênios <b style="color:var(--azul)">no design</b> estão prontos. Anexe Story e Feed e marque como entregue. Precisa <b>trocar sua arte</b> depois? Use "Trocar / editar artes" — não precisa devolver. Só devolva pra comunicação se o <b>texto/informação estiver errado</b>.</p>
+    <p class="sub">Convênios <b style="color:var(--azul)">no design</b> estão prontos, com o texto já ajustado pelo Márcio. Anexe Story e Feed e envie de volta para a comunicação. Precisa <b>trocar a arte</b> depois? Use "Trocar / editar artes" a qualquer momento.</p>
   </div>
 
   <!-- FILTROS -->
@@ -447,29 +377,6 @@ footer.ft span{color:rgba(255,255,255,.6);font-size:11.5px}
 </div>
 
 <!-- MODAL comunicação -->
-<div class="modal-bg" id="modalTexto">
-  <div class="modal">
-    <h3><i data-lucide="pen-line"></i>Ajustar texto para os cards</h3>
-    <p class="msub" id="mtNome"></p>
-    <div class="ref-box">
-      <div class="rl">Bruto do cadastro (referência)</div>
-      <div class="rt" id="mtBruto"></div>
-    </div>
-    <div class="field">
-      <label>Texto ajustado <span class="opt">(vai para os cards)</span></label>
-      <textarea id="mtAjustado" style="min-height:120px" placeholder="Redija aqui a versão final, limpa e pronta para o card."></textarea>
-    </div>
-    <div class="field" style="margin-top:12px">
-      <label>Nome de quem ajustou</label>
-      <input type="text" id="mtAuthor" placeholder="Ex.: Márcio" style="max-width:260px">
-    </div>
-    <div class="btn-row" style="margin-top:16px">
-      <button class="btn btn-green" onclick="salvarAjuste()"><i data-lucide="check"></i>Liberar para o design</button>
-      <button class="btn btn-ghost" onclick="fecharModal('modalTexto')">Cancelar</button>
-    </div>
-  </div>
-</div>
-
 <!-- MODAL design -->
 <div class="modal-bg" id="modalArte">
   <div class="modal">
@@ -517,52 +424,27 @@ footer.ft span{color:rgba(255,255,255,.6);font-size:11.5px}
 <!-- MODAL devolução -->
 <div class="modal-bg" id="modalDevol">
   <div class="modal">
-    <h3><i data-lucide="corner-up-left"></i>Devolver convênio</h3>
+    <h3><i data-lucide="corner-up-left"></i>Pedir ajuste ao design</h3>
     <p class="msub" id="dvNome"></p>
     <div class="ref-box" id="dvDestBox">
       <div class="rl">Voltará para</div>
       <div class="rt" id="dvDest"></div>
     </div>
     <div class="field">
-      <label>Motivo da devolução <span class="opt">(o que precisa ser corrigido)</span></label>
-      <textarea id="dvMotivo" style="min-height:90px" placeholder="Ex.: O desconto no cartão está diferente do que o conveniado passou. / Falta o telefone de WhatsApp."></textarea>
+      <label>O que precisa ajustar <span class="opt">(na arte)</span></label>
+      <textarea id="dvMotivo" style="min-height:90px" placeholder="Ex.: Trocar a cor de fundo. / A logo está esticada. / Ajustar o tamanho do texto no story."></textarea>
     </div>
     <div class="field" style="margin-top:12px">
       <label>Seu nome</label>
-      <input type="text" id="dvAuthor" placeholder="Quem está devolvendo" style="max-width:260px">
+      <input type="text" id="dvAuthor" placeholder="Quem está pedindo" style="max-width:260px">
     </div>
     <div class="btn-row" style="margin-top:16px">
-      <button class="btn btn-primary" onclick="confirmarDevolucao()"><i data-lucide="corner-up-left"></i>Devolver</button>
+      <button class="btn btn-primary" onclick="confirmarDevolucao()"><i data-lucide="corner-up-left"></i>Enviar ao design</button>
       <button class="btn btn-ghost" onclick="fecharModal('modalDevol')">Cancelar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: pedir revisão (conveniado) -->
-<div class="modal-bg" id="modalRevisao">
-  <div class="modal">
-    <h3><i data-lucide="message-square-warning"></i>Pedir revisão do conveniado</h3>
-    <p class="msub" id="rvNome"></p>
-    <div class="ref-box">
-      <div class="rl">O que acontece</div>
-      <div class="rt">O card volta para a <b>comunicação</b>. O Márcio decide se ajusta o texto ou libera direto pro design refazer a arte. Fica marcado como <b>revisão do conveniado</b>.</div>
-    </div>
-    <div class="field">
-      <label>O que o conveniado pediu <span class="opt">(texto, arte, o que mudar)</span></label>
-      <textarea id="rvMotivo" style="min-height:90px" placeholder="Ex.: O conveniado quer o desconto atualizado para 25% e trocar a cor de fundo da arte."></textarea>
-    </div>
-    <div class="field" style="margin-top:12px">
-      <label>Seu nome</label>
-      <input type="text" id="rvAuthor" placeholder="Quem está pedindo" style="max-width:260px">
-    </div>
-    <div class="btn-row" style="margin-top:16px">
-      <button class="btn btn-primary" onclick="confirmarRevisao()"><i data-lucide="message-square-warning"></i>Enviar para revisão</button>
-      <button class="btn btn-ghost" onclick="fecharModal('modalRevisao')">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: excluir -->
 <div class="modal-bg" id="modalExcluir">
   <div class="modal">
     <h3><i data-lucide="trash-2"></i>Apagar convênio</h3>
@@ -658,7 +540,7 @@ const CAT_ICON={
 const MESES=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const MAX_MB=10;
 
-let role='iara';
+let role='marcio';
 let filterStage='todos';
 let convenios=[];
 let tempLogo=null,tempLogoType=null,tempLogoName=null;   // podem ser dataURL (novo) ou URL https (já salvo)
@@ -667,21 +549,15 @@ let editando=false;
 let editandoStatus=null;
 
 const STAGES=[
-  {k:'rascunho',label:'Rascunho (Iara)',color:'#6b7a90'},
-  {k:'cadastro',label:'Devolvidos',color:'var(--laranja)'},
-  {k:'revisao',label:'Revisão conveniado',color:'#d64550'},
-  {k:'ajuste',label:'Comunicação',color:'var(--roxo)'},
-  {k:'design',label:'Design',color:'var(--azul)'},
-  {k:'aprov_marcio',label:'Aprov. Márcio',color:'#e08a1e'},
-  {k:'aprov_iara',label:'Aprov. Iara',color:'#0aa2c0'},
-  {k:'conveniado',label:'Com conveniado',color:'#8a63d2'},
+  {k:'design',label:'No design',color:'var(--azul)'},
   {k:'apostar',label:'A postar',color:'#1f8f5a'},
+  {k:'agendado',label:'Agendado',color:'#2f80ed'},
   {k:'postado',label:'Postado',color:'var(--verde)'},
   {k:'todos',label:'Total',color:'#ffffff'},
 ];
-const STLABEL={rascunho:'Rascunho',cadastro:'Devolvido',ajuste:'Com comunicação',design:'No design',aprov_marcio:'Aprovação Márcio',aprov_iara:'Aprovação Iara',conveniado:'Com o conveniado',apostar:'A postar',agendado:'Agendado',postado:'Postado'};
-const STCLS={rascunho:'st-rascunho',cadastro:'st-cadastro',ajuste:'st-ajuste',design:'st-design',aprov_marcio:'st-apmarcio',aprov_iara:'st-apiara',conveniado:'st-conv',apostar:'st-apostar',agendado:'st-agendado',postado:'st-postado'};
-const STROW={rascunho:'s-rascunho',cadastro:'s-ajuste',ajuste:'s-ajuste',design:'s-design',aprov_marcio:'s-apmarcio',aprov_iara:'s-apiara',conveniado:'s-conv',apostar:'s-apostar',agendado:'s-agendado',postado:'s-postado'};
+const STLABEL={design:'No design',apostar:'A postar',agendado:'Agendado',postado:'Postado'};
+const STCLS={design:'st-design',apostar:'st-apostar',agendado:'st-agendado',postado:'st-postado'};
+const STROW={design:'s-design',apostar:'s-apostar',agendado:'s-agendado',postado:'s-postado'};
 
 function ic(name){return `<i data-lucide="${name}"></i>`;}
 function refreshIcons(){if(window.lucide)lucide.createIcons({attrs:{class:'lc'}});}
@@ -743,14 +619,12 @@ async function persist(cv){
 /* ---------- popular selects ---------- */
 function initSelects(){
   const CAT_ORD=[...CATEGORIAS.filter(c=>c!=='Outros').sort((a,b)=>a.localeCompare(b,'pt-BR')),'Outros'];
-  const cat=document.getElementById('fCat');
-  CAT_ORD.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cat.appendChild(o);});
-  const tipo=document.getElementById('fTipo');
-  CAT_ORD.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;tipo.appendChild(o);});
+  const fill=el=>{if(!el)return;CAT_ORD.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;el.appendChild(o);});};
+  fill(document.getElementById('fCat'));
+  fill(document.getElementById('fTipo'));
+  fill(document.getElementById('dCat'));
   const mes=document.getElementById('fMes');
-  MESES.forEach((m,i)=>{const o=document.createElement('option');o.value=i;o.textContent=m;mes.appendChild(o);});
-  const dcat=document.getElementById('dCat');
-  if(dcat)CAT_ORD.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;dcat.appendChild(o);});
+  if(mes)MESES.forEach((m,i)=>{const o=document.createElement('option');o.value=i;o.textContent=m;mes.appendChild(o);});
 }
 function toggleOutraD(){
   const v=document.getElementById('dCat').value;
@@ -787,8 +661,11 @@ function limparDireto(){
   const dco=document.getElementById('dCatOutra');if(dco)dco.style.display='none';
   tempLogoD=null;tempLogoTypeD=null;tempLogoNameD=null;
   const dz=document.getElementById('dzLogoD');if(dz){dz.classList.remove('has');dz.innerHTML=`<div class="ic"><i data-lucide="paperclip"></i></div><p><b>Clique para anexar</b> a marca (PNG, JPG, SVG ou PDF)</p>`;}
+  editandoM=null;
+  const bd=document.getElementById('btnDireto');if(bd)bd.innerHTML=ic('send')+'Enviar para o design';
   refreshIcons();
 }
+let editandoM=null;
 async function salvarDireto(){
   const nome=document.getElementById('dNome').value.trim();
   const texto=document.getElementById('dTexto').value.trim();
@@ -800,27 +677,53 @@ async function salvarDireto(){
   if(!author){toast('Informe o nome de quem está cadastrando.');return;}
   const tels=[document.getElementById('dTel1').value.trim(),document.getElementById('dTel2').value.trim()].filter(Boolean);
   const now=Date.now();
-  const btn=document.getElementById('btnDireto');setBusy(btn,ic('loader')+' Enviando…');refreshIcons();
+  const btn=document.getElementById('btnDireto');setBusy(btn,ic('loader')+' Salvando…');refreshIcons();
   try{
-    const id='cv_'+now+'_'+Math.random().toString(36).slice(2,7);
     const logoUrl=tempLogoD||null;
-    const cv={
+    const base={
       nome,cat,
       endereco:document.getElementById('dEnd').value.trim(),
       bruto:texto, ajustado:texto,
       instagram:document.getElementById('dInsta').value.trim(),
       tels, extra:document.getElementById('dExtra').value.trim(),
-      logo:logoUrl,logoType:tempLogoTypeD,logoName:tempLogoNameD,
-      status:'design',
-      story:null,feed:null, devolucao:null,
-      hist:[{tipo:'direto',by:author,at:now}],
-      criadoEm: now,
-      ev:{ captado:{by:author,at:now}, ajustado:{by:author,at:now}, artes:null }
+      logo:logoUrl,logoType:tempLogoTypeD,logoName:tempLogoNameD
     };
-    await db.collection('convenios').doc(id).set(cv);
-    limparDireto();toast('Enviado direto pro design '+ic('check'));
+    if(editandoM){
+      const cv=convenios.find(c=>c.id===editandoM);
+      await db.collection('convenios').doc(editandoM).set({...base, hist:[...((cv&&cv.hist)||[]),{tipo:'edicao',by:author,at:now}]},{merge:true});
+      editandoM=null;limparDireto();toast('Cadastro atualizado '+ic('check'));
+    }else{
+      const id='cv_'+now+'_'+Math.random().toString(36).slice(2,7);
+      const cv={ ...base, status:'design', story:null,feed:null, devolucao:null,
+        hist:[{tipo:'direto',by:author,at:now}], criadoEm: now,
+        ev:{ captado:{by:author,at:now}, ajustado:{by:author,at:now}, artes:null } };
+      await db.collection('convenios').doc(id).set(cv);
+      limparDireto();toast('Enviado para o design '+ic('check'));
+    }
   }catch(e){ console.error(e); toast('Erro ao salvar: '+(e.message||'')); }
   finally{ unBusy(btn); }
+}
+function abrirEdicaoM(id){
+  const cv=convenios.find(c=>c.id===id);if(!cv)return;
+  setRole('marcio');
+  editandoM=id;
+  document.getElementById('dNome').value=cv.nome||'';
+  const catBase=(cv.cat||'').startsWith('Outros')?'Outros':(cv.cat||'');
+  document.getElementById('dCat').value=catBase; toggleOutraD();
+  if(catBase==='Outros'){const extra=(cv.cat||'').replace(/^Outros:?\s*/,'');document.getElementById('dCatOutra').value=extra;}
+  document.getElementById('dTexto').value=cv.ajustado||cv.bruto||'';
+  document.getElementById('dEnd').value=cv.endereco||'';
+  document.getElementById('dInsta').value=cv.instagram||'';
+  document.getElementById('dTel1').value=(cv.tels&&cv.tels[0])||'';
+  document.getElementById('dTel2').value=(cv.tels&&cv.tels[1])||'';
+  document.getElementById('dExtra').value=cv.extra||'';
+  document.getElementById('dAuthor').value='';
+  tempLogoD=cv.logo;tempLogoTypeD=cv.logoType;tempLogoNameD=cv.logoName;
+  const dz=document.getElementById('dzLogoD');
+  if(cv.logo){dz.classList.add('has');const isPdf=cv.logoType==='application/pdf';dz.innerHTML=`${isPdf?'<div class="ic"><i data-lucide="file-text"></i></div>':`<img src="${cv.logo}" class="preview-img">`}<p><b>${cv.logoName||'marca'}</b> — clique para trocar</p>`;}
+  document.getElementById('btnDireto').innerHTML=ic('save')+'Salvar alterações';
+  document.querySelector('#viewMarcio h2').scrollIntoView({behavior:'smooth',block:'start'});
+  refreshIcons();toast('Editando o cadastro — altere e salve');
 }
 function toggleOutra(){
   const v=document.getElementById('fCat').value;
@@ -842,8 +745,7 @@ function limparFiltros(){
 
 function setRole(r){
   role=r;
-  ['iara','marcio','raphael'].forEach(x=>document.getElementById('r-'+x).classList.toggle('active',x===r));
-  document.getElementById('viewIara').style.display = r==='iara'?'block':'none';
+  ['marcio','raphael'].forEach(x=>document.getElementById('r-'+x).classList.toggle('active',x===r));
   document.getElementById('viewMarcio').style.display = r==='marcio'?'block':'none';
   document.getElementById('viewRaphael').style.display = r==='raphael'?'block':'none';
   render();
@@ -1072,9 +974,9 @@ async function _saveArte(entregar,btn){
     const storyUrl=tempStory||null;
     const feedUrl=tempFeed||null;
     const upd={ story:storyUrl, feed:feedUrl, ev:{...cv.ev, artes:{by,at:Date.now()}} };
-    if(entregar)upd.status='aprov_marcio';
+    if(entregar)upd.status='apostar';
     await db.collection('convenios').doc(cv.id).set(upd,{merge:true});
-    fecharModal('modalArte');toast((entregar?'Enviado p/ aprovação ':'Artes salvas ')+ic('check'));
+    fecharModal('modalArte');toast((entregar?'Enviado para a comunicação ':'Artes salvas ')+ic('check'));
   }catch(e){ console.error(e); toast('Erro ao salvar arte: '+(e.message||'')); }
   finally{ unBusy(btn); }
 }
@@ -1105,10 +1007,8 @@ async function liberarTodosRascunhos(){
 
 /* Move o card para o próximo estágio, registrando na linha do tempo */
 const FLUXO_EV={
-  marcio_ok:{tipo:'aprov_marcio',ic:'check',txt:'aprovou a arte'},
-  iara_ok:{tipo:'aprov_iara',ic:'send',txt:'enviou ao conveniado'},
-  conv_ok:{tipo:'conv_ok',ic:'check-check',txt:'conveniado aprovou'},
-  postou:{tipo:'postado',ic:'check-check',txt:'marcou como postado'}
+  postou:{tipo:'postado',ic:'check-check',txt:'marcou como postado'},
+  reabrir:{tipo:'reabrir',ic:'rotate-ccw',txt:'reabriu'}
 };
 async function moverFluxo(id,novoStatus,evKey){
   const cv=convenios.find(c=>c.id===id);if(!cv)return;
@@ -1159,7 +1059,7 @@ async function confirmarAgendar(){
   }catch(e){toast('Erro ao agendar.');}
 }
 
-const DEST_LABEL={cadastro:'Convênios (corrigir cadastro)', ajuste:'Comunicação (ajustar texto)'};
+const DEST_LABEL={design:'Design (refazer/ajustar a arte)'};
 function abrirDevolucao(id,para){
   devolTarget={id,para};
   const cv=convenios.find(c=>c.id===id);
@@ -1235,31 +1135,6 @@ async function confirmarExcluir(){
   finally{ unBusy(btn); }
 }
 
-function abrirEdicao(id){
-  currentId=id;const cv=convenios.find(c=>c.id===id);
-  setRole('iara');
-  document.getElementById('fNome').value=cv.nome;
-  const catSel=document.getElementById('fCat');
-  if(cv.cat&&cv.cat.startsWith('Outros')){catSel.value='Outros';toggleOutra();document.getElementById('fCatOutra').value=cv.cat.replace(/^Outros:?\s*/,'');}
-  else{catSel.value=cv.cat||'';toggleOutra();}
-  document.getElementById('fVant').value=cv.bruto;
-  document.getElementById('fEnd').value=cv.endereco||'';
-  document.getElementById('fInsta').value=cv.instagram||'';
-  document.getElementById('fTel1').value=(cv.tels&&cv.tels[0])||'';
-  document.getElementById('fTel2').value=(cv.tels&&cv.tels[1])||'';
-  document.getElementById('fExtra').value=cv.extra||'';
-  document.getElementById('fAuthor').value=cv.ev.captado.by||'';
-  tempLogo=cv.logo;tempLogoType=cv.logoType;tempLogoName=cv.logoName;
-  const dz=document.getElementById('dzLogo');
-  if(cv.logo){dz.classList.add('has');const isPdf=cv.logoType==='application/pdf';dz.innerHTML=`${isPdf?'<div class="ic"><i data-lucide=\"file-text\"></i></div>':`<img src="${cv.logo}" class="preview-img">`}<p><b>${cv.logoName||'marca'}</b> — clique para trocar</p>`;}
-  editando=true;
-  editandoStatus=cv.status;
-  document.querySelector('#viewIara h2').scrollIntoView({behavior:'smooth',block:'start'});
-  document.getElementById('btnEnviar').innerHTML= cv.status==='rascunho' ? ic('save')+'Salvar rascunho' : ic('send')+'Reenviar corrigido para comunicação';
-  refreshIcons();
-  toast('Editando cadastro devolvido — corrija e reenvie');
-}
-
 function fecharModal(id){document.getElementById(id).classList.remove('show');}
 
 function download(key){
@@ -1302,14 +1177,13 @@ function copiarTudo(id){
 function catIcon(cat){ if(!cat)return 'tag'; if(cat.startsWith('Outros'))return 'tag'; return CAT_ICON[cat]||'tag'; }
 
 function render(){
-  const counts={rascunho:0,cadastro:0,ajuste:0,design:0,aprov_marcio:0,aprov_iara:0,conveniado:0,apostar:0,agendado:0,postado:0,revisao:0};
-  convenios.forEach(c=>{if(counts[c.status]!=null)counts[c.status]++; if(c.revisaoConveniado)counts.revisao++;});
+  const counts={design:0,apostar:0,agendado:0,postado:0};
+  convenios.forEach(c=>{if(counts[c.status]!=null)counts[c.status]++;});
 
   // badges de pendências por perfil (o que exige AÇÃO de cada um)
   const setBadge=(id,n)=>{const el=document.getElementById(id);if(!el)return;el.textContent=n>99?'99+':n;el.classList.toggle('show',n>0);};
-  setBadge('badge-iara', counts.rascunho + counts.cadastro + counts.aprov_iara + counts.conveniado); // liberar rascunho, corrigir, aprovar arte, conveniado
-  setBadge('badge-marcio', counts.ajuste + counts.aprov_marcio + counts.apostar);                    // ajustar texto, aprovar arte, postar
-  setBadge('badge-raphael', counts.design);                                                          // produzir arte
+  setBadge('badge-marcio', counts.apostar + counts.agendado);   // a postar / agendado aguardam o Márcio
+  setBadge('badge-raphael', counts.design);                     // produzir arte
   const total=convenios.length;
 
   const arrow=`<div class="pstage-arrow">${ic('chevron-right')}</div>`;
@@ -1319,29 +1193,14 @@ function render(){
     </div>`;
   const S=k=>STAGES.find(x=>x.k===k);
 
-  // fluxo completo: (rascunho) → comunicação → design → aprov.Márcio → aprov.Iara → conveniado → a postar → (agendado) → postado
-  let html='';
-  if(counts.rascunho>0||filterStage==='rascunho') html+=cell(S('rascunho'))+arrow;
-  html += cell(S('ajuste')) + arrow + cell(S('design')) + arrow + cell(S('aprov_marcio')) + arrow + cell(S('aprov_iara')) + arrow + cell(S('conveniado')) + arrow + cell(S('apostar'));
+  // fluxo: design → a postar → (agendado) → postado
+  let html = cell(S('design')) + arrow + cell(S('apostar'));
   if(counts.agendado>0||filterStage==='agendado') html+=arrow+cell(S('agendado'));
   html += arrow + cell(S('postado'));
-  // exceções (só quando houver): devolvido e revisão
-  let excep='';
-  if(counts.cadastro>0||filterStage==='cadastro') excep+=cell(S('cadastro'),'excep');
-  if(counts.revisao>0||filterStage==='revisao') excep+=cell(S('revisao'),'excep');
-  if(excep) html+=`<div class="pstage-arrow" style="opacity:.5">${ic('git-branch')}</div>`+excep;
-  // total
   html+=cell(S('todos'),'total');
   document.getElementById('pipe').innerHTML=html;
 
-  // banner de liberar rascunhos (só Iara)
-  const rb=document.getElementById('rascunhoBar');
-  if(role==='iara' && counts.rascunho>0){
-    rb.innerHTML=`<div class="rasc-bar">
-      <div class="rasc-info">${ic('folder-clock')}<span><b>${counts.rascunho}</b> convênio(s) no seu rascunho, aguardando liberação para a comunicação.</span></div>
-      <button class="btn btn-green btn-sm" id="btnLiberarTodos" onclick="liberarTodosRascunhos()">${ic('send')}Liberar todos</button>
-    </div>`;
-  }else rb.innerHTML='';
+  const rb=document.getElementById('rascunhoBar'); if(rb) rb.innerHTML='';
 
   const q=document.getElementById('fBusca').value.toLowerCase();
   const mes=document.getElementById('fMes').value;
@@ -1349,10 +1208,7 @@ function render(){
   const tipo=document.getElementById('fTipo').value;
 
   let list=convenios.filter(c=>{
-    // rascunhos só aparecem para a Iara (Convênios)
-    if(c.status==='rascunho' && role!=='iara') return false;
-    if(filterStage==='revisao'){ if(!c.revisaoConveniado)return false; }
-    else if(filterStage!=='todos'&&c.status!==filterStage)return false;
+    if(filterStage!=='todos'&&c.status!==filterStage)return false;
     if(q&&!(c.nome.toLowerCase().includes(q)||(c.cat||'').toLowerCase().includes(q)))return false;
     const d=new Date(c.ev.captado.at);
     if(mes!==''&&d.getMonth()!=mes)return false;
@@ -1389,37 +1245,24 @@ function render(){
 
     let devNote='';
     if(c.devolucao){
-      if(c.devolucao.conveniado){
-        devNote=`<div class="devnote rev"><span class="ic">${ic('message-square-warning')}</span><div><b>Revisão pedida pelo conveniado</b> — ${escapeHtml(c.devolucao.by)}<br>${escapeHtml(c.devolucao.motivo)}</div></div>`;
-      }else{
-        const origem = c.devolucao.de==='design'?'design':'comunicação';
-        devNote=`<div class="devnote">${ic('corner-up-left')}<div><b>Devolvido pel${c.devolucao.de==='design'?'o':'a'} ${origem}</b> — ${escapeHtml(c.devolucao.by)}<br>${escapeHtml(c.devolucao.motivo)}</div></div>`;
-      }
+      devNote=`<div class="devnote">${ic('corner-up-left')}<div><b>Ajuste pedido pela comunicação</b> — ${escapeHtml(c.devolucao.by)}<br>${escapeHtml(c.devolucao.motivo)}</div></div>`;
     }
 
     let tls='';
     if(c.ev.captado)tls+=`<div class="tl"><span class="ic">${ic('user-plus')}</span><span><span class="who">${escapeHtml(c.ev.captado.by)}</span> cadastrou · ${fmt(c.ev.captado.at)}</span></div>`;
     (c.hist||[]).forEach(h=>{
       if(h.tipo==='devolucao'){
-        const orig=h.de==='design'?'design':'comunicação';
-        tls+=`<div class="tl dev"><span class="ic">${ic('corner-up-left')}</span><span><span class="who">${escapeHtml(h.by)}</span> devolveu (${orig}) · ${fmt(h.at)}</span></div>`;
-      }else if(h.tipo==='correcao'){
-        tls+=`<div class="tl"><span class="ic">${ic('rotate-cw')}</span><span><span class="who">${escapeHtml(h.by)}</span> corrigiu e reenviou · ${fmt(h.at)}</span></div>`;
-      }else if(h.tipo==='revisao'){
-        tls+=`<div class="tl rev"><span class="ic">${ic('message-square-warning')}</span><span><span class="who">${escapeHtml(h.by)}</span> pediu revisão (conveniado) · ${fmt(h.at)}</span></div>`;
-      }else if(h.tipo==='aprov_marcio'){
-        tls+=`<div class="tl"><span class="ic">${ic('check')}</span><span><span class="who">${escapeHtml(h.by)}</span> aprovou a arte · ${fmt(h.at)}</span></div>`;
-      }else if(h.tipo==='aprov_iara'){
-        tls+=`<div class="tl"><span class="ic">${ic('send')}</span><span><span class="who">${escapeHtml(h.by)}</span> enviou ao conveniado · ${fmt(h.at)}</span></div>`;
-      }else if(h.tipo==='conv_ok'){
-        tls+=`<div class="tl"><span class="ic">${ic('check-check')}</span><span>conveniado aprovou (via <span class="who">${escapeHtml(h.by)}</span>) · ${fmt(h.at)}</span></div>`;
+        tls+=`<div class="tl dev"><span class="ic">${ic('corner-up-left')}</span><span><span class="who">${escapeHtml(h.by)}</span> pediu ajuste ao design · ${fmt(h.at)}</span></div>`;
       }else if(h.tipo==='agendado'){
         tls+=`<div class="tl"><span class="ic">${ic('calendar')}</span><span><span class="who">${escapeHtml(h.by)}</span> agendou p/ ${h.data?fmtData(h.data):'—'} · ${fmt(h.at)}</span></div>`;
       }else if(h.tipo==='postado'){
         tls+=`<div class="tl"><span class="ic">${ic('check-check')}</span><span><span class="who">${escapeHtml(h.by)}</span> postou · ${fmt(h.at)}</span></div>`;
+      }else if(h.tipo==='edicao'){
+        tls+=`<div class="tl"><span class="ic">${ic('pencil')}</span><span><span class="who">${escapeHtml(h.by)}</span> editou o cadastro · ${fmt(h.at)}</span></div>`;
+      }else if(h.tipo==='reabrir'){
+        tls+=`<div class="tl"><span class="ic">${ic('rotate-ccw')}</span><span><span class="who">${escapeHtml(h.by)}</span> reabriu · ${fmt(h.at)}</span></div>`;
       }
     });
-    if(c.ev.ajustado)tls+=`<div class="tl"><span class="ic">${ic('pen-line')}</span><span><span class="who">${escapeHtml(c.ev.ajustado.by)}</span> ajustou · ${fmt(c.ev.ajustado.at)}</span></div>`;
     if(c.ev.artes)tls+=`<div class="tl"><span class="ic">${ic('palette')}</span><span><span class="who">${escapeHtml(c.ev.artes.by)}</span> enviou artes · ${fmt(c.ev.artes.at)}</span></div>`;
 
     let artSlot='';
@@ -1430,42 +1273,21 @@ function render(){
     }
 
     let actions='';
-    if(role==='iara'){
-      if(c.status==='rascunho'){
-        actions=`<button class="btn btn-green btn-sm" onclick="liberarRascunho('${c.id}')">${ic('send')}Liberar p/ comunicação</button>`;
-        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirEdicao('${c.id}')">${ic('pencil')}Editar</button>`;
-      }else if(c.status==='cadastro'){
-        actions=`<button class="btn btn-primary btn-sm" onclick="abrirEdicao('${c.id}')">${ic('pencil')}Corrigir cadastro</button>`;
-      }else if(c.status==='aprov_iara'){
-        // Iara aprova a arte e envia ao conveniado
-        actions=`<button class="btn btn-green btn-sm" onclick="moverFluxo('${c.id}','conveniado','iara_ok')">${ic('send')}Enviar ao conveniado</button>`;
-        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirDevolucao('${c.id}','design')">${ic('corner-up-left')}Pedir ajuste ao design</button>`;
-      }else if(c.status==='conveniado'){
-        // conveniado respondeu: aprovou (libera p/ postar) ou não (revisão)
-        actions=`<button class="btn btn-green btn-sm" onclick="moverFluxo('${c.id}','apostar','conv_ok')">${ic('check-check')}Conveniado aprovou</button>`;
-        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirRevisao('${c.id}')">${ic('message-square-warning')}Conveniado pediu mudança</button>`;
-      }
-      actions+=`<button class="btn btn-danger btn-sm" onclick="abrirExcluir('${c.id}')">${ic('trash-2')}Apagar</button>`;
-    }
     if(role==='marcio'){
-      if(c.status==='ajuste'||c.status==='design'){
-        actions=`<button class="btn ${c.status==='ajuste'?'btn-green':'btn-ghost'} btn-sm" onclick="abrirTexto('${c.id}')">${ic('pen-line')}${c.status==='ajuste'?'Ajustar texto':'Editar texto'}</button>`;
-        if(c.status==='ajuste')actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirDevolucao('${c.id}','cadastro')">${ic('corner-up-left')}Devolver p/ convênios</button>`;
-      }else if(c.status==='cadastro'){
-        actions=`<span style="font-size:11px;color:var(--texto-sub);text-align:center">Devolvido — aguardando correção dos convênios</span>`;
-      }else if(c.status==='aprov_marcio'){
-        // Márcio confere a arte: aprova (libera p/ Iara) ou pede ajuste no texto ao design
-        actions=`<button class="btn btn-green btn-sm" onclick="moverFluxo('${c.id}','aprov_iara','marcio_ok')">${ic('check')}Aprovar e liberar p/ Iara</button>`;
-        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirDevolucao('${c.id}','design')">${ic('corner-up-left')}Pedir ajuste no texto</button>`;
+      if(c.status==='design'){
+        actions=`<span style="font-size:11px;color:var(--texto-sub);text-align:center">No design — aguardando arte</span>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirEdicaoM('${c.id}')">${ic('pencil')}Editar cadastro</button>`;
       }else if(c.status==='apostar'){
-        // aprovado pelo conveniado: Márcio agenda/posta
         actions=`<button class="btn btn-green btn-sm" onclick="abrirAgendar('${c.id}')">${ic('calendar')}Agendar postagem</button>`;
         actions+=`<button class="btn btn-ghost btn-sm" onclick="moverFluxo('${c.id}','postado','postou')">${ic('check-check')}Marcar postado</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirDevolucao('${c.id}','design')">${ic('corner-up-left')}Pedir ajuste ao design</button>`;
       }else if(c.status==='agendado'){
         actions=`<button class="btn btn-green btn-sm" onclick="moverFluxo('${c.id}','postado','postou')">${ic('check-check')}Marcar postado</button>`;
         actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirAgendar('${c.id}')">${ic('calendar')}Reagendar</button>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirDevolucao('${c.id}','design')">${ic('corner-up-left')}Pedir ajuste ao design</button>`;
       }else if(c.status==='postado'){
         actions=`<span style="font-size:11px;color:var(--verde);text-align:center;font-weight:700">${ic('check-check')} Postado</span>`;
+        actions+=`<button class="btn btn-ghost btn-sm" onclick="moverFluxo('${c.id}','apostar','reabrir')">${ic('rotate-ccw')}Reabrir</button>`;
       }
       actions+=`<button class="btn btn-danger btn-sm" onclick="abrirExcluir('${c.id}')">${ic('trash-2')}Apagar</button>`;
     }
@@ -1473,17 +1295,9 @@ function render(){
       if(c.status==='design'){
         actions=`<button class="btn btn-ghost btn-sm" onclick="copiarTudo('${c.id}')">${ic('clipboard-copy')}Copiar tudo</button>`;
         actions+=`<button class="btn btn-green btn-sm" onclick="abrirArte('${c.id}')">${ic('paperclip')}${(c.story||c.feed)?'Trocar / editar artes':'Responder com artes'}</button>`;
-        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirDevolucao('${c.id}','ajuste')">${ic('corner-up-left')}Texto errado? Devolver</button>`;
-      }else if(c.status==='aprov_marcio'||c.status==='aprov_iara'||c.status==='conveniado'){
-        // já enviado; design pode acompanhar e ainda trocar a arte se quiser
-        actions=`<button class="btn btn-ghost btn-sm" onclick="copiarTudo('${c.id}')">${ic('clipboard-copy')}Copiar tudo</button>`;
-        actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirArte('${c.id}')">${ic('paperclip')}Trocar / editar artes</button>`;
-        actions+=`<span style="font-size:11px;color:var(--texto-sub);text-align:center">Aguardando aprovação</span>`;
       }else if(c.status==='apostar'||c.status==='agendado'||c.status==='postado'){
         actions=`<button class="btn btn-ghost btn-sm" onclick="copiarTudo('${c.id}')">${ic('clipboard-copy')}Copiar tudo</button>`;
         actions+=`<button class="btn btn-ghost btn-sm" onclick="abrirArte('${c.id}')">${ic('paperclip')}Trocar / editar artes</button>`;
-      }else{
-        actions=`<span style="font-size:11px;color:var(--texto-sub);text-align:center">Aguardando comunicação</span>`;
       }
     }
 
@@ -1510,7 +1324,7 @@ function render(){
 }
 
 initSelects();
-setRole('iara');
+setRole('marcio');
 refreshIcons();
 checarAcesso();
 </script>
