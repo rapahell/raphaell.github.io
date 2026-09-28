@@ -105,11 +105,23 @@ textarea{resize:vertical;min-height:92px;line-height:1.5}
 
 .cv-list{display:flex;flex-direction:column;gap:14px}
 
+/* cabeçalho do card (sanfona só na grade) */
+.cv-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.cv-head-main{min-width:0}
+.cv-chevron{display:none;color:var(--texto-sub);flex-shrink:0;transition:transform .2s}
+.cv-chevron svg{width:18px;height:18px}
+
 /* modo grade (cards quadrados) */
-.cv-list.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.cv-list.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;align-items:start}
 .cv-list.grade .cv{grid-template-columns:1fr;gap:12px}
 .cv-list.grade .cv-logo{width:56px;height:56px}
 .cv-list.grade .cv-side{border-top:1px solid var(--linha);padding-top:12px}
+.cv-list.grade .cv-head{cursor:pointer}
+.cv-list.grade .cv-chevron{display:flex}
+.cv-list.grade .cv.expanded .cv-chevron{transform:rotate(180deg)}
+/* recolhido: esconde o conteúdo expansível */
+.cv-list.grade .cv:not(.expanded) .cv-collapsible{display:none}
+.cv-list.grade .cv:not(.expanded){padding-bottom:16px}
 
 /* alternador lista/grade */
 .viewtoggle{display:flex;gap:4px;background:#eef2f7;border-radius:9px;padding:3px}
@@ -586,6 +598,14 @@ function atualizarBotoesView(){
 function setOrdem(o){
   window.ordemAtual=o;
   try{localStorage.setItem('gcv_ordem',o);}catch(e){}
+  render();
+}
+window.expandidos = window.expandidos || new Set();
+function toggleCard(id){
+  // só expande/recolhe no modo grade
+  if(window.viewAtual!=='grade') return;
+  if(window.expandidos.has(id)) window.expandidos.delete(id);
+  else window.expandidos.add(id);
   render();
 }
 let convenios=[];
@@ -1354,18 +1374,26 @@ function render(){
       }
     }
 
-    return `<div class="cv ${STROW[c.status]} ${c.devolucao?'devolvido':''}">
+    const expanded = window.expandidos && window.expandidos.has(c.id);
+    return `<div class="cv ${STROW[c.status]} ${c.devolucao?'devolvido':''} ${expanded?'expanded':''}" data-id="${c.id}">
       ${logo}
       <div class="cv-body">
-        <h3>${escapeHtml(c.nome)}</h3>
-        ${c.cat?`<span class="cv-cat">${ic(catIcon(c.cat))}${escapeHtml(c.cat)}</span>`:''}
+        <div class="cv-head" onclick="toggleCard('${c.id}')">
+          <div class="cv-head-main">
+            <h3>${escapeHtml(c.nome)}</h3>
+            ${c.cat?`<span class="cv-cat">${ic(catIcon(c.cat))}${escapeHtml(c.cat)}</span>`:''}
+          </div>
+          <span class="cv-chevron">${ic('chevron-down')}</span>
+        </div>
         ${c.revisaoConveniado?`<span class="cv-rev-badge">${ic('message-square-warning')}Revisão do conveniado</span>`:''}
         ${(c.status==='agendado'&&c.dataPostagem)?`<span class="cv-date-badge">${ic('calendar')}Postar em ${fmtData(c.dataPostagem)}</span>`:''}
-        ${devNote}
-        ${textoBlock}
-        <div class="cv-meta">${end}${insta}${tels}${extra}${logoDl}</div>
+        <div class="cv-collapsible">
+          ${devNote}
+          ${textoBlock}
+          <div class="cv-meta">${end}${insta}${tels}${extra}${logoDl}</div>
+        </div>
       </div>
-      <div class="cv-side">
+      <div class="cv-side cv-collapsible">
         <span class="status ${STCLS[c.status]}">${STLABEL[c.status]}</span>
         ${actions?`<div class="cv-actions">${actions}</div>`:''}
         ${artSlot}
