@@ -104,6 +104,19 @@ textarea{resize:vertical;min-height:92px;line-height:1.5}
 .filterbar .clearf{align-self:flex-end;background:transparent;border:0;color:var(--azul);font-weight:700;font-size:12.5px;cursor:pointer;padding:9px 4px;display:flex;align-items:center;gap:5px}
 
 .cv-list{display:flex;flex-direction:column;gap:14px}
+
+/* modo grade (cards quadrados) */
+.cv-list.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.cv-list.grade .cv{grid-template-columns:1fr;gap:12px}
+.cv-list.grade .cv-logo{width:56px;height:56px}
+.cv-list.grade .cv-side{border-top:1px solid var(--linha);padding-top:12px}
+
+/* alternador lista/grade */
+.viewtoggle{display:flex;gap:4px;background:#eef2f7;border-radius:9px;padding:3px}
+.viewtoggle button{border:0;background:transparent;color:var(--texto-sub);width:34px;height:30px;border-radius:7px;cursor:pointer;display:grid;place-items:center;transition:.15s}
+.viewtoggle button.on{background:#fff;color:var(--azul);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.viewtoggle button svg{width:17px;height:17px}
+.fgroup.vgroup{display:flex;flex-direction:column}
 .cv{background:#fff;border-radius:14px;border:1px solid var(--linha);padding:18px;display:grid;grid-template-columns:64px 1fr 230px;gap:16px;align-items:start;transition:.15s;position:relative;overflow:hidden}
 .cv::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px}
 .cv.s-ajuste::before{background:var(--roxo)}
@@ -364,6 +377,21 @@ footer.ft span{color:rgba(255,255,255,.6);font-size:11.5px}
       <label>Tipo</label>
       <select id="fTipo" onchange="render()"><option value="">Todos</option></select>
     </div>
+    <div class="fgroup">
+      <label>Ordenar</label>
+      <select id="fOrdem" onchange="setOrdem(this.value)">
+        <option value="recentes">Mais recentes</option>
+        <option value="antigos">Mais antigos</option>
+        <option value="alfabetica">Alfabética (A–Z)</option>
+      </select>
+    </div>
+    <div class="fgroup vgroup">
+      <label>Ver</label>
+      <div class="viewtoggle">
+        <button id="vtLista" onclick="setView('lista')" title="Lista"><i data-lucide="rows-3"></i></button>
+        <button id="vtGrade" onclick="setView('grade')" title="Grade"><i data-lucide="layout-grid"></i></button>
+      </div>
+    </div>
     <button class="clearf" onclick="limparFiltros()"><i data-lucide="x"></i>Limpar filtros</button>
   </div>
 
@@ -542,6 +570,24 @@ const MAX_MB=10;
 
 let role='marcio';
 let filterStage='todos';
+window.viewAtual = (()=>{ try{return localStorage.getItem('gcv_view')||'lista';}catch(e){return 'lista';} })();
+window.ordemAtual = (()=>{ try{return localStorage.getItem('gcv_ordem')||'recentes';}catch(e){return 'recentes';} })();
+function setView(v){
+  window.viewAtual=v;
+  try{localStorage.setItem('gcv_view',v);}catch(e){}
+  atualizarBotoesView();
+  render();
+}
+function atualizarBotoesView(){
+  const l=document.getElementById('vtLista'),g=document.getElementById('vtGrade');
+  if(l)l.classList.toggle('on',window.viewAtual!=='grade');
+  if(g)g.classList.toggle('on',window.viewAtual==='grade');
+}
+function setOrdem(o){
+  window.ordemAtual=o;
+  try{localStorage.setItem('gcv_ordem',o);}catch(e){}
+  render();
+}
 let convenios=[];
 let tempLogo=null,tempLogoType=null,tempLogoName=null;   // podem ser dataURL (novo) ou URL https (já salvo)
 let tempStory=null,tempFeed=null,currentId=null;
@@ -1220,10 +1266,17 @@ function render(){
     return true;
   });
 
+  // ordenação
+  const ordem=window.ordemAtual||'recentes';
+  if(ordem==='alfabetica') list.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  else if(ordem==='antigos') list.sort((a,b)=>(a.ev.captado.at||0)-(b.ev.captado.at||0));
+  else list.sort((a,b)=>(b.ev.captado.at||0)-(a.ev.captado.at||0)); // recentes
+
   const wrap=document.getElementById('listWrap');
   if(!list.length){wrap.innerHTML=`<div class="panel"><div class="empty"><div class="ic"><i data-lucide="inbox"></i></div><p>Nenhum convênio encontrado com esses filtros.</p></div></div>`;refreshIcons();return;}
 
-  wrap.innerHTML='<div class="cv-list">'+list.map(c=>{
+  const viewCls = (window.viewAtual==='grade')?'cv-list grade':'cv-list';
+  wrap.innerHTML='<div class="'+viewCls+'">'+list.map(c=>{
     const initials=c.nome.trim().slice(0,2).toUpperCase();
     let logo;
     if(c.logo&&c.logoType==='application/pdf')logo=`<div class="cv-logo" title="Marca em PDF"><div class="ic"><i data-lucide="file-text"></i></div></div>`;
@@ -1325,6 +1378,7 @@ function render(){
 
 initSelects();
 setRole('marcio');
+(function(){ const o=document.getElementById('fOrdem'); if(o)o.value=window.ordemAtual; atualizarBotoesView(); })();
 refreshIcons();
 checarAcesso();
 </script>
