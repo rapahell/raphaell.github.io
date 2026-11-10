@@ -1,1 +1,619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vitória-Régia · Grandes Empreendimentos</title>
+<meta name="description" content="Vitória-Régia: comunicação social para empreendimentos de grande porte. Case FICO – Ferrovia de Integração Centro-Oeste.">
+<meta name="theme-color" content="#0b2a0c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="preload" as="image" href="a/capa.webp">
+<style>
+/* Layout: rolagem contínua de faixas no ritmo da apresentação. Imagem onde a imagem é o conteúdo (capa, flor, mapa, fotos), HTML onde há texto e número. Toda faixa tem um verde por trás, então nada fica branco enquanto a imagem carrega ou quando ela não cobre a tela. */
+:root{
+  --noite:#0b2a0c;      /* verde mais escuro, fundo da página */
+  --folha:#0f3a12;      /* faixa de folha */
+  --campo:#1fa300;      /* verde do slide FICO, idêntico ao fundo do mapa */
+  --estado:#47d645;
+  --lima:#7fff30;
+  --verde:#1f8f0a;      /* títulos sobre fundo claro */
+  --verde-esc:#145c0b;
+  --broto:#3fdc6a;
+  --creme:#f1ecd6;
+  --rosa:#d47a9e;
+  --azul:#3a8dc0;
+  --marinho:#13305f;
+  --menta:#eef5e6;      /* fundo claro: verde muito pálido, nunca branco */
+  --menta-2:#e1ecd6;
+  --tinta:#132116;
+  --tinta-2:#46584a;
+  --f-display:"Bebas Neue","Oswald","Arial Narrow",Impact,sans-serif;
+  --f-head:"Archivo","Arial Black",Arial,sans-serif;
+  --f-body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --wrap:1200px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--noite);scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--noite);color:var(--tinta);font-family:var(--f-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.band{position:relative;overflow:hidden;padding-block:clamp(72px,9vw,128px)}
+.band>.wrap{position:relative;z-index:2}
+.light{background:var(--menta)}
+.light.alt{background:var(--menta-2)}
+.dark{background:var(--folha);color:var(--creme)}
+.eyebrow{font-family:var(--f-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--verde);margin:0 0 16px}
+.dark .eyebrow{color:var(--broto)}
+h1,h2,h3{margin:0;text-wrap:balance;overflow-wrap:break-word}
+h2{font-family:var(--f-head);font-weight:800;text-transform:uppercase;font-size:clamp(32px,4.6vw,60px);line-height:1;letter-spacing:-.01em;color:var(--verde)}
+.dark h2{color:var(--creme)}
+h3{font-family:var(--f-head);font-weight:700;font-size:20px;line-height:1.2;color:var(--verde)}
+.lead{font-size:clamp(18px,1.9vw,21px);max-width:58ch;color:var(--tinta-2);margin:24px 0 0}
+.dark .lead{color:#d3dbc4}
+.num{font-family:var(--f-head);font-weight:800;line-height:.9;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 
+/* asterisco da marca em contorno, como nos slides claros */
+.ast{position:absolute;z-index:1;pointer-events:none;opacity:.35;width:min(760px,90vw);right:-14%;top:10%}
+
+/* ---------- parallax: camada maior que a faixa, deslocada por script ---------- */
+.px{position:absolute;inset:-14% 0;z-index:0;will-change:transform}
+.px img{width:100%;height:100%;object-fit:cover}
+
+/* ---------- capa ---------- */
+.hero{position:relative;overflow:hidden;background:#2f5a1d;color:#fff;min-height:clamp(560px,86vh,900px);display:flex;align-items:stretch}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(6,24,8,.25),rgba(6,24,8,0) 35%,rgba(6,24,8,.08) 62%,rgba(6,24,8,.7))}
+.hero .wrap{position:relative;z-index:2;width:100%;display:flex;flex-direction:column;justify-content:space-between;gap:40px;padding-block:max(28px,env(safe-area-inset-top,0px)) 40px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.top .tag{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;background:rgba(8,28,10,.45);padding:7px 11px;border-radius:2px;backdrop-filter:blur(6px)}
+.chip{display:inline-flex;align-items:center;gap:8px;font:600 14px/1 var(--f-body);text-decoration:none;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);padding:10px 15px;border-radius:999px;backdrop-filter:blur(6px)}
+.chip:hover{background:rgba(255,255,255,.26)}
+.hero h1{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(8px,1.2vw,16px);font-family:var(--f-display);font-weight:400;font-size:clamp(44px,7.6vw,112px);line-height:.92;letter-spacing:.01em;margin-top:clamp(24px,6vh,80px)}
+.hero h1 span{max-width:100%;overflow-wrap:normal;padding:.1em .2em .02em;animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.hero h1 span:nth-child(1){background:rgba(196,160,18,.88)}
+.hero h1 span:nth-child(2){background:rgba(40,104,118,.88);animation-delay:.08s}
+.hero h1 span:nth-child(3){background:rgba(38,136,40,.88);animation-delay:.16s}
+@keyframes rise{from{transform:translateY(18px)}to{transform:none}}
+.hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.hero-foot p{margin:0;max-width:44ch;color:#eef3e4}
+.hero-foot .place{display:block;margin-top:10px;font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;color:#d4e4c8}
+.hero-logo{width:clamp(130px,15vw,190px)}
+.scroll-cue{position:absolute;left:50%;bottom:16px;z-index:3;transform:translateX(-50%);width:26px;height:40px;border:2px solid rgba(255,255,255,.6);border-radius:14px}
+.scroll-cue::after{content:"";position:absolute;left:50%;top:8px;width:4px;height:8px;margin-left:-2px;background:#fff;border-radius:2px;animation:cue 1.8s ease-in-out infinite}
+@keyframes cue{0%{transform:none;opacity:1}70%{transform:translateY(12px);opacity:0}100%{opacity:0}}
+
+/* ---------- quem somos (folha) ---------- */
+.leaf{background:var(--folha);color:var(--creme)}
+.leaf .px{left:auto;width:min(1100px,100%);right:0}
+.leaf .px img{object-position:right center}
+.leaf::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,var(--folha) 0%,rgba(15,58,18,.82) 38%,rgba(15,58,18,.15) 100%)}
+.about{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:48px;align-items:center}
+.about h2{font-family:var(--f-body);font-weight:500;text-transform:none;font-size:clamp(32px,4vw,52px);line-height:1.08;letter-spacing:-.015em;color:var(--creme)}
+.verse{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:36px;font-size:clamp(18px,1.9vw,23px);line-height:1.5;color:#e7df9e}
+.verse p{margin:0}
+.verse p:last-child{padding-top:2.4em}
+.facts{display:flex;flex-wrap:wrap;gap:28px;margin-top:44px;padding-top:26px;border-top:1px solid rgba(241,236,214,.2);font-size:15px;color:#d3dbc4}
+.facts div{flex:1 1 210px;min-width:0}
+.facts b{display:block;color:var(--creme)}
+.about-art{display:grid;justify-items:center;gap:26px}
+.lotus{width:min(100%,480px);-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);animation:float 7s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.brand-lock{display:grid;justify-items:end;gap:12px;justify-self:end}
+.brand-lock img{width:230px}
+.pill{font-family:var(--f-mono);font-size:14px;letter-spacing:.08em;text-transform:uppercase;background:var(--rosa);color:#2a0f1b;padding:5px 10px}
+
+/* ---------- serviços ---------- */
+.svc-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.svc-head .lead{margin:0;max-width:40ch}
+.svc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:56px 64px;margin-top:64px}
+.svc{display:grid;grid-template-columns:96px minmax(0,1fr);gap:24px;align-items:start}
+.svc img{width:96px;height:96px;object-fit:contain}
+.svc ul{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:7px;color:var(--tinta-2)}
+.svc li{position:relative;padding-left:18px}
+.svc li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--broto)}
+
+/* ---------- FICO ---------- */
+.fico{background:var(--campo);color:#fff;padding-bottom:clamp(64px,8vw,110px)}
+.fico h2{color:var(--lima)}
+.fico .eyebrow{color:#d6ffb8}
+.fico-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.fico-map{position:relative;margin-right:calc(-1 * max(20px,env(safe-area-inset-right,0px)) - max(0px,(100vw - var(--wrap))/2));margin-top:-40px}
+.fico-map img{width:100%;-webkit-mask-image:linear-gradient(180deg,#000 82%,transparent);mask-image:linear-gradient(180deg,#000 82%,transparent)}
+.client{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:30px;font:700 clamp(18px,1.8vw,24px)/1.2 var(--f-head)}
+.client img{height:44px;width:auto}
+.fico .lead{color:#effbe6}
+.stats-title{font:700 20px/1.2 var(--f-head);margin:48px 0 10px}
+.stats{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.stats li{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:baseline;gap:14px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.18)}
+.stats .num{font-size:56px;color:var(--lima);text-align:right}
+.stats span:last-child{font-size:17px}
+.stats b{color:var(--lima);font-family:var(--f-head);font-size:22px}
+.fico-boxes{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;margin-top:44px}
+.box{background:var(--lima);color:#0e3d0a;border-radius:16px;padding:24px 28px;font:700 clamp(16px,1.5vw,19px)/1.35 var(--f-head)}
+.box.big{display:flex;align-items:center;gap:20px}
+.box.big .num{font-size:clamp(52px,6vw,76px);color:#0e3d0a}
+
+/* ---------- jornal ---------- */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:56px;align-items:center}
+.editions{display:grid;gap:28px;margin-top:40px}
+.ed b{display:block;font:800 clamp(30px,3.4vw,44px)/1 var(--f-head);color:var(--azul)}
+.ed span{display:block;margin-top:8px;color:var(--tinta)}
+.quote{margin:40px 0 0;padding-top:22px;border-top:2px solid var(--verde);font-size:19px;max-width:52ch}
+.quote b{color:var(--verde)}
+.fan{position:relative;aspect-ratio:1/1.02}
+.fan img{position:absolute;width:44%;border-radius:2px;box-shadow:0 18px 40px rgba(20,50,20,.25);transition:transform .35s ease}
+.fan img:nth-child(1){left:14%;top:0;transform:rotate(-4deg)}
+.fan img:nth-child(2){left:44%;top:6%;transform:rotate(3deg)}
+.fan img:nth-child(3){left:56%;top:30%;transform:rotate(5deg)}
+.fan img:nth-child(4){left:30%;top:22%;transform:rotate(-1deg)}
+.fan img:nth-child(5){left:2%;top:36%;width:48%;transform:rotate(-3deg)}
+.fan:hover img:nth-child(5){transform:rotate(-3deg) translateY(-10px)}
+
+/* ---------- vídeos ---------- */
+.vid-text{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;margin-top:32px}
+.vid-text p{margin:0 0 14px;color:var(--tinta)}
+.vid-text b{color:var(--azul)}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.checks li{position:relative;padding-left:28px}
+.checks li::before{content:"";position:absolute;left:0;top:.35em;width:14px;height:14px;border:2px solid var(--verde);border-radius:50%;background:radial-gradient(circle,var(--verde) 36%,transparent 40%)}
+.gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:52px}
+.gallery img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px;transition:transform .35s ease}
+.gallery img:hover{transform:scale(1.03)}
+
+/* ---------- campanhas ---------- */
+.camp{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:56px;align-items:start}
+.camp h2 small{display:block;font-size:.5em;margin-top:.4em;color:var(--tinta);letter-spacing:0}
+.counts{display:grid;margin-top:34px}
+.count{display:grid;grid-template-columns:120px minmax(0,1fr);align-items:center;gap:16px;padding:10px 0;border-bottom:1px solid #cfdcc5}
+.count .num{font-size:60px;color:var(--verde-esc);text-align:right}
+.count.big{grid-template-columns:minmax(0,1fr);gap:6px;border-bottom:0;padding-top:20px}
+.count.big .num{font-size:clamp(64px,7vw,88px);text-align:left}
+.photos{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.photos img{width:100%;height:100%;object-fit:cover;border-radius:4px}
+.photos .p1{grid-column:1/7;aspect-ratio:16/9}
+.photos .p2{grid-column:1/4;aspect-ratio:4/3}
+.photos .p3{grid-column:4/7;aspect-ratio:4/3}
+
+/* ---------- linguagem ---------- */
+.lang{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:minmax(0,auto);gap:12px;margin-top:48px}
+.lang figure{margin:0;min-width:0;position:relative}
+.lang img{width:100%;height:100%;object-fit:cover;border-radius:4px}
+.lang figcaption{position:absolute;left:8px;bottom:8px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:rgba(15,58,18,.85);color:var(--creme);padding:4px 8px;border-radius:2px}
+.l-kids{grid-column:1/4;grid-row:1}
+.l-blitz{grid-column:4/8;grid-row:1}
+.l-mascote{grid-column:8/10;grid-row:1;z-index:2}
+.l-mascote img{object-fit:contain;transform:scale(1.3);animation:float 5s ease-in-out infinite}
+.l-mascote figcaption{display:none}
+.l-gibi{grid-column:10/13;grid-row:1/3}
+.l-folder{grid-column:1/5;grid-row:2}
+.l-outdoor{grid-column:5/10;grid-row:2}
+
+/* ---------- 71 ações ---------- */
+.themes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:56px}
+.theme{--c:var(--verde);position:relative;border:2px solid var(--c);border-radius:16px;padding:34px 26px 28px 30px;margin-left:24px;background:var(--menta)}
+.theme .ic{position:absolute;left:-26px;top:-22px;width:68px;height:68px;border-radius:50%;border:2px solid var(--c);background:var(--menta);display:grid;place-items:center}
+.theme .ic img{width:40px;height:40px;object-fit:contain}
+.theme h3{color:var(--c);font-size:16px;letter-spacing:.04em;text-transform:uppercase;margin:6px 0 12px 22px}
+.theme p{margin:0 0 0 22px;color:var(--tinta)}
+.t-seg{--c:#b9431a}.t-sau{--c:#c79a0c}.t-dir{--c:#2f9a1c}.t-mei{--c:#3a8dc0}
+.t-rep{--c:var(--marinho);grid-column:span 2;background:var(--marinho);color:#eef2fa}
+.t-rep .ic{background:var(--marinho);border-color:#cdd8ee}
+.t-rep .ic img{filter:brightness(0) invert(1)}
+.t-rep h3{color:#fff;font-size:19px;letter-spacing:.01em;line-height:1.25}
+.t-rep p{color:#cdd8ee}
+
+/* ---------- visitas (foto em parallax) ---------- */
+.visit{background:var(--noite);color:#fff;min-height:clamp(560px,80vh,820px);display:flex;align-items:flex-end}
+.visit::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(6,22,8,.92) 0%,rgba(6,22,8,.72) 40%,rgba(6,22,8,.1) 75%),linear-gradient(0deg,rgba(6,22,8,.6),transparent 40%)}
+.visit .wrap{width:100%}
+.visit-card{max-width:560px}
+.visit h2{color:#fff}
+.visit .eyebrow{color:var(--broto)}
+.organs{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.organs span{font-family:var(--f-mono);font-size:13px;border:1px solid rgba(255,255,255,.4);padding:6px 10px;border-radius:999px;background:rgba(6,22,8,.35)}
+.visit p{color:#dfe7d6}
+.visit .note{border-left:3px solid var(--broto);padding-left:18px;color:#fff;font-size:18px}
+
+/* ---------- contato ---------- */
+.end{background:var(--folha);color:var(--creme)}
+.end::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,var(--folha) 0%,rgba(15,58,18,.85) 45%,rgba(15,58,18,.35) 100%)}
+.end .px{left:auto;width:min(1100px,100%);right:0}
+.end h2{color:var(--creme);font-size:clamp(30px,3.6vw,48px);overflow-wrap:normal}
+.end-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+.person{font:800 clamp(28px,3vw,38px)/1.1 var(--f-head);margin:30px 0 4px}
+.role{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--broto);margin:0}
+.actions{display:grid;gap:12px;margin-top:28px}
+.act{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:16px;padding:14px 18px 14px 14px;border-radius:14px;text-decoration:none;background:rgba(241,236,214,.07);border:1px solid rgba(241,236,214,.18);transition:background .15s ease,transform .15s ease}
+.act:hover{background:rgba(241,236,214,.14);transform:translateX(4px)}
+.act:focus-visible,.btn:focus-visible,.copy:focus-visible,.chip:focus-visible,.fab:focus-visible{outline:3px solid var(--lima);outline-offset:3px}
+.act .ico{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;background:var(--creme);color:var(--folha)}
+.act .ico svg{width:24px;height:24px}
+.act.wa .ico{background:#25d366;color:#05300f}
+.act .t{min-width:0}
+.act .t b{display:block;font-size:17px}
+.act .t span{display:block;font-size:15px;color:#c9d4bb;overflow-wrap:anywhere}
+.act .go{font-family:var(--f-mono);font-size:13px;color:var(--broto)}
+.copy{font:500 12px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;background:transparent;color:var(--creme);border:1px solid rgba(241,236,214,.35);padding:8px 11px;border-radius:999px;cursor:pointer}
+.copy-row{margin:16px 0 0;font-size:14px;color:#c9d4bb;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.copy:hover{background:rgba(241,236,214,.12)}
+.dl-card{background:var(--creme);color:var(--tinta);border-radius:18px;padding:34px}
+.dl-card h3{font-size:26px;color:var(--verde-esc)}
+.dl-card p{color:var(--tinta-2);margin:12px 0 0}
+.btn{display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;text-decoration:none;border-radius:999px;font:700 17px/1 var(--f-body);padding:18px 28px;transition:transform .15s ease,background .15s ease}
+.btn-dl{background:var(--campo);color:#fff;margin-top:26px}
+.btn-dl:hover{background:#178000;transform:translateY(-2px)}
+.btn-dl[disabled]{opacity:.7;cursor:progress}
+.btn svg{width:20px;height:20px}
+.dl-meta{display:block;margin-top:12px;font-family:var(--f-mono);font-size:13px;color:var(--tinta-2)}
+.dl-msg{min-height:1.4em;margin:8px 0 0;font-size:15px;color:var(--verde-esc)}
+.sig{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:80px;padding-top:28px;border-top:1px solid rgba(241,236,214,.18);font-size:14px;color:#b9c6ab}
+.sig img{width:150px}
+
+/* ---------- botão flutuante de WhatsApp ---------- */
+.fab{position:fixed;z-index:20;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;padding:12px 18px 12px 14px;border-radius:999px;background:#25d366;color:#05300f;text-decoration:none;font:700 15px/1 var(--f-body);box-shadow:0 10px 30px rgba(0,0,0,.28);transition:transform .2s ease}
+.fab:hover{transform:translateY(-3px)}
+.fab svg{width:24px;height:24px}
+
+/* ---------- responsivo ---------- */
+@media (max-width:960px){
+  .about,.split,.camp,.end-grid,.vid-text,.fico-grid{grid-template-columns:minmax(0,1fr)}
+  .fico-map{margin:0 calc(-1 * max(20px,env(safe-area-inset-right,0px))) 0 calc(-1 * max(20px,env(safe-area-inset-left,0px)))}
+  .fico-boxes{grid-template-columns:minmax(0,1fr)}
+  .svc-grid{grid-template-columns:minmax(0,1fr);gap:44px}
+  .themes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lang{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .l-kids{grid-column:1/4;grid-row:1}.l-blitz{grid-column:4/7;grid-row:1}
+  .l-mascote{grid-column:1/3;grid-row:2}.l-mascote img{transform:none}
+  .l-gibi{grid-column:3/7;grid-row:2}
+  .l-folder{grid-column:1/7;grid-row:3}.l-outdoor{grid-column:1/7;grid-row:4}
+  .brand-lock{justify-self:start;justify-items:start}
+  .visit::before{background:linear-gradient(0deg,rgba(6,22,8,.95) 0%,rgba(6,22,8,.75) 55%,rgba(6,22,8,.2) 100%)}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .top .tag{display:none}
+  .hero h1{font-size:clamp(34px,10vw,44px)}
+  .brand-lock img{width:170px}
+  .lotus{width:80%}
+  .verse{grid-template-columns:1fr;gap:12px}.verse p:last-child{padding-top:0}
+  .svc{grid-template-columns:64px minmax(0,1fr);gap:16px}.svc img{width:64px;height:64px}
+  .stats li{grid-template-columns:72px minmax(0,1fr)}.stats .num{font-size:44px}
+  .box.big{flex-direction:column;align-items:flex-start;gap:6px}
+  .themes{grid-template-columns:minmax(0,1fr)}.t-rep{grid-column:auto}
+  .count{grid-template-columns:84px minmax(0,1fr)}.count .num{font-size:48px}
+  .act{grid-template-columns:44px minmax(0,1fr)}.act .go{display:none}
+  .fab span{display:none}.fab{padding:14px}
+  .dl-card{padding:26px}
+}
+</style>
+</head>
+<body>
+
+<a class="fab" href="https://wa.me/5562991354340?text=Ol%C3%A1%2C%20Vitor!%20Vi%20a%20apresenta%C3%A7%C3%A3o%20da%20Vit%C3%B3ria-R%C3%A9gia%20e%20gostaria%20de%20conversar." target="_blank" rel="noopener" aria-label="Conversar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z"/></svg>
+  <span>Fale com a gente</span>
+</a>
+
+<!-- 1 · Capa -->
+<header class="hero">
+  <div class="px" data-px="0.35"><img src="a/capa.webp" alt="" fetchpriority="high"></div>
+  <div class="wrap">
+    <div class="top">
+      <span class="tag">Apresentação · Mineração e infraestrutura</span>
+      <a class="chip" href="#contato">Contato e PDF ↓</a>
+    </div>
+    <h1><span>Comunicação social</span><span>para empreendimentos</span><span>de grande porte</span></h1>
+    <div class="hero-foot">
+      <p>Relacionamento com comunidades, produção audiovisual e consultoria em ESG para obras que mudam a paisagem e a vida de quem mora no entorno.<span class="place">Goiânia-GO</span></p>
+      <img class="hero-logo" src="a/logo-cream.webp" alt="Vitória-Régia">
+    </div>
+  </div>
+  <span class="scroll-cue" aria-hidden="true"></span>
+</header>
+
+<!-- 2 · Quem somos -->
+<section class="band leaf" aria-labelledby="quem">
+  <div class="px" data-px="0.18"><img src="a/folha.webp" alt="" loading="lazy"></div>
+  <div class="wrap about">
+    <div>
+      <p class="eyebrow">Quem somos</p>
+      <h2 id="quem">agência e produtora<br>propaganda e audiovisual</h2>
+      <div class="verse">
+        <p>grandes ideias brotam aqui<br>imagens que comunicam<br>identidades que florescem</p>
+        <p>juntos, semeamos conceitos<br>oxigenamos contextos<br>cultivamos histórias</p>
+      </div>
+      <div class="facts">
+        <div><b>Equipe própria de criação,</b>produção audiovisual e mobilização em campo.</div>
+        <div><b>Sede em Goiânia</b>operação corrente em 8 municípios de Goiás e Mato Grosso.</div>
+      </div>
+    </div>
+    <div class="about-art">
+      <img class="lotus" src="a/lotus.webp" alt="Flor de vitória-régia">
+      <div class="brand-lock">
+        <img src="a/logo-cream.webp" alt="Vitória-Régia">
+        <span class="pill">Agência e produtora</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Serviços -->
+<section class="band light" aria-labelledby="servicos">
+  <img class="ast" src="a/asterisk.webp" alt="" loading="lazy">
+  <div class="wrap">
+    <div class="svc-head">
+      <div><p class="eyebrow">O que entregamos</p><h2 id="servicos">Serviços disponíveis</h2></div>
+      <p class="lead">Quatro frentes que trabalham juntas, do mapa de stakeholders ao registro histórico da obra.</p>
+    </div>
+    <div class="svc-grid">
+      <article class="svc"><img src="a/ic-comunidade.webp" alt=""><div><h3>Relacionamento com comunidades</h3><ul><li>Mapa de stakeholders</li><li>Plano de relacionamento</li><li>Comunicação de condicionantes</li><li>Apoio a consultas e audiências públicas</li><li>Comunicação de risco</li></ul></div></article>
+      <article class="svc"><img src="a/ic-audiovisual.webp" alt=""><div><h3>Produção audiovisual</h3><ul><li>Registro sistemático de obra e operação</li><li>Vídeo institucional</li><li>Documentário</li><li>Cobertura de visitas e eventos</li></ul></div></article>
+      <article class="svc"><img src="a/ic-campo.webp" alt=""><div><h3>Execução em campo</h3><ul><li>Campanhas comunitárias</li><li>Mobilização em escolas e associações</li><li>Mídia local e rádio</li><li>Material educativo impresso e digital</li></ul></div></article>
+      <article class="svc"><img src="a/ic-esg.webp" alt=""><div><h3>Consultoria em ESG e Direitos Humanos</h3><ul><li>Devida diligência em direitos humanos</li><li>Adequação de programas às diretrizes de licenciamento social</li><li>Capacitação de equipes e lideranças</li></ul></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · FICO -->
+<section class="band fico" aria-labelledby="fico">
+  <div class="wrap">
+    <div class="fico-grid">
+      <div>
+        <p class="eyebrow">Case</p>
+        <h2 id="fico">Comunicação da FICO · Ferrovia de Integração Centro-Oeste</h2>
+        <div class="client"><span>Contratada pela</span><img src="a/vale.webp" alt="Vale"><span>· Outubro de 2024</span></div>
+        <p class="lead">Comunicação interna do projeto, ações externas de divulgação e comunicação com as comunidades impactadas pela obra.</p>
+        <p class="stats-title">Em 25 meses de contrato:</p>
+        <ul class="stats">
+          <li><span class="num">71</span><span>ações de comunicação executadas</span></li>
+          <li><span class="num">72</span><span>vídeos-relatórios mensais de evolução de obra</span></li>
+          <li><span class="num">21</span><span>edições do jornal FICO por Dentro · <b>24.900</b> exemplares distribuídos</span></li>
+          <li><span class="num">8</span><span>municípios atendidos, em 2 estados (Goiás e Mato Grosso)</span></li>
+        </ul>
+      </div>
+      <figure class="fico-map" style="margin-bottom:0;margin-left:0">
+        <img src="a/mapa-fico.webp" alt="Traçado da FICO entre Água Boa (MT) e Mara Rosa (GO), passando por Nova Nazaré, Cocalinho, Aruanã, Nova Crixás, Crixás, Santa Terezinha de Goiás, Pilar de Goiás, Alto Horizonte e Nova Iguaçu de Goiás" loading="lazy">
+      </figure>
+    </div>
+    <div class="fico-boxes">
+      <div class="box">Presença no eixo minerário de Goiás, com 25 meses de atuação junto às comunidades, instituições e empresas do entorno das operações: escolas, associações, prefeituras e veículos de comunicação.</div>
+      <div class="box big"><span class="num">5.653</span><span>pessoas impactadas diretamente em ações de campo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Jornal -->
+<section class="band light" aria-labelledby="jornal">
+  <img class="ast" src="a/asterisk.webp" alt="" loading="lazy">
+  <div class="wrap split">
+    <div>
+      <p class="eyebrow">Jornal <i>FICO por Dentro</i></p>
+      <h2 id="jornal">21 edições realizadas</h2>
+      <p class="lead">Publicação que atende duas audiências com edições próprias: empregados do projeto e moradores das comunidades no traçado.</p>
+      <div class="editions">
+        <div class="ed"><b>13 edições internas</b><span>Informação da obra para as equipes do projeto</span></div>
+        <div class="ed"><b>8 edições comunitárias</b><span>24.900 exemplares distribuídos nos 8 municípios</span></div>
+      </div>
+      <p class="quote"><b>O valor está na continuidade.</b> Comunidade que recebe informação constantemente constrói uma relação de transparência e credibilidade com o empreendimento.</p>
+    </div>
+    <div class="fan" aria-label="Capas do jornal FICO por Dentro">
+      <img src="a/jornal-3.webp" alt="Edição comunitária do jornal" loading="lazy">
+      <img src="a/jornal-2.webp" alt="Edição Novembro/Dezembro 2025" loading="lazy">
+      <img src="a/jornal-1.webp" alt="Edição Janeiro/Fevereiro 2026" loading="lazy">
+      <img src="a/jornal-4.webp" alt="Edição Maio/Junho 2026" loading="lazy">
+      <img src="a/jornal-5.webp" alt="Edição Julho/Agosto 2026, nº 77" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- 6 · Vídeos -->
+<section class="band light alt" aria-labelledby="videos">
+  <div class="wrap">
+    <p class="eyebrow">Registro audiovisual</p>
+    <h2 id="videos">72 vídeos-relatórios de evolução das obras</h2>
+    <div class="vid-text">
+      <div>
+        <p><b>Cobertura audiovisual mensal em campo:</b> coleta de imagens, apuração junto às frentes de trabalho e edição de vídeo-relatório da evolução física.</p>
+        <p><b>Produção própria:</b> equipe, equipamento e edição em Goiás, sem custo de deslocamento de fora do estado.</p>
+      </div>
+      <ul class="checks">
+        <li>Cadência mensal ininterrupta desde outubro de 2024</li>
+        <li>Material usado para prestação de contas interna, comunicação com stakeholders e registro histórico do empreendimento</li>
+      </ul>
+    </div>
+    <div class="gallery">
+      <img src="a/obra-6.webp" alt="Terraplenagem da ferrovia" loading="lazy">
+      <img src="a/obra-2.webp" alt="Máquina de via sobre trilhos" loading="lazy">
+      <img src="a/obra-3.webp" alt="Trecho de via com trilhos assentados" loading="lazy">
+      <img src="a/obra-8.webp" alt="Ponte em construção sobre rio" loading="lazy">
+      <img src="a/obra-1.webp" alt="Pátio de obra com composição de trilhos" loading="lazy">
+      <img src="a/obra-4.webp" alt="Viaduto ferroviário entre a mata" loading="lazy">
+      <img src="a/obra-5.webp" alt="Ponte ferroviária em obras" loading="lazy">
+      <img src="a/obra-7.webp" alt="Pilares de ponte sobre o rio" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Campanhas -->
+<section class="band light" aria-labelledby="campanhas">
+  <img class="ast" src="a/asterisk.webp" alt="" loading="lazy">
+  <div class="wrap camp">
+    <div>
+      <p class="eyebrow">Campanhas socioambientais</p>
+      <h2 id="campanhas">5 campanhas<small>nos 8 municípios do traçado</small></h2>
+      <p class="lead">Criamos e executamos campanhas de conscientização sobre trânsito responsável, voltadas à gestão de impacto de tráfego nas comunidades.</p>
+      <div class="counts">
+        <div class="count"><span class="num">40</span><span>palestras interativas</span></div>
+        <div class="count"><span class="num">16</span><span>blitzes de trânsito</span></div>
+        <div class="count"><span class="num">5</span><span>apresentações teatrais</span></div>
+        <div class="count"><span class="num">16</span><span>escolas públicas atendidas</span></div>
+        <div class="count big"><span class="num">5.653</span><span>pessoas impactadas diretamente, entre alunos e moradores</span></div>
+      </div>
+    </div>
+    <div class="photos">
+      <img class="p1" src="a/camp-ginasio.webp" alt="Alunos de escola pública com cartilhas da campanha" loading="lazy">
+      <img class="p2" src="a/camp-palestra.webp" alt="Palestra interativa para crianças" loading="lazy">
+      <img class="p3" src="a/camp-teatro.webp" alt="Apresentação teatral de rua sobre trânsito" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Linguagem -->
+<section class="band light alt" aria-labelledby="linguagem">
+  <div class="wrap">
+    <p class="eyebrow">Peças da campanha</p>
+    <h2 id="linguagem">Linguagem construída para o público</h2>
+    <p class="lead">Personagem, gibi e peças desenvolvidos para crianças da rede pública de ensino. Mídia externa instalada nas cidades, rádio local, cards digitais e material impresso distribuído em mãos.</p>
+    <div class="lang">
+      <figure class="l-kids"><img src="a/criancas.webp" alt="Atores caracterizados com crianças e cartilhas" loading="lazy"><figcaption>Ação de rua</figcaption></figure>
+      <figure class="l-blitz"><img src="a/blitz.webp" alt="Equipe da campanha em blitz educativa" loading="lazy"><figcaption>Blitz educativa</figcaption></figure>
+      <figure class="l-mascote"><img src="a/mascote.webp" alt="Mascote Super-Cinto" loading="lazy"><figcaption>Super-Cinto</figcaption></figure>
+      <figure class="l-gibi"><img src="a/gibi.webp" alt="Página do gibi As Aventuras do Super-Cinto" loading="lazy"><figcaption>Gibi</figcaption></figure>
+      <figure class="l-folder"><img src="a/folder.webp" alt="Folder Não ache, tenha certeza" loading="lazy"><figcaption>Folder</figcaption></figure>
+      <figure class="l-outdoor"><img src="a/outdoor.webp" alt="Outdoor do Super-Cinto em rodovia" loading="lazy"><figcaption>Mídia externa</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · 71 ações -->
+<section class="band light" aria-labelledby="acoes">
+  <img class="ast" src="a/asterisk.webp" alt="" loading="lazy">
+  <div class="wrap">
+    <p class="eyebrow">Repertório</p>
+    <h2 id="acoes">71 ações de comunicação realizadas, com temas variados</h2>
+    <div class="themes">
+      <article class="theme t-seg"><span class="ic"><img src="a/ic-seguranca.webp" alt=""></span><h3>Segurança operacional e viária</h3><p>Desvios, interdições, circulação de veículos pesados, desmonte de rochas, alertas de navegação e de incêndio.</p></article>
+      <article class="theme t-sau"><span class="ic"><img src="a/ic-saude.webp" alt=""></span><h3>Saúde nas comunidades</h3><p>Combate à dengue e à malária.</p></article>
+      <article class="theme t-dir"><span class="ic"><img src="a/ic-direitos.webp" alt=""></span><h3>Direitos humanos e trabalho</h3><p>Combate ao trabalho infantil, conscientização sobre abuso de álcool e drogas, direitos humanos.</p></article>
+      <article class="theme t-mei"><span class="ic"><img src="a/ic-meios.webp" alt=""></span><h3>Meios</h3><p>Rádio, mídia externa, folders, cartilhas, banners e cards digitais.</p></article>
+      <article class="theme t-rep"><span class="ic"><img src="a/ic-repertorio.webp" alt=""></span><h3>Este repertório é o que separa comunicação de empreendimento de publicidade convencional</h3><p>E é onde nossa consultoria de ESG e Direitos Humanos atua junto ao planejamento.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · Visitas -->
+<section class="band visit" aria-labelledby="visitas">
+  <div class="px" data-px="0.3"><img src="a/visita.webp" alt="" loading="lazy"></div>
+  <div class="wrap">
+    <div class="visit-card">
+      <p class="eyebrow">Protocolo</p>
+      <h2 id="visitas">5 visitas de órgãos federais acompanhadas em campo</h2>
+      <div class="organs"><span>ANTT</span><span>Infra S.A.</span><span>Ministério dos Transportes</span><span>CGU</span><span>Secretaria Nacional de Transportes Ferroviários</span></div>
+      <p style="margin-top:24px">Cobertura audiovisual, entrevistas com autoridades e com os responsáveis pela implantação, e edição dos vídeos com os depoimentos colhidos.</p>
+      <p class="note">Operar sob observação de órgão fiscalizador exige protocolo, discrição e previsibilidade. É o mesmo padrão que uma auditoria, uma visita de investidor ou uma inspeção ambiental impõe.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · Contato + PDF -->
+<section class="band end" id="contato" aria-labelledby="fim">
+  <div class="px" data-px="0.18"><img src="a/folha.webp" alt="" loading="lazy"></div>
+  <div class="wrap">
+    <div class="end-grid">
+      <div>
+        <p class="eyebrow">Contato</p>
+        <h2 id="fim">Vamos conversar sobre o seu empreendimento</h2>
+        <p class="person">Vitor Duarte</p>
+        <p class="role">Vitória-Régia · Agência e produtora</p>
+        <div class="actions">
+          <a class="act wa" href="https://wa.me/5562991354340?text=Ol%C3%A1%2C%20Vitor!%20Vi%20a%20apresenta%C3%A7%C3%A3o%20da%20Vit%C3%B3ria-R%C3%A9gia%20e%20gostaria%20de%20conversar." target="_blank" rel="noopener">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z"/></svg></span>
+            <span class="t"><b>WhatsApp</b><span>(62) 99135-4340</span></span><span class="go">Abrir ↗</span>
+          </a>
+          <a class="act" href="mailto:vitor@vitoria-regia.com?subject=Apresenta%C3%A7%C3%A3o%20Vit%C3%B3ria-R%C3%A9gia%20%C2%B7%20Grandes%20Empreendimentos">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+            <span class="t"><b>E-mail</b><span id="mail-txt">vitor@vitoria-regia.com</span></span><span class="go">Escrever ↗</span>
+          </a>
+          <a class="act" href="https://vitoria-regia.com" target="_blank" rel="noopener">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z"/></svg></span>
+            <span class="t"><b>Site</b><span>vitoria-regia.com</span></span><span class="go">Abrir ↗</span>
+          </a>
+          <a class="act" href="https://www.linkedin.com/company/vitoria-regia-comunicacao/" target="_blank" rel="noopener">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-1 1.83-2 3.77-2 4.03 0 4.77 2.6 4.77 6v5.5h-4v-4.9c0-1.17-.02-2.68-1.63-2.68-1.64 0-1.89 1.28-1.89 2.6v4.98h-4v-11Z"/></svg></span>
+            <span class="t"><b>LinkedIn</b><span>vitoria-regia-comunicacao</span></span><span class="go">Abrir ↗</span>
+          </a>
+        </div>
+        <p class="copy-row">Prefere copiar o e-mail? <button class="copy" type="button" id="cp-mail" data-copy="vitor@vitoria-regia.com">Copiar e-mail</button></p>
+      </div>
+      <div class="dl-card">
+        <h3>Leve a apresentação completa</h3>
+        <p>A versão em PDF tem os 12 slides desta página, para guardar, imprimir ou repassar à sua equipe.</p>
+        <a class="btn btn-dl" id="dl" href="Vitoria-Regia_Comunicacao-Grandes-Empreendimentos.pdf" download="Vitoria-Regia_Comunicacao-Grandes-Empreendimentos.pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+          Baixar PDF
+        </a>
+        <span class="dl-meta">PDF · 12 slides · 6,5 MB</span>
+        <p class="dl-msg" id="dl-msg" role="status"></p>
+      </div>
+    </div>
+    <div class="sig">
+      <img src="a/logo-cream.webp" alt="Vitória-Régia" loading="lazy">
+      <span>Agência e produtora · Goiânia-GO</span>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  /* Parallax: move a camada de imagem mais devagar que a rolagem. Desligado com "reduzir movimento". */
+  var layers=[].slice.call(document.querySelectorAll("[data-px]"));
+  var still=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!still&&layers.length){
+    var ticking=false;
+    var run=function(){
+      ticking=false;
+      var vh=window.innerHeight;
+      for(var i=0;i<layers.length;i++){
+        var el=layers[i], r=el.parentElement.getBoundingClientRect();
+        if(r.bottom<-50||r.top>vh+50) continue;
+        var k=parseFloat(el.getAttribute("data-px"))||0.2;
+        var off=(r.top+r.height/2-vh/2)*k*-1;
+        var lim=r.height*0.13; if(off>lim)off=lim; if(off<-lim)off=-lim;
+        el.style.transform="translate3d(0,"+off.toFixed(1)+"px,0)";
+      }
+    };
+    var req=function(){if(!ticking){ticking=true;requestAnimationFrame(run);}};
+    addEventListener("scroll",req,{passive:true});
+    addEventListener("resize",req);
+    run();
+  }
+
+  /* Download do PDF: no site próprio o link baixa direto; dentro do Claude usa o recurso de downloads. */
+  var FILE="Vitoria-Regia_Comunicacao-Grandes-Empreendimentos.pdf";
+  var btn=document.getElementById("dl"), msg=document.getElementById("dl-msg"), api=null;
+  if(window.claude&&window.claude.use){window.claude.use("downloads").then(function(d){api=d;}).catch(function(){});}
+  btn.addEventListener("click",function(e){
+    if(!api) return;
+    e.preventDefault();
+    btn.setAttribute("disabled","");
+    msg.textContent="Preparando o arquivo…";
+    fetch(FILE).then(function(r){if(!r.ok)throw new Error("fetch");return r.blob();})
+      .then(function(b){return api.save({filename:"Vitória-Régia — Comunicação para Grandes Empreendimentos.pdf",data:b});})
+      .then(function(){msg.textContent="Download iniciado.";})
+      .catch(function(err){
+        var c=err&&err.code;
+        if(c==="declined") msg.textContent="";
+        else if(c==="rate_limited") msg.textContent="Já existe um download aguardando confirmação.";
+        else msg.textContent="Não foi possível baixar aqui. Peça o PDF pelo WhatsApp ou e-mail ao lado.";
+      })
+      .then(function(){btn.removeAttribute("disabled");});
+  });
+
+  /* Copiar e-mail (o botão fica dentro do link, então não deixa o link abrir) */
+  var cp=document.getElementById("cp-mail");
+  cp.addEventListener("click",function(e){
+    var t=cp.getAttribute("data-copy");
+    var ok=function(){cp.textContent="Copiado";setTimeout(function(){cp.textContent="Copiar";},1600);};
+    var sel=function(){var s=document.getElementById("mail-txt"),r=document.createRange();r.selectNodeContents(s);var g=getSelection();g.removeAllRanges();g.addRange(r);cp.textContent="Selecionado";setTimeout(function(){cp.textContent="Copiar";},1600);};
+    try{navigator.clipboard.writeText(t).then(ok,sel);}catch(_){sel();}
+  });
+})();
+</script>
+</body>
+</html>
